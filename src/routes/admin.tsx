@@ -237,7 +237,10 @@ function AdminConsole({ email }: { email: string }) {
   async function removeMember(m: Member) {
     if (!confirm(`Delete ${m.real_name}?`)) return;
     const { error } = await supabase.from("members").delete().eq("id", m.id);
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     if (m.profile_picture) {
       await supabase.storage.from("profile-pictures").remove([m.profile_picture]);
     }
@@ -245,7 +248,7 @@ function AdminConsole({ email }: { email: string }) {
     toast.success("Member deleted");
   }
 
-  async function saveMember(updated: Member) {
+  async function saveMember(updated: Member): Promise<void> {
     const { error } = await supabase
       .from("members")
       .update({
@@ -256,7 +259,10 @@ function AdminConsole({ email }: { email: string }) {
         occupation: updated.occupation,
       })
       .eq("id", updated.id);
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     setMembers((prev) => prev.map((m) => (m.id === updated.id ? updated : m)));
     setEditing(null);
     toast.success("Member updated");
