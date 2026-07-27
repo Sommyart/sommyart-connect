@@ -90,23 +90,23 @@ function Join() {
       let picturePath: string | null = null;
       if (blob) picturePath = await uploadProfilePicture(blob);
 
-      const { data, error } = await supabase
+      const id = crypto.randomUUID();
+      const { error } = await supabase
         .from("members")
         .insert({
+          id,
           real_name: values.real_name,
           nickname: values.nickname,
           birth_day: Number(values.birth_day),
           birth_month: Number(values.birth_month),
           occupation: values.occupation,
           profile_picture: picturePath,
-        })
-        .select("id")
-        .single();
+        });
 
       if (error) throw error;
 
       const member: Member = {
-        id: data.id,
+        id,
         real_name: values.real_name,
         nickname: values.nickname,
         birth_day: Number(values.birth_day),
