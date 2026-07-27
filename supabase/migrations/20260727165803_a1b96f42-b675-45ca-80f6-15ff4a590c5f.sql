@@ -1,0 +1,1 @@
+DELETE FROM public.members WHERE real_name = 'Chinedu Okeke';
