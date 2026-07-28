@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, LogIn } from "lucide-react";
+
 import { Logo } from "@/components/Logo";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/")({
@@ -10,12 +12,12 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Join the AWKA CONNECT community. Register your details and stay updated with live announcements.",
+          "Join the AWKA CONNECT community: weekly activities, live announcements, winners and more.",
       },
       { property: "og:title", content: "AWKA CONNECT — Connect, Engage, Grow" },
       {
         property: "og:description",
-        content: "Join the AWKA CONNECT community and never miss an announcement.",
+        content: "Weekly activities, live announcements and community winners in one app.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -27,6 +29,10 @@ export const Route = createFileRoute("/")({
 function Landing() {
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center px-6 py-12">
+      <div className="absolute top-5 right-5">
+        <ThemeToggle />
+      </div>
+
       <div className="animate-fade-up w-full max-w-sm text-center">
         <div className="animate-float">
           <Logo size={200} className="mx-auto h-44 w-44" />
@@ -39,22 +45,30 @@ function Landing() {
           Connect • Engage • Grow
         </p>
         <p className="text-muted-foreground mt-4 text-sm leading-relaxed">
-          One community, one place. Register your details and stay informed with live
-          announcements from the AWKA CONNECT team.
+          Register once, sign in with your nickname and 4-digit PIN, and never miss an activity,
+          announcement or winner.
         </p>
 
-        <Button asChild size="lg" className="press shadow-glow mt-8 h-13 w-full rounded-2xl text-base">
-          <Link to="/join">
-            Join Community <ArrowRight className="ml-1 h-5 w-5" aria-hidden />
+        <Button
+          asChild
+          size="lg"
+          className="press shadow-glow mt-8 h-13 w-full rounded-2xl text-base"
+        >
+          <Link to="/register">
+            Create your account <ArrowRight className="ml-1 h-5 w-5" aria-hidden />
           </Link>
         </Button>
 
-        <Link
-          to="/home"
-          className="text-muted-foreground hover:text-primary mt-5 inline-block text-sm font-medium transition-colors"
+        <Button
+          asChild
+          variant="secondary"
+          size="lg"
+          className="press mt-3 h-13 w-full rounded-2xl text-base"
         >
-          Already registered? Go to home
-        </Link>
+          <Link to="/login">
+            <LogIn className="mr-1 h-5 w-5" aria-hidden /> I already have an account
+          </Link>
+        </Button>
       </div>
     </main>
   );

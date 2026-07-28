@@ -9,15 +9,40 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WinnersRouteImport } from './routes/winners'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as ActivitiesRouteImport } from './routes/activities'
 import { Route as IndexRouteImport } from './routes/index'
 
+const WinnersRoute = WinnersRouteImport.update({
+  id: '/winners',
+  path: '/winners',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const JoinRoute = JoinRouteImport.update({
@@ -35,6 +60,11 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ActivitiesRoute = ActivitiesRouteImport.update({
+  id: '/activities',
+  path: '/activities',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -43,49 +73,128 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/activities': typeof ActivitiesRoute
   '/admin': typeof AdminRoute
   '/home': typeof HomeRoute
   '/join': typeof JoinRoute
+  '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
+  '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/winners': typeof WinnersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/activities': typeof ActivitiesRoute
   '/admin': typeof AdminRoute
   '/home': typeof HomeRoute
   '/join': typeof JoinRoute
+  '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
+  '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/winners': typeof WinnersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/activities': typeof ActivitiesRoute
   '/admin': typeof AdminRoute
   '/home': typeof HomeRoute
   '/join': typeof JoinRoute
+  '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
+  '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/winners': typeof WinnersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/home' | '/join' | '/sitemap.xml'
+  fullPaths:
+    | '/'
+    | '/activities'
+    | '/admin'
+    | '/home'
+    | '/join'
+    | '/login'
+    | '/profile'
+    | '/register'
+    | '/sitemap.xml'
+    | '/winners'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/home' | '/join' | '/sitemap.xml'
-  id: '__root__' | '/' | '/admin' | '/home' | '/join' | '/sitemap.xml'
+  to:
+    | '/'
+    | '/activities'
+    | '/admin'
+    | '/home'
+    | '/join'
+    | '/login'
+    | '/profile'
+    | '/register'
+    | '/sitemap.xml'
+    | '/winners'
+  id:
+    | '__root__'
+    | '/'
+    | '/activities'
+    | '/admin'
+    | '/home'
+    | '/join'
+    | '/login'
+    | '/profile'
+    | '/register'
+    | '/sitemap.xml'
+    | '/winners'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ActivitiesRoute: typeof ActivitiesRoute
   AdminRoute: typeof AdminRoute
   HomeRoute: typeof HomeRoute
   JoinRoute: typeof JoinRoute
+  LoginRoute: typeof LoginRoute
+  ProfileRoute: typeof ProfileRoute
+  RegisterRoute: typeof RegisterRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  WinnersRoute: typeof WinnersRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/winners': {
+      id: '/winners'
+      path: '/winners'
+      fullPath: '/winners'
+      preLoaderRoute: typeof WinnersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/join': {
@@ -109,6 +218,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/activities': {
+      id: '/activities'
+      path: '/activities'
+      fullPath: '/activities'
+      preLoaderRoute: typeof ActivitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -121,10 +237,15 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ActivitiesRoute: ActivitiesRoute,
   AdminRoute: AdminRoute,
   HomeRoute: HomeRoute,
   JoinRoute: JoinRoute,
+  LoginRoute: LoginRoute,
+  ProfileRoute: ProfileRoute,
+  RegisterRoute: RegisterRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  WinnersRoute: WinnersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
