@@ -14,29 +14,103 @@ export type Database = {
   }
   public: {
     Tables: {
-      announcements: {
+      activities: {
         Row: {
           created_at: string
+          day: number
+          description: string
           id: string
+          image: string | null
           is_active: boolean
-          message: string
+          title: string
           updated_at: string
         }
         Insert: {
           created_at?: string
+          day: number
+          description: string
           id?: string
+          image?: string | null
           is_active?: boolean
-          message: string
+          title: string
           updated_at?: string
         }
         Update: {
           created_at?: string
+          day?: number
+          description?: string
           id?: string
+          image?: string | null
           is_active?: boolean
-          message?: string
+          title?: string
           updated_at?: string
         }
         Relationships: []
+      }
+      announcements: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          is_active: boolean
+          is_pinned: boolean
+          message: string
+          publish_at: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          is_pinned?: boolean
+          message: string
+          publish_at?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_active?: boolean
+          is_pinned?: boolean
+          message?: string
+          publish_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      member_sessions: {
+        Row: {
+          created_at: string
+          expires_at: string
+          id: string
+          member_id: string
+          token_hash: string
+        }
+        Insert: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          member_id: string
+          token_hash: string
+        }
+        Update: {
+          created_at?: string
+          expires_at?: string
+          id?: string
+          member_id?: string
+          token_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_sessions_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       members: {
         Row: {
@@ -44,30 +118,45 @@ export type Database = {
           birth_month: number
           created_at: string
           id: string
+          is_active: boolean
           nickname: string
           occupation: string
+          password_hint: string | null
+          pin_hash: string | null
+          pin_reset_requested: boolean
           profile_picture: string | null
           real_name: string
+          updated_at: string
         }
         Insert: {
           birth_day: number
           birth_month: number
           created_at?: string
           id?: string
+          is_active?: boolean
           nickname: string
           occupation: string
+          password_hint?: string | null
+          pin_hash?: string | null
+          pin_reset_requested?: boolean
           profile_picture?: string | null
           real_name: string
+          updated_at?: string
         }
         Update: {
           birth_day?: number
           birth_month?: number
           created_at?: string
           id?: string
+          is_active?: boolean
           nickname?: string
           occupation?: string
+          password_hint?: string | null
+          pin_hash?: string | null
+          pin_reset_requested?: boolean
           profile_picture?: string | null
           real_name?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -89,6 +178,39 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      winners: {
+        Row: {
+          activity: string
+          congratulation_message: string | null
+          created_at: string
+          date: string
+          id: string
+          updated_at: string
+          winner_image: string | null
+          winner_name: string
+        }
+        Insert: {
+          activity: string
+          congratulation_message?: string | null
+          created_at?: string
+          date?: string
+          id?: string
+          updated_at?: string
+          winner_image?: string | null
+          winner_name: string
+        }
+        Update: {
+          activity?: string
+          congratulation_message?: string | null
+          created_at?: string
+          date?: string
+          id?: string
+          updated_at?: string
+          winner_image?: string | null
+          winner_name?: string
         }
         Relationships: []
       }
