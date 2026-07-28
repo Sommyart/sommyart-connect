@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as HomeRouteImport } from './routes/home'
 import { Route as AdminRouteImport } from './routes/admin'
@@ -24,6 +25,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const JoinRoute = JoinRouteImport.update({
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/home': typeof HomeRoute
   '/join': typeof JoinRoute
+  '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/home': typeof HomeRoute
   '/join': typeof JoinRoute
+  '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
@@ -69,20 +77,36 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/home': typeof HomeRoute
   '/join': typeof JoinRoute
+  '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/home' | '/join' | '/register' | '/sitemap.xml'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/home'
+    | '/join'
+    | '/login'
+    | '/register'
+    | '/sitemap.xml'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/home' | '/join' | '/register' | '/sitemap.xml'
+  to:
+    | '/'
+    | '/admin'
+    | '/home'
+    | '/join'
+    | '/login'
+    | '/register'
+    | '/sitemap.xml'
   id:
     | '__root__'
     | '/'
     | '/admin'
     | '/home'
     | '/join'
+    | '/login'
     | '/register'
     | '/sitemap.xml'
   fileRoutesById: FileRoutesById
@@ -92,6 +116,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   HomeRoute: typeof HomeRoute
   JoinRoute: typeof JoinRoute
+  LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
@@ -110,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/join': {
@@ -148,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   HomeRoute: HomeRoute,
   JoinRoute: JoinRoute,
+  LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
