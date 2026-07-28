@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WinnersRouteImport } from './routes/winners'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as HomeRouteImport } from './routes/home'
@@ -32,6 +33,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoginRoute = LoginRouteImport.update({
@@ -72,6 +78,7 @@ export interface FileRoutesByFullPath {
   '/home': typeof HomeRoute
   '/join': typeof JoinRoute
   '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/winners': typeof WinnersRoute
@@ -83,6 +90,7 @@ export interface FileRoutesByTo {
   '/home': typeof HomeRoute
   '/join': typeof JoinRoute
   '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/winners': typeof WinnersRoute
@@ -95,6 +103,7 @@ export interface FileRoutesById {
   '/home': typeof HomeRoute
   '/join': typeof JoinRoute
   '/login': typeof LoginRoute
+  '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/winners': typeof WinnersRoute
@@ -108,6 +117,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/join'
     | '/login'
+    | '/profile'
     | '/register'
     | '/sitemap.xml'
     | '/winners'
@@ -119,6 +129,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/join'
     | '/login'
+    | '/profile'
     | '/register'
     | '/sitemap.xml'
     | '/winners'
@@ -130,6 +141,7 @@ export interface FileRouteTypes {
     | '/home'
     | '/join'
     | '/login'
+    | '/profile'
     | '/register'
     | '/sitemap.xml'
     | '/winners'
@@ -142,6 +154,7 @@ export interface RootRouteChildren {
   HomeRoute: typeof HomeRoute
   JoinRoute: typeof JoinRoute
   LoginRoute: typeof LoginRoute
+  ProfileRoute: typeof ProfileRoute
   RegisterRoute: typeof RegisterRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   WinnersRoute: typeof WinnersRoute
@@ -168,6 +181,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/login': {
@@ -222,6 +242,7 @@ const rootRouteChildren: RootRouteChildren = {
   HomeRoute: HomeRoute,
   JoinRoute: JoinRoute,
   LoginRoute: LoginRoute,
+  ProfileRoute: ProfileRoute,
   RegisterRoute: RegisterRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   WinnersRoute: WinnersRoute,
