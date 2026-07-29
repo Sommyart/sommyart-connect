@@ -15,6 +15,12 @@ import {
 import { toast } from "sonner";
 
 import { Logo } from "@/components/Logo";
+import { ActivitiesPanel } from "@/components/admin/ActivitiesPanel";
+import { AttendancePanel } from "@/components/admin/AttendancePanel";
+import { ContributionsPanel } from "@/components/admin/ContributionsPanel";
+import { DashboardPanel } from "@/components/admin/DashboardPanel";
+import { WinnersPanel } from "@/components/admin/WinnersPanel";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
