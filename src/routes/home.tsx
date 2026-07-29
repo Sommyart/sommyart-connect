@@ -86,6 +86,8 @@ function Home() {
       <div className="mt-6 space-y-6">
         <WelcomeCard member={member} />
 
+        <DailySignInCard />
+
         <section>
           <div className="mb-3 flex items-end justify-between">
             <h2 className="text-foreground text-base font-extrabold">This week's activities</h2>
