@@ -307,101 +307,143 @@ function AdminConsole({ email }: { email: string }) {
         </Button>
       </header>
 
-      <section className="bg-card shadow-card animate-fade-up mt-6 rounded-3xl p-5">
-        <h2 className="text-card-foreground flex items-center gap-2 font-bold">
-          <Megaphone className="text-primary h-5 w-5" aria-hidden /> Scrolling announcement
-        </h2>
-        <Textarea
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          rows={3}
-          maxLength={300}
-          className="mt-3 rounded-2xl"
-        />
-        <Button
-          className="press mt-3 w-full rounded-2xl"
-          disabled={savingMsg}
-          onClick={() => void saveAnnouncement()}
-        >
-          {savingMsg ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden /> : null}
-          Publish announcement
-        </Button>
-      </section>
+      <Tabs defaultValue="dashboard" className="mt-6">
+        <TabsList className="flex w-full flex-wrap justify-start gap-1 rounded-2xl">
+          <TabsTrigger value="dashboard" className="rounded-xl">
+            Dashboard
+          </TabsTrigger>
+          <TabsTrigger value="members" className="rounded-xl">
+            Members
+          </TabsTrigger>
+          <TabsTrigger value="attendance" className="rounded-xl">
+            Attendance
+          </TabsTrigger>
+          <TabsTrigger value="contributions" className="rounded-xl">
+            Contributions
+          </TabsTrigger>
+          <TabsTrigger value="activities" className="rounded-xl">
+            Activities
+          </TabsTrigger>
+          <TabsTrigger value="winners" className="rounded-xl">
+            Winners
+          </TabsTrigger>
+        </TabsList>
 
-      <section className="bg-card shadow-card animate-fade-up mt-5 rounded-3xl p-5">
-        <div className="flex flex-wrap items-center gap-2">
-          <h2 className="text-card-foreground flex-1 font-bold">Members ({members.length})</h2>
-          <Button
-            variant="secondary"
-            size="sm"
-            className="press rounded-xl"
-            onClick={() => setSorted((s) => !s)}
-          >
-            <ArrowDownAZ className="mr-1 h-4 w-4" aria-hidden /> {sorted ? "A–Z" : "Newest"}
-          </Button>
-          <Button variant="secondary" size="sm" className="press rounded-xl" onClick={exportCsv}>
-            <Download className="mr-1 h-4 w-4" aria-hidden /> CSV
-          </Button>
-        </div>
+        <TabsContent value="dashboard" className="mt-5 space-y-5">
+          <DashboardPanel />
+          <section className="bg-card shadow-card animate-fade-up rounded-3xl p-5">
+            <h2 className="text-card-foreground flex items-center gap-2 font-bold">
+              <Megaphone className="text-primary h-5 w-5" aria-hidden /> Scrolling announcement
+            </h2>
+            <Textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              rows={3}
+              maxLength={300}
+              className="mt-3 rounded-2xl"
+            />
+            <Button
+              className="press mt-3 w-full rounded-2xl"
+              disabled={savingMsg}
+              onClick={() => void saveAnnouncement()}
+            >
+              {savingMsg ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden /> : null}
+              Publish announcement
+            </Button>
+          </section>
+        </TabsContent>
 
-        <div className="relative mt-3">
-          <Search
-            className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2"
-            aria-hidden
-          />
-          <Input
-            placeholder="Search name, nickname or occupation"
-            className="h-11 rounded-2xl pl-9"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </div>
-
-        <div className="mt-4 space-y-2">
-          {loading ? (
-            Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="bg-muted h-16 animate-pulse rounded-2xl" />
-            ))
-          ) : visible.length === 0 ? (
-            <p className="text-muted-foreground py-6 text-center text-sm">No members yet.</p>
-          ) : (
-            visible.map((m) => (
-              <div
-                key={m.id}
-                className="bg-secondary flex items-center gap-3 rounded-2xl px-4 py-3"
+        <TabsContent value="members" className="mt-5">
+          <section className="bg-card shadow-card animate-fade-up rounded-3xl p-5">
+            <div className="flex flex-wrap items-center gap-2">
+              <h2 className="text-card-foreground flex-1 font-bold">Members ({members.length})</h2>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="press rounded-xl"
+                onClick={() => setSorted((s) => !s)}
               >
-                <div className="min-w-0 flex-1">
-                  <p className="text-secondary-foreground truncate text-sm font-semibold">
-                    {m.real_name} <span className="text-primary">“{m.nickname}”</span>
-                  </p>
-                  <p className="text-muted-foreground truncate text-xs">
-                    {m.occupation} • {birthdayLabel(m.birth_day, m.birth_month)}
-                  </p>
-                </div>
-                <button
-                  aria-label={`Edit ${m.real_name}`}
-                  className="press text-muted-foreground hover:text-primary p-2"
-                  onClick={() => setEditing(m)}
-                >
-                  <Pencil className="h-4 w-4" aria-hidden />
-                </button>
-                <button
-                  aria-label={`Delete ${m.real_name}`}
-                  className="press text-muted-foreground hover:text-destructive p-2"
-                  onClick={() => void removeMember(m)}
-                >
-                  <Trash2 className="h-4 w-4" aria-hidden />
-                </button>
-              </div>
-            ))
-          )}
-        </div>
-      </section>
+                <ArrowDownAZ className="mr-1 h-4 w-4" aria-hidden /> {sorted ? "A–Z" : "Newest"}
+              </Button>
+              <Button variant="secondary" size="sm" className="press rounded-xl" onClick={exportCsv}>
+                <Download className="mr-1 h-4 w-4" aria-hidden /> CSV
+              </Button>
+            </div>
+
+            <div className="relative mt-3">
+              <Search
+                className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2"
+                aria-hidden
+              />
+              <Input
+                placeholder="Search name, nickname or occupation"
+                className="h-11 rounded-2xl pl-9"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+              />
+            </div>
+
+            <div className="mt-4 space-y-2">
+              {loading ? (
+                Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="bg-muted h-16 animate-pulse rounded-2xl" />
+                ))
+              ) : visible.length === 0 ? (
+                <p className="text-muted-foreground py-6 text-center text-sm">No members yet.</p>
+              ) : (
+                visible.map((m) => (
+                  <div
+                    key={m.id}
+                    className="bg-secondary flex items-center gap-3 rounded-2xl px-4 py-3"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="text-secondary-foreground truncate text-sm font-semibold">
+                        {m.real_name} <span className="text-primary">“{m.nickname}”</span>
+                      </p>
+                      <p className="text-muted-foreground truncate text-xs">
+                        {m.occupation} • {birthdayLabel(m.birth_day, m.birth_month)}
+                      </p>
+                    </div>
+                    <button
+                      aria-label={`Edit ${m.real_name}`}
+                      className="press text-muted-foreground hover:text-primary p-2"
+                      onClick={() => setEditing(m)}
+                    >
+                      <Pencil className="h-4 w-4" aria-hidden />
+                    </button>
+                    <button
+                      aria-label={`Delete ${m.real_name}`}
+                      className="press text-muted-foreground hover:text-destructive p-2"
+                      onClick={() => void removeMember(m)}
+                    >
+                      <Trash2 className="h-4 w-4" aria-hidden />
+                    </button>
+                  </div>
+                ))
+              )}
+            </div>
+          </section>
+        </TabsContent>
+
+        <TabsContent value="attendance" className="mt-5">
+          <AttendancePanel members={members} />
+        </TabsContent>
+        <TabsContent value="contributions" className="mt-5">
+          <ContributionsPanel members={members} />
+        </TabsContent>
+        <TabsContent value="activities" className="mt-5">
+          <ActivitiesPanel />
+        </TabsContent>
+        <TabsContent value="winners" className="mt-5">
+          <WinnersPanel />
+        </TabsContent>
+      </Tabs>
 
       <EditDialog member={editing} onClose={() => setEditing(null)} onSave={saveMember} />
     </main>
   );
 }
+
 
 function EditDialog({
   member,
