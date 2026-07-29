@@ -80,6 +80,79 @@ export type Database = {
         }
         Relationships: []
       }
+      attendance: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          member_id: string
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          id?: string
+          member_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          member_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "attendance_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      contributions: {
+        Row: {
+          amount: number | null
+          created_at: string
+          id: string
+          member_id: string
+          month: number
+          remarks: string | null
+          status: string
+          updated_at: string
+          year: number
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          id?: string
+          member_id: string
+          month: number
+          remarks?: string | null
+          status?: string
+          updated_at?: string
+          year: number
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          id?: string
+          member_id?: string
+          month?: number
+          remarks?: string | null
+          status?: string
+          updated_at?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "contributions_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       member_sessions: {
         Row: {
           created_at: string
