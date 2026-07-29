@@ -5,6 +5,7 @@ import { ArrowRight, Bell, Loader2 } from "lucide-react";
 import { ActivityCarousel } from "@/components/ActivityCarousel";
 import { AnnouncementBanner } from "@/components/AnnouncementBanner";
 import { BottomNav } from "@/components/BottomNav";
+import { DailySignInCard } from "@/components/DailySignInCard";
 import { InstallCard } from "@/components/InstallCard";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
