@@ -5,6 +5,7 @@ import { ArrowRight, Bell, Loader2 } from "lucide-react";
 import { ActivityCarousel } from "@/components/ActivityCarousel";
 import { AnnouncementBanner } from "@/components/AnnouncementBanner";
 import { BottomNav } from "@/components/BottomNav";
+import { DailySignInCard } from "@/components/DailySignInCard";
 import { InstallCard } from "@/components/InstallCard";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -85,6 +86,8 @@ function Home() {
 
       <div className="mt-6 space-y-6">
         <WelcomeCard member={member} />
+
+        <DailySignInCard />
 
         <section>
           <div className="mb-3 flex items-end justify-between">
