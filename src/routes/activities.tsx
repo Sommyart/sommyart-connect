@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CalendarDays } from "lucide-react";
 
+import { AppFooter } from "@/components/AppFooter";
 import { BottomNav } from "@/components/BottomNav";
 import { useActivities } from "@/hooks/use-community";
 import { DAY_NAMES } from "@/lib/member-types";
@@ -57,6 +58,8 @@ function Activities() {
           </article>
         ))}
       </div>
+
+      <AppFooter />
 
       <BottomNav />
     </main>

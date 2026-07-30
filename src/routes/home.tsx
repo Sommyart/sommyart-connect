@@ -4,7 +4,10 @@ import { ArrowRight, Bell, Loader2 } from "lucide-react";
 
 import { ActivityCarousel } from "@/components/ActivityCarousel";
 import { AnnouncementBanner } from "@/components/AnnouncementBanner";
+import { AppFooter } from "@/components/AppFooter";
 import { BottomNav } from "@/components/BottomNav";
+import { BusinessCarousel } from "@/components/BusinessCarousel";
+import { BusinessSpotlightPoster } from "@/components/BusinessSpotlightPoster";
 import { DailySignInCard } from "@/components/DailySignInCard";
 import { InstallCard } from "@/components/InstallCard";
 import { Logo } from "@/components/Logo";
@@ -13,8 +16,10 @@ import { WelcomeCard } from "@/components/WelcomeCard";
 import { WinnerCard } from "@/components/WinnerCard";
 import { Button } from "@/components/ui/button";
 import { useAnnouncement } from "@/hooks/use-announcement";
+import { useBusinessPosts } from "@/hooks/use-business";
 import { useActivities, useWinners } from "@/hooks/use-community";
 import { useMember } from "@/hooks/use-member";
+
 
 export const Route = createFileRoute("/home")({
   ssr: false,
@@ -44,6 +49,8 @@ function Home() {
   const { announcement, loading } = useAnnouncement(true);
   const { data: activities = [] } = useActivities();
   const { data: winners = [] } = useWinners();
+  const { data: businessPosts = [] } = useBusinessPosts();
+
   const [notifState, setNotifState] = useState<NotificationPermission | "unsupported">(
     "unsupported",
   );
@@ -103,6 +110,15 @@ function Home() {
           )}
         </section>
 
+        <section>
+          <h2 className="text-foreground mb-3 text-base font-extrabold">Business Spotlight</h2>
+          <div className="space-y-3">
+            <BusinessSpotlightPoster />
+            <BusinessCarousel posts={businessPosts} />
+          </div>
+        </section>
+
+
         {winners.length > 0 && (
           <section>
             <div className="mb-3 flex items-end justify-between">
@@ -144,6 +160,8 @@ function Home() {
           </Link>
         </Button>
       </div>
+
+      <AppFooter />
 
       <BottomNav />
     </main>

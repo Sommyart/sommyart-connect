@@ -109,6 +109,53 @@ export type Database = {
           },
         ]
       }
+      business_posts: {
+        Row: {
+          business_name: string | null
+          caption: string | null
+          created_at: string
+          id: string
+          images: string[]
+          member_id: string
+          member_image: string | null
+          member_nickname: string
+          post_date: string
+          updated_at: string
+        }
+        Insert: {
+          business_name?: string | null
+          caption?: string | null
+          created_at?: string
+          id?: string
+          images: string[]
+          member_id: string
+          member_image?: string | null
+          member_nickname: string
+          post_date?: string
+          updated_at?: string
+        }
+        Update: {
+          business_name?: string | null
+          caption?: string | null
+          created_at?: string
+          id?: string
+          images?: string[]
+          member_id?: string
+          member_image?: string | null
+          member_nickname?: string
+          post_date?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_posts_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       contributions: {
         Row: {
           amount: number | null
@@ -261,6 +308,7 @@ export type Database = {
           created_at: string
           date: string
           id: string
+          member_id: string | null
           updated_at: string
           winner_image: string | null
           winner_name: string
@@ -271,6 +319,7 @@ export type Database = {
           created_at?: string
           date?: string
           id?: string
+          member_id?: string | null
           updated_at?: string
           winner_image?: string | null
           winner_name: string
@@ -281,11 +330,20 @@ export type Database = {
           created_at?: string
           date?: string
           id?: string
+          member_id?: string | null
           updated_at?: string
           winner_image?: string | null
           winner_name?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "winners_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

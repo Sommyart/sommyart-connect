@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, LogIn } from "lucide-react";
 
+import { AppFooter } from "@/components/AppFooter";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -69,7 +71,10 @@ function Landing() {
             <LogIn className="mr-1 h-5 w-5" aria-hidden /> I already have an account
           </Link>
         </Button>
+
+        <AppFooter />
       </div>
     </main>
   );
 }
+
