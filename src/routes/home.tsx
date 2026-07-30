@@ -161,6 +161,8 @@ function Home() {
         </Button>
       </div>
 
+      <AppFooter />
+
       <BottomNav />
     </main>
   );

@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
+import { AppFooter } from "@/components/AppFooter";
 import { BottomNav } from "@/components/BottomNav";
 import { WinnerCard } from "@/components/WinnerCard";
 import { useWinners } from "@/hooks/use-community";
@@ -40,6 +41,8 @@ function Winners() {
           <WinnerCard key={w.id} winner={w} />
         ))}
       </div>
+
+      <AppFooter />
 
       <BottomNav />
     </main>
