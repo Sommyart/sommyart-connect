@@ -108,6 +108,15 @@ function Home() {
           )}
         </section>
 
+        <section>
+          <h2 className="text-foreground mb-3 text-base font-extrabold">Business Spotlight</h2>
+          <div className="space-y-3">
+            <BusinessSpotlightPoster />
+            <BusinessCarousel posts={businessPosts} />
+          </div>
+        </section>
+
+
         {winners.length > 0 && (
           <section>
             <div className="mb-3 flex items-end justify-between">
