@@ -4,7 +4,10 @@ import { ArrowRight, Bell, Loader2 } from "lucide-react";
 
 import { ActivityCarousel } from "@/components/ActivityCarousel";
 import { AnnouncementBanner } from "@/components/AnnouncementBanner";
+import { AppFooter } from "@/components/AppFooter";
 import { BottomNav } from "@/components/BottomNav";
+import { BusinessCarousel } from "@/components/BusinessCarousel";
+import { BusinessSpotlightPoster } from "@/components/BusinessSpotlightPoster";
 import { DailySignInCard } from "@/components/DailySignInCard";
 import { InstallCard } from "@/components/InstallCard";
 import { Logo } from "@/components/Logo";
@@ -13,8 +16,10 @@ import { WelcomeCard } from "@/components/WelcomeCard";
 import { WinnerCard } from "@/components/WinnerCard";
 import { Button } from "@/components/ui/button";
 import { useAnnouncement } from "@/hooks/use-announcement";
+import { useBusinessPosts } from "@/hooks/use-business";
 import { useActivities, useWinners } from "@/hooks/use-community";
 import { useMember } from "@/hooks/use-member";
+
 
 export const Route = createFileRoute("/home")({
   ssr: false,
