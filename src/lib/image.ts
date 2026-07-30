@@ -19,3 +19,14 @@ export async function cropSquareAndCompress(file: File, size = 512, quality = 0.
   if (!blob) throw new Error("Could not compress image");
   return blob;
 }
+
+export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+
+/** Returns an error message when the file is not a supported image under 5MB. */
+export function validateImageFile(file: File): string | null {
+  if (!ACCEPTED_IMAGE_TYPES.includes(file.type.toLowerCase()))
+    return "Only JPG, PNG or WEBP images are supported";
+  if (file.size > MAX_IMAGE_BYTES) return "Image must be 5MB or smaller";
+  return null;
+}

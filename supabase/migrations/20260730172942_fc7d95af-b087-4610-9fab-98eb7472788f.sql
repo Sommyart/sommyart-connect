@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.sync_member_public_data() FROM anon, authenticated, PUBLIC;

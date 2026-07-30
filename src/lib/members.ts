@@ -68,3 +68,14 @@ export async function uploadProfilePicture(blob: Blob): Promise<string> {
   if (error) throw error;
   return path;
 }
+
+/** Upload any processed image blob to the shared media bucket. */
+export async function uploadImageBlob(blob: Blob, prefix = ""): Promise<string> {
+  const path = `${prefix}${crypto.randomUUID()}.jpg`;
+  const { error } = await supabase.storage.from(BUCKET).upload(path, blob, {
+    contentType: "image/jpeg",
+    upsert: false,
+  });
+  if (error) throw error;
+  return path;
+}
