@@ -16,6 +16,8 @@ import { toast } from "sonner";
 
 import { Logo } from "@/components/Logo";
 import { ActivitiesPanel } from "@/components/admin/ActivitiesPanel";
+import { BirthdaysPanel } from "@/components/admin/BirthdaysPanel";
+import { BusinessPostsPanel } from "@/components/admin/BusinessPostsPanel";
 import { AttendancePanel } from "@/components/admin/AttendancePanel";
 import { ContributionsPanel } from "@/components/admin/ContributionsPanel";
 import { DashboardPanel } from "@/components/admin/DashboardPanel";
@@ -333,6 +335,12 @@ function AdminConsole({ email }: { email: string }) {
           <TabsTrigger value="winners" className="rounded-xl">
             Winners
           </TabsTrigger>
+          <TabsTrigger value="birthdays" className="rounded-xl">
+            Birthdays
+          </TabsTrigger>
+          <TabsTrigger value="business" className="rounded-xl">
+            Business
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="dashboard" className="mt-5 space-y-5">
@@ -442,6 +450,12 @@ function AdminConsole({ email }: { email: string }) {
         </TabsContent>
         <TabsContent value="winners" className="mt-5">
           <WinnersPanel />
+        </TabsContent>
+        <TabsContent value="birthdays" className="mt-5">
+          <BirthdaysPanel members={members} />
+        </TabsContent>
+        <TabsContent value="business" className="mt-5">
+          <BusinessPostsPanel />
         </TabsContent>
       </Tabs>
 
