@@ -49,6 +49,8 @@ function Home() {
   const { announcement, loading } = useAnnouncement(true);
   const { data: activities = [] } = useActivities();
   const { data: winners = [] } = useWinners();
+  const { data: businessPosts = [] } = useBusinessPosts();
+
   const [notifState, setNotifState] = useState<NotificationPermission | "unsupported">(
     "unsupported",
   );
