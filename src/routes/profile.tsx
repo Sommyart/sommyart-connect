@@ -15,6 +15,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLogout, useMember } from "@/hooks/use-member";
+import { useGameProfile } from "@/hooks/use-games";
+import { useWhatsappConsent } from "@/hooks/use-whatsapp";
+
 import { updateProfile } from "@/lib/profile.functions";
 import { birthdayLabel } from "@/lib/members";
 import { getToken } from "@/lib/session";
