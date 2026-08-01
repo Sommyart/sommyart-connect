@@ -45,8 +45,10 @@ function Profile() {
   const queryClient = useQueryClient();
   const { data: member, isLoading } = useMember();
   const logout = useLogout();
+  const save = useServerFn(updateProfile);
   const { data: consent } = useWhatsappConsent();
   const { data: gameProfile } = useGameProfile();
+
 
 
   const [form, setForm] = useState({ nickname: "", occupation: "", password_hint: "" });
