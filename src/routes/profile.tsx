@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Loader2, Lock, LogOut, Save } from "lucide-react";
+import { Award, Loader2, Lock, LogOut, MessageCircle, Save } from "lucide-react";
+
 import { toast } from "sonner";
 
 import { AppFooter } from "@/components/AppFooter";
