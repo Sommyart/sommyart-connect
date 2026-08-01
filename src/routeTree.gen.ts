@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WinnersRouteImport } from './routes/winners'
+import { Route as WhatsappRouteImport } from './routes/whatsapp'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileRouteImport } from './routes/profile'
@@ -24,6 +25,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const WinnersRoute = WinnersRouteImport.update({
   id: '/winners',
   path: '/winners',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WhatsappRoute = WhatsappRouteImport.update({
+  id: '/whatsapp',
+  path: '/whatsapp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -88,6 +94,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/whatsapp': typeof WhatsappRoute
   '/winners': typeof WinnersRoute
 }
 export interface FileRoutesByTo {
@@ -101,6 +108,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/whatsapp': typeof WhatsappRoute
   '/winners': typeof WinnersRoute
 }
 export interface FileRoutesById {
@@ -115,6 +123,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/whatsapp': typeof WhatsappRoute
   '/winners': typeof WinnersRoute
 }
 export interface FileRouteTypes {
@@ -130,6 +139,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/register'
     | '/sitemap.xml'
+    | '/whatsapp'
     | '/winners'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -143,6 +153,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/register'
     | '/sitemap.xml'
+    | '/whatsapp'
     | '/winners'
   id:
     | '__root__'
@@ -156,6 +167,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/register'
     | '/sitemap.xml'
+    | '/whatsapp'
     | '/winners'
   fileRoutesById: FileRoutesById
 }
@@ -170,6 +182,7 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   RegisterRoute: typeof RegisterRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  WhatsappRoute: typeof WhatsappRoute
   WinnersRoute: typeof WinnersRoute
 }
 
@@ -180,6 +193,13 @@ declare module '@tanstack/react-router' {
       path: '/winners'
       fullPath: '/winners'
       preLoaderRoute: typeof WinnersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/whatsapp': {
+      id: '/whatsapp'
+      path: '/whatsapp'
+      fullPath: '/whatsapp'
+      preLoaderRoute: typeof WhatsappRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -266,6 +286,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   RegisterRoute: RegisterRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  WhatsappRoute: WhatsappRoute,
   WinnersRoute: WinnersRoute,
 }
 export const routeTree = rootRouteImport
