@@ -200,6 +200,117 @@ export type Database = {
           },
         ]
       }
+      daily_completions: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          kind: string
+          member_id: string
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          id?: string
+          kind: string
+          member_id: string
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          kind?: string
+          member_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "daily_completions_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      member_badges: {
+        Row: {
+          badge: string
+          earned_at: string
+          id: string
+          member_id: string
+        }
+        Insert: {
+          badge: string
+          earned_at?: string
+          id?: string
+          member_id: string
+        }
+        Update: {
+          badge?: string
+          earned_at?: string
+          id?: string
+          member_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_badges_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      member_points: {
+        Row: {
+          best_quiz_score: number
+          created_at: string
+          featured: boolean
+          games_won: number
+          member_id: string
+          nickname: string
+          profile_picture: string | null
+          quizzes_played: number
+          riddles_solved: number
+          total_points: number
+          updated_at: string
+        }
+        Insert: {
+          best_quiz_score?: number
+          created_at?: string
+          featured?: boolean
+          games_won?: number
+          member_id: string
+          nickname: string
+          profile_picture?: string | null
+          quizzes_played?: number
+          riddles_solved?: number
+          total_points?: number
+          updated_at?: string
+        }
+        Update: {
+          best_quiz_score?: number
+          created_at?: string
+          featured?: boolean
+          games_won?: number
+          member_id?: string
+          nickname?: string
+          profile_picture?: string | null
+          quizzes_played?: number
+          riddles_solved?: number
+          total_points?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "member_points_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: true
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       member_sessions: {
         Row: {
           created_at: string
@@ -280,6 +391,104 @@ export type Database = {
         }
         Relationships: []
       }
+      points_ledger: {
+        Row: {
+          created_at: string
+          id: string
+          member_id: string
+          points: number
+          reason: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          member_id: string
+          points: number
+          reason: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          member_id?: string
+          points?: number
+          reason?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "points_ledger_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      quiz_questions: {
+        Row: {
+          answer_index: number
+          category: string
+          created_at: string
+          difficulty: string
+          id: string
+          is_active: boolean
+          options: string[]
+          question: string
+          updated_at: string
+        }
+        Insert: {
+          answer_index: number
+          category: string
+          created_at?: string
+          difficulty?: string
+          id?: string
+          is_active?: boolean
+          options: string[]
+          question: string
+          updated_at?: string
+        }
+        Update: {
+          answer_index?: number
+          category?: string
+          created_at?: string
+          difficulty?: string
+          id?: string
+          is_active?: boolean
+          options?: string[]
+          question?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      riddles: {
+        Row: {
+          answer: string
+          category: string
+          created_at: string
+          id: string
+          is_active: boolean
+          question: string
+          updated_at: string
+        }
+        Insert: {
+          answer: string
+          category: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          question: string
+          updated_at?: string
+        }
+        Update: {
+          answer?: string
+          category?: string
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          question?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -300,6 +509,56 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      whatsapp_consents: {
+        Row: {
+          accepted: boolean
+          accepted_at: string | null
+          created_at: string
+          device: string | null
+          id: string
+          join_clicked: boolean
+          joined_at: string | null
+          member_id: string
+          nickname: string
+          real_name: string
+          updated_at: string
+        }
+        Insert: {
+          accepted?: boolean
+          accepted_at?: string | null
+          created_at?: string
+          device?: string | null
+          id?: string
+          join_clicked?: boolean
+          joined_at?: string | null
+          member_id: string
+          nickname: string
+          real_name: string
+          updated_at?: string
+        }
+        Update: {
+          accepted?: boolean
+          accepted_at?: string | null
+          created_at?: string
+          device?: string | null
+          id?: string
+          join_clicked?: boolean
+          joined_at?: string | null
+          member_id?: string
+          nickname?: string
+          real_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "whatsapp_consents_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: true
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       winners: {
         Row: {

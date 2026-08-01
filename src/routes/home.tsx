@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, Bell, Loader2 } from "lucide-react";
+import { ArrowRight, Bell, Gamepad2, Loader2, MessageCircle } from "lucide-react";
 
 import { ActivityCarousel } from "@/components/ActivityCarousel";
 import { AnnouncementBanner } from "@/components/AnnouncementBanner";
@@ -12,6 +12,8 @@ import { DailySignInCard } from "@/components/DailySignInCard";
 import { InstallCard } from "@/components/InstallCard";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { TuesdayHero } from "@/components/TuesdayHero";
+
 import { WelcomeCard } from "@/components/WelcomeCard";
 import { WinnerCard } from "@/components/WinnerCard";
 import { Button } from "@/components/ui/button";
@@ -78,6 +80,8 @@ function Home() {
 
   return (
     <main className="mx-auto min-h-dvh w-full max-w-md px-5 pt-5 pb-32">
+      <TuesdayHero posts={businessPosts} />
+
       <AnnouncementBanner message={announcement?.message} loading={loading} />
 
       <header className="mt-6 flex items-center gap-3">
@@ -95,6 +99,35 @@ function Home() {
         <WelcomeCard member={member} />
 
         <DailySignInCard />
+
+        <Link
+          to="/whatsapp"
+          className="press bg-gradient-brand text-primary-foreground shadow-glow flex items-center gap-3 rounded-3xl p-4"
+        >
+          <MessageCircle className="h-6 w-6 shrink-0" aria-hidden />
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-extrabold">Join our WhatsApp community</p>
+            <p className="text-xs opacity-90">Accept the community rules, then join the group.</p>
+          </div>
+          <ArrowRight className="h-5 w-5 shrink-0" aria-hidden />
+        </Link>
+
+        <Link
+          to="/games"
+          className="press bg-card/85 shadow-card border-border/60 flex items-center gap-3 rounded-3xl border p-4 backdrop-blur-xl"
+        >
+          <div className="bg-secondary text-primary flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl">
+            <Gamepad2 className="h-5 w-5" aria-hidden />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-card-foreground text-sm font-bold">Games & Fun Zone</p>
+            <p className="text-muted-foreground text-xs">
+              Tic Tac Toe, quizzes, riddles and AWKA Points.
+            </p>
+          </div>
+          <ArrowRight className="text-muted-foreground h-5 w-5 shrink-0" aria-hidden />
+        </Link>
+
 
         <section>
           <div className="mb-3 flex items-end justify-between">

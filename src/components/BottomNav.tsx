@@ -1,12 +1,14 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { CalendarDays, Home, Trophy, User } from "lucide-react";
+import { CalendarDays, Gamepad2, Home, Trophy, User } from "lucide-react";
 
 const items = [
   { to: "/home", label: "Home", icon: Home },
   { to: "/activities", label: "Activities", icon: CalendarDays },
+  { to: "/games", label: "Games", icon: Gamepad2 },
   { to: "/winners", label: "Winners", icon: Trophy },
   { to: "/profile", label: "Profile", icon: User },
 ] as const;
+
 
 export function BottomNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });

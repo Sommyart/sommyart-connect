@@ -104,21 +104,31 @@ function Admin() {
   return <AdminConsole email={session.user.email ?? ""} />;
 }
 
+const ADMIN_EMAILS = ["josiahbenmoshe@gmail.com", "janedan732@gmail.com"];
+
 function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
 
-  async function submit(mode: "in" | "up") {
+  async function submit() {
+    if (!ADMIN_EMAILS.includes(email.trim().toLowerCase())) {
+      toast.error("This email is not recognised as an AWKA CONNECT admin.");
+      return;
+    }
     setBusy(true);
-    const fn =
-      mode === "in"
-        ? supabase.auth.signInWithPassword({ email, password })
-        : supabase.auth.signUp({ email, password });
-    const { error } = await fn;
+    const creds = { email: email.trim().toLowerCase(), password };
+    let { error } = await supabase.auth.signInWithPassword(creds);
+    if (error) {
+      // first-time sign in for a recognised admin creates the account instantly
+      const { error: signUpError } = await supabase.auth.signUp(creds);
+      if (!signUpError) ({ error } = await supabase.auth.signInWithPassword(creds));
+      else error = signUpError;
+    }
     if (error) toast.error(error.message);
     setBusy(false);
   }
+
 
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center px-6">
@@ -133,7 +143,7 @@ function AdminLogin() {
           className="mt-6 space-y-4"
           onSubmit={(e) => {
             e.preventDefault();
-            void submit("in");
+            void submit();
           }}
         >
           <div className="space-y-1.5">
@@ -163,15 +173,10 @@ function AdminLogin() {
             {busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden /> : null}
             Sign in
           </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            disabled={busy}
-            className="press h-12 w-full rounded-2xl"
-            onClick={() => void submit("up")}
-          >
-            Create admin account
-          </Button>
+          <p className="text-muted-foreground text-center text-xs">
+            Only the two recognised AWKA CONNECT admin emails can sign in here.
+          </p>
+
         </form>
       </div>
     </main>
@@ -298,7 +303,7 @@ function AdminConsole({ email }: { email: string }) {
   }
 
   return (
-    <main className="mx-auto min-h-dvh w-full max-w-3xl px-5 pt-6 pb-14">
+    <main className="mx-auto min-h-dvh w-full max-w-5xl px-4 pt-6 pb-14 sm:px-6">
       <header className="flex items-center gap-3">
         <Logo size={44} className="h-11 w-11" />
         <div className="flex-1">
@@ -316,29 +321,29 @@ function AdminConsole({ email }: { email: string }) {
       </header>
 
       <Tabs defaultValue="dashboard" className="mt-6">
-        <TabsList className="flex w-full flex-wrap justify-start gap-1 rounded-2xl">
-          <TabsTrigger value="dashboard" className="rounded-xl">
+        <TabsList className="bg-card/85 flex h-auto w-full flex-wrap justify-start gap-1.5 rounded-2xl p-2 backdrop-blur-xl">
+          <TabsTrigger value="dashboard" className="data-[state=active]:bg-gradient-brand data-[state=active]:text-primary-foreground grow rounded-xl px-3 py-2 text-xs font-semibold">
             Dashboard
           </TabsTrigger>
-          <TabsTrigger value="members" className="rounded-xl">
+          <TabsTrigger value="members" className="data-[state=active]:bg-gradient-brand data-[state=active]:text-primary-foreground grow rounded-xl px-3 py-2 text-xs font-semibold">
             Members
           </TabsTrigger>
-          <TabsTrigger value="attendance" className="rounded-xl">
+          <TabsTrigger value="attendance" className="data-[state=active]:bg-gradient-brand data-[state=active]:text-primary-foreground grow rounded-xl px-3 py-2 text-xs font-semibold">
             Attendance
           </TabsTrigger>
-          <TabsTrigger value="contributions" className="rounded-xl">
+          <TabsTrigger value="contributions" className="data-[state=active]:bg-gradient-brand data-[state=active]:text-primary-foreground grow rounded-xl px-3 py-2 text-xs font-semibold">
             Contributions
           </TabsTrigger>
-          <TabsTrigger value="activities" className="rounded-xl">
+          <TabsTrigger value="activities" className="data-[state=active]:bg-gradient-brand data-[state=active]:text-primary-foreground grow rounded-xl px-3 py-2 text-xs font-semibold">
             Activities
           </TabsTrigger>
-          <TabsTrigger value="winners" className="rounded-xl">
+          <TabsTrigger value="winners" className="data-[state=active]:bg-gradient-brand data-[state=active]:text-primary-foreground grow rounded-xl px-3 py-2 text-xs font-semibold">
             Winners
           </TabsTrigger>
-          <TabsTrigger value="birthdays" className="rounded-xl">
+          <TabsTrigger value="birthdays" className="data-[state=active]:bg-gradient-brand data-[state=active]:text-primary-foreground grow rounded-xl px-3 py-2 text-xs font-semibold">
             Birthdays
           </TabsTrigger>
-          <TabsTrigger value="business" className="rounded-xl">
+          <TabsTrigger value="business" className="data-[state=active]:bg-gradient-brand data-[state=active]:text-primary-foreground grow rounded-xl px-3 py-2 text-xs font-semibold">
             Business
           </TabsTrigger>
         </TabsList>

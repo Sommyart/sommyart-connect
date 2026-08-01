@@ -10,12 +10,14 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WinnersRouteImport } from './routes/winners'
+import { Route as WhatsappRouteImport } from './routes/whatsapp'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as JoinRouteImport } from './routes/join'
 import { Route as HomeRouteImport } from './routes/home'
+import { Route as GamesRouteImport } from './routes/games'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ActivitiesRouteImport } from './routes/activities'
 import { Route as IndexRouteImport } from './routes/index'
@@ -23,6 +25,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const WinnersRoute = WinnersRouteImport.update({
   id: '/winners',
   path: '/winners',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WhatsappRoute = WhatsappRouteImport.update({
+  id: '/whatsapp',
+  path: '/whatsapp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -55,6 +62,11 @@ const HomeRoute = HomeRouteImport.update({
   path: '/home',
   getParentRoute: () => rootRouteImport,
 } as any)
+const GamesRoute = GamesRouteImport.update({
+  id: '/games',
+  path: '/games',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -75,24 +87,28 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/activities': typeof ActivitiesRoute
   '/admin': typeof AdminRoute
+  '/games': typeof GamesRoute
   '/home': typeof HomeRoute
   '/join': typeof JoinRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/whatsapp': typeof WhatsappRoute
   '/winners': typeof WinnersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/activities': typeof ActivitiesRoute
   '/admin': typeof AdminRoute
+  '/games': typeof GamesRoute
   '/home': typeof HomeRoute
   '/join': typeof JoinRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/whatsapp': typeof WhatsappRoute
   '/winners': typeof WinnersRoute
 }
 export interface FileRoutesById {
@@ -100,12 +116,14 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/activities': typeof ActivitiesRoute
   '/admin': typeof AdminRoute
+  '/games': typeof GamesRoute
   '/home': typeof HomeRoute
   '/join': typeof JoinRoute
   '/login': typeof LoginRoute
   '/profile': typeof ProfileRoute
   '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/whatsapp': typeof WhatsappRoute
   '/winners': typeof WinnersRoute
 }
 export interface FileRouteTypes {
@@ -114,36 +132,42 @@ export interface FileRouteTypes {
     | '/'
     | '/activities'
     | '/admin'
+    | '/games'
     | '/home'
     | '/join'
     | '/login'
     | '/profile'
     | '/register'
     | '/sitemap.xml'
+    | '/whatsapp'
     | '/winners'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/activities'
     | '/admin'
+    | '/games'
     | '/home'
     | '/join'
     | '/login'
     | '/profile'
     | '/register'
     | '/sitemap.xml'
+    | '/whatsapp'
     | '/winners'
   id:
     | '__root__'
     | '/'
     | '/activities'
     | '/admin'
+    | '/games'
     | '/home'
     | '/join'
     | '/login'
     | '/profile'
     | '/register'
     | '/sitemap.xml'
+    | '/whatsapp'
     | '/winners'
   fileRoutesById: FileRoutesById
 }
@@ -151,12 +175,14 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ActivitiesRoute: typeof ActivitiesRoute
   AdminRoute: typeof AdminRoute
+  GamesRoute: typeof GamesRoute
   HomeRoute: typeof HomeRoute
   JoinRoute: typeof JoinRoute
   LoginRoute: typeof LoginRoute
   ProfileRoute: typeof ProfileRoute
   RegisterRoute: typeof RegisterRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  WhatsappRoute: typeof WhatsappRoute
   WinnersRoute: typeof WinnersRoute
 }
 
@@ -167,6 +193,13 @@ declare module '@tanstack/react-router' {
       path: '/winners'
       fullPath: '/winners'
       preLoaderRoute: typeof WinnersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/whatsapp': {
+      id: '/whatsapp'
+      path: '/whatsapp'
+      fullPath: '/whatsapp'
+      preLoaderRoute: typeof WhatsappRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -211,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HomeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/games': {
+      id: '/games'
+      path: '/games'
+      fullPath: '/games'
+      preLoaderRoute: typeof GamesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -239,12 +279,14 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ActivitiesRoute: ActivitiesRoute,
   AdminRoute: AdminRoute,
+  GamesRoute: GamesRoute,
   HomeRoute: HomeRoute,
   JoinRoute: JoinRoute,
   LoginRoute: LoginRoute,
   ProfileRoute: ProfileRoute,
   RegisterRoute: RegisterRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  WhatsappRoute: WhatsappRoute,
   WinnersRoute: WinnersRoute,
 }
 export const routeTree = rootRouteImport
