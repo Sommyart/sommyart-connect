@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { ArrowRight, Bell, Loader2 } from "lucide-react";
+import { ArrowRight, Bell, Gamepad2, Loader2, MessageCircle } from "lucide-react";
 
 import { ActivityCarousel } from "@/components/ActivityCarousel";
 import { AnnouncementBanner } from "@/components/AnnouncementBanner";
