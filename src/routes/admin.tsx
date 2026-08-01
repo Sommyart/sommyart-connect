@@ -104,21 +104,31 @@ function Admin() {
   return <AdminConsole email={session.user.email ?? ""} />;
 }
 
+const ADMIN_EMAILS = ["josiahbenmoshe@gmail.com", "janedan732@gmail.com"];
+
 function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
 
-  async function submit(mode: "in" | "up") {
+  async function submit() {
+    if (!ADMIN_EMAILS.includes(email.trim().toLowerCase())) {
+      toast.error("This email is not recognised as an AWKA CONNECT admin.");
+      return;
+    }
     setBusy(true);
-    const fn =
-      mode === "in"
-        ? supabase.auth.signInWithPassword({ email, password })
-        : supabase.auth.signUp({ email, password });
-    const { error } = await fn;
+    const creds = { email: email.trim().toLowerCase(), password };
+    let { error } = await supabase.auth.signInWithPassword(creds);
+    if (error) {
+      // first-time sign in for a recognised admin creates the account instantly
+      const { error: signUpError } = await supabase.auth.signUp(creds);
+      if (!signUpError) ({ error } = await supabase.auth.signInWithPassword(creds));
+      else error = signUpError;
+    }
     if (error) toast.error(error.message);
     setBusy(false);
   }
+
 
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center px-6">
