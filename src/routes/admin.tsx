@@ -173,15 +173,10 @@ function AdminLogin() {
             {busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden /> : null}
             Sign in
           </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            disabled={busy}
-            className="press h-12 w-full rounded-2xl"
-            onClick={() => void submit("up")}
-          >
-            Create admin account
-          </Button>
+          <p className="text-muted-foreground text-center text-xs">
+            Only the two recognised AWKA CONNECT admin emails can sign in here.
+          </p>
+
         </form>
       </div>
     </main>
