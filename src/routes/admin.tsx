@@ -143,7 +143,7 @@ function AdminLogin() {
           className="mt-6 space-y-4"
           onSubmit={(e) => {
             e.preventDefault();
-            void submit("in");
+            void submit();
           }}
         >
           <div className="space-y-1.5">
