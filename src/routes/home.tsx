@@ -12,6 +12,8 @@ import { DailySignInCard } from "@/components/DailySignInCard";
 import { InstallCard } from "@/components/InstallCard";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { TuesdayHero } from "@/components/TuesdayHero";
+
 import { WelcomeCard } from "@/components/WelcomeCard";
 import { WinnerCard } from "@/components/WinnerCard";
 import { Button } from "@/components/ui/button";
