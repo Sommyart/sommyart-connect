@@ -146,6 +146,55 @@ function Profile() {
           </div>
         </section>
 
+        <Link
+          to="/whatsapp"
+          className={`press flex items-center gap-3 rounded-3xl p-4 ${
+            consent?.accepted
+              ? "bg-gradient-brand text-primary-foreground shadow-glow"
+              : "bg-card/85 border-border/60 border"
+          }`}
+        >
+          <MessageCircle className="h-6 w-6 shrink-0" aria-hidden />
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-extrabold">
+              {consent?.accepted ? "🟢 WhatsApp Community Member" : "🔴 Not Yet Joined Community"}
+            </p>
+            <p className="text-xs opacity-90">
+              {consent?.accepted
+                ? "You accepted the community rules."
+                : "Tap to read and accept the community rules."}
+            </p>
+          </div>
+        </Link>
+
+        {gameProfile && (
+          <section className="bg-card/85 shadow-card border-border/60 rounded-3xl border p-5 backdrop-blur-xl">
+            <h2 className="text-card-foreground flex items-center gap-2 font-bold">
+              <Award className="text-primary h-5 w-5" aria-hidden /> AWKA Points & badges
+            </h2>
+            <p className="text-primary mt-2 text-3xl font-black">{gameProfile.total_points}</p>
+            <p className="text-muted-foreground text-xs font-semibold">
+              {gameProfile.tier.emoji} {gameProfile.tier.badge}
+            </p>
+            <div className="mt-3 flex flex-wrap gap-1.5">
+              {gameProfile.badges.length ? (
+                gameProfile.badges.map((b) => (
+                  <span
+                    key={b}
+                    className="bg-secondary text-secondary-foreground rounded-lg px-2 py-1 text-[10px] font-bold"
+                  >
+                    {b}
+                  </span>
+                ))
+              ) : (
+                <span className="text-muted-foreground text-xs">
+                  Play in the Games & Fun Zone to earn your first badge.
+                </span>
+              )}
+            </div>
+          </section>
+        )}
+
         <section className="bg-secondary rounded-3xl p-5">
           <h2 className="text-secondary-foreground flex items-center gap-2 text-sm font-bold">
             <Lock className="h-4 w-4" aria-hidden /> Locked after registration
@@ -165,6 +214,7 @@ function Profile() {
             </p>
           </div>
         </section>
+
 
         <Button
           variant="secondary"
