@@ -18,19 +18,23 @@ export const POINT_LABELS: Record<PointReason, string> = {
   host_session: "Host a session",
 };
 
-export const LEVELS = [
+export type LevelDef = { min: number; name: string; icon: string };
+
+export const LEVELS: LevelDef[] = [
   { min: 0, name: "Explorer", icon: "🌱" },
   { min: 150, name: "Builder", icon: "🔧" },
   { min: 400, name: "Creator", icon: "🎨" },
   { min: 900, name: "Innovator", icon: "🚀" },
   { min: 1800, name: "Mentor", icon: "🧠" },
   { min: 3500, name: "Luminary", icon: "👑" },
-] as const;
+];
 
 export function levelFor(points: number) {
-  let current = LEVELS[0];
-  for (const level of LEVELS) if (points >= level.min) current = level;
-  const index = LEVELS.indexOf(current);
+  let index = 0;
+  LEVELS.forEach((level, i) => {
+    if (points >= level.min) index = i;
+  });
+  const current = LEVELS[index]!;
   const next = LEVELS[index + 1] ?? null;
   const span = next ? next.min - current.min : 1;
   const progress = next ? Math.min(100, Math.round(((points - current.min) / span) * 100)) : 100;
