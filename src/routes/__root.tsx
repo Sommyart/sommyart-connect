@@ -82,19 +82,21 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "viewport",
         content: "width=device-width, initial-scale=1, viewport-fit=cover",
       },
-      { title: "AWKA CONNECT — Connect, Engage, Grow" },
+      { title: "SOMMYART CONNECT — AI & Tech Creator Community" },
       {
         name: "description",
-        content: "The AWKA CONNECT community app: register as a member and stay informed.",
+        content:
+          "SOMMYART CONNECT: weekly AI build challenges, project showcases and a community of African AI creators.",
       },
-      { name: "theme-color", content: "#F57C00" },
+      { name: "theme-color", content: "#FF7A00" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
-      { name: "apple-mobile-web-app-title", content: "AWKA CONNECT" },
+      { name: "apple-mobile-web-app-title", content: "SOMMYART CONNECT" },
       { name: "apple-mobile-web-app-status-bar-style", content: "default" },
-      { property: "og:title", content: "AWKA CONNECT — Connect, Engage, Grow" },
+      { property: "og:title", content: "SOMMYART CONNECT — AI & Tech Creator Community" },
       {
         property: "og:description",
-        content: "The AWKA CONNECT community app: register as a member and stay informed.",
+        content:
+          "SOMMYART CONNECT: weekly AI build challenges, project showcases and a community of African AI creators.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

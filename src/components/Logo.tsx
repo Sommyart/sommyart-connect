@@ -4,7 +4,7 @@ export function Logo({ className, size = 96 }: { className?: string; size?: numb
   return (
     <img
       src="/icons/logo.png"
-      alt="AWKA CONNECT logo"
+      alt="SOMMYART CONNECT logo"
       width={size}
       height={size}
       className={cn("select-none object-contain", className)}
