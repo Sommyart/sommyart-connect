@@ -1,8 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Flame, Sparkles, Trophy, Users } from "lucide-react";
 
 import { AppNav } from "@/components/AppNav";
 import { Logo } from "@/components/Logo";
+import { Avatar } from "@/components/Media";
+
 import { useMe } from "@/hooks/use-auth";
 import { useCommunityStats, useLeaderboard } from "@/hooks/use-platform";
 
@@ -39,7 +41,11 @@ function DashboardPage() {
           </h1>
           <p className="text-muted-foreground text-xs">Connect • Engage • Grow</p>
         </div>
+        <Link to="/profile" aria-label="My profile" className="press">
+          <Avatar path={profile?.avatar_url} name={profile?.full_name ?? "SC"} size={40} />
+        </Link>
       </header>
+
 
       <section className="bg-gradient-brand text-primary-foreground shadow-glow animate-fade-up mt-5 grid grid-cols-2 gap-4 rounded-3xl p-5">
         <div>

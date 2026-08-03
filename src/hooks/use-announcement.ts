@@ -46,7 +46,7 @@ export function useAnnouncement(notify = false) {
             typeof Notification !== "undefined" &&
             Notification.permission === "granted"
           ) {
-            new Notification("AWKA CONNECT", {
+            new Notification("SOMMYART CONNECT", {
               body: latest.message,
               icon: "/icons/icon-192.png",
             });
