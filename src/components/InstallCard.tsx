@@ -15,7 +15,7 @@ export function InstallCard() {
           <Smartphone className="h-5 w-5" aria-hidden />
         </div>
         <div className="flex-1">
-          <h3 className="text-card-foreground font-bold">📱 Install AWKA CONNECT</h3>
+          <h3 className="text-card-foreground font-bold">📱 Install SOMMYART CONNECT</h3>
           <p className="text-muted-foreground mt-1 text-sm">
             Get faster access by installing the app on your device.
           </p>
