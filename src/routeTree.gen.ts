@@ -9,80 +9,20 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as WinnersRouteImport } from './routes/winners'
-import { Route as WhatsappRouteImport } from './routes/whatsapp'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as RegisterRouteImport } from './routes/register'
-import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as JoinRouteImport } from './routes/join'
-import { Route as HomeRouteImport } from './routes/home'
-import { Route as GamesRouteImport } from './routes/games'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as ActivitiesRouteImport } from './routes/activities'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 
-const WinnersRoute = WinnersRouteImport.update({
-  id: '/winners',
-  path: '/winners',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const WhatsappRoute = WhatsappRouteImport.update({
-  id: '/whatsapp',
-  path: '/whatsapp',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RegisterRoute = RegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JoinRoute = JoinRouteImport.update({
-  id: '/join',
-  path: '/join',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HomeRoute = HomeRouteImport.update({
-  id: '/home',
-  path: '/home',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GamesRoute = GamesRouteImport.update({
-  id: '/games',
-  path: '/games',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ActivitiesRoute = ActivitiesRouteImport.update({
-  id: '/activities',
-  path: '/activities',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -102,139 +42,47 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/activities': typeof ActivitiesRoute
-  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
-  '/games': typeof GamesRoute
-  '/home': typeof HomeRoute
-  '/join': typeof JoinRoute
-  '/login': typeof LoginRoute
-  '/profile': typeof ProfileRoute
-  '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/whatsapp': typeof WhatsappRoute
-  '/winners': typeof WinnersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/activities': typeof ActivitiesRoute
-  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
-  '/games': typeof GamesRoute
-  '/home': typeof HomeRoute
-  '/join': typeof JoinRoute
-  '/login': typeof LoginRoute
-  '/profile': typeof ProfileRoute
-  '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/whatsapp': typeof WhatsappRoute
-  '/winners': typeof WinnersRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/activities': typeof ActivitiesRoute
-  '/admin': typeof AdminRoute
   '/auth': typeof AuthRoute
-  '/games': typeof GamesRoute
-  '/home': typeof HomeRoute
-  '/join': typeof JoinRoute
-  '/login': typeof LoginRoute
-  '/profile': typeof ProfileRoute
-  '/register': typeof RegisterRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/whatsapp': typeof WhatsappRoute
-  '/winners': typeof WinnersRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/activities'
-    | '/admin'
-    | '/auth'
-    | '/games'
-    | '/home'
-    | '/join'
-    | '/login'
-    | '/profile'
-    | '/register'
-    | '/sitemap.xml'
-    | '/whatsapp'
-    | '/winners'
-    | '/dashboard'
+  fullPaths: '/' | '/auth' | '/sitemap.xml' | '/dashboard'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/activities'
-    | '/admin'
-    | '/auth'
-    | '/games'
-    | '/home'
-    | '/join'
-    | '/login'
-    | '/profile'
-    | '/register'
-    | '/sitemap.xml'
-    | '/whatsapp'
-    | '/winners'
-    | '/dashboard'
+  to: '/' | '/auth' | '/sitemap.xml' | '/dashboard'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
-    | '/activities'
-    | '/admin'
     | '/auth'
-    | '/games'
-    | '/home'
-    | '/join'
-    | '/login'
-    | '/profile'
-    | '/register'
     | '/sitemap.xml'
-    | '/whatsapp'
-    | '/winners'
     | '/_authenticated/dashboard'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  ActivitiesRoute: typeof ActivitiesRoute
-  AdminRoute: typeof AdminRoute
   AuthRoute: typeof AuthRoute
-  GamesRoute: typeof GamesRoute
-  HomeRoute: typeof HomeRoute
-  JoinRoute: typeof JoinRoute
-  LoginRoute: typeof LoginRoute
-  ProfileRoute: typeof ProfileRoute
-  RegisterRoute: typeof RegisterRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
-  WhatsappRoute: typeof WhatsappRoute
-  WinnersRoute: typeof WinnersRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/winners': {
-      id: '/winners'
-      path: '/winners'
-      fullPath: '/winners'
-      preLoaderRoute: typeof WinnersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/whatsapp': {
-      id: '/whatsapp'
-      path: '/whatsapp'
-      fullPath: '/whatsapp'
-      preLoaderRoute: typeof WhatsappRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -242,67 +90,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/register': {
-      id: '/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof RegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/join': {
-      id: '/join'
-      path: '/join'
-      fullPath: '/join'
-      preLoaderRoute: typeof JoinRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/home': {
-      id: '/home'
-      path: '/home'
-      fullPath: '/home'
-      preLoaderRoute: typeof HomeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/games': {
-      id: '/games'
-      path: '/games'
-      fullPath: '/games'
-      preLoaderRoute: typeof GamesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth': {
       id: '/auth'
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/activities': {
-      id: '/activities'
-      path: '/activities'
-      fullPath: '/activities'
-      preLoaderRoute: typeof ActivitiesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -343,29 +135,9 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  ActivitiesRoute: ActivitiesRoute,
-  AdminRoute: AdminRoute,
   AuthRoute: AuthRoute,
-  GamesRoute: GamesRoute,
-  HomeRoute: HomeRoute,
-  JoinRoute: JoinRoute,
-  LoginRoute: LoginRoute,
-  ProfileRoute: ProfileRoute,
-  RegisterRoute: RegisterRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
-  WhatsappRoute: WhatsappRoute,
-  WinnersRoute: WinnersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
