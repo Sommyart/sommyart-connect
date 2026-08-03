@@ -1,8 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Flame, Sparkles, Trophy, Users } from "lucide-react";
 
 import { AppNav } from "@/components/AppNav";
 import { Logo } from "@/components/Logo";
+import { Avatar } from "@/components/Media";
+
 import { useMe } from "@/hooks/use-auth";
 import { useCommunityStats, useLeaderboard } from "@/hooks/use-platform";
 
