@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Flame, Sparkles, Trophy, Users } from "lucide-react";
 
 import { AppNav } from "@/components/AppNav";
+import { DailySignIn } from "@/components/DailySignIn";
 import { Logo } from "@/components/Logo";
 import { Avatar } from "@/components/Media";
 
