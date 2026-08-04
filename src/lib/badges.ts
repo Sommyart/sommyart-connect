@@ -18,8 +18,7 @@ export type Badge = {
 };
 
 export function badgesFor(stats: BadgeStats): Badge[] {
-  const defs: Omit<Badge, "earned">[] & { test?: never }[] = [] as never;
-  void defs;
+
 
   const list: (Omit<Badge, "earned"> & { earned: boolean })[] = [
     {
