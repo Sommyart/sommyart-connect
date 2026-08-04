@@ -11,7 +11,7 @@ export const signInToday = createServerFn({ method: "POST" })
   });
 
 /** Streak, totals and the dates the caller has signed in. */
-export const getСheckInStats = createServerFn({ method: "POST" })
+export const getCheckInStats = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { stats } = await import("./checkin.server");
