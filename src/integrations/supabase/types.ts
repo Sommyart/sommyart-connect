@@ -547,14 +547,21 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bio: string | null
+          cover_url: string | null
           created_at: string
+          deactivated: boolean
           email: string | null
           featured: boolean
           full_name: string
+          github_url: string | null
           id: string
           last_active_date: string | null
+          linkedin_url: string | null
           longest_streak: number
           monthly_points: number
+          notify_announcements: boolean
+          notify_digest: boolean
+          notify_mentions: boolean
           occupation: string | null
           phone: string | null
           points: number
@@ -562,19 +569,28 @@ export type Database = {
           suspended: boolean
           updated_at: string
           username: string
+          website_url: string | null
           weekly_points: number
+          x_url: string | null
         }
         Insert: {
           avatar_url?: string | null
           bio?: string | null
+          cover_url?: string | null
           created_at?: string
+          deactivated?: boolean
           email?: string | null
           featured?: boolean
           full_name?: string
+          github_url?: string | null
           id: string
           last_active_date?: string | null
+          linkedin_url?: string | null
           longest_streak?: number
           monthly_points?: number
+          notify_announcements?: boolean
+          notify_digest?: boolean
+          notify_mentions?: boolean
           occupation?: string | null
           phone?: string | null
           points?: number
@@ -582,19 +598,28 @@ export type Database = {
           suspended?: boolean
           updated_at?: string
           username: string
+          website_url?: string | null
           weekly_points?: number
+          x_url?: string | null
         }
         Update: {
           avatar_url?: string | null
           bio?: string | null
+          cover_url?: string | null
           created_at?: string
+          deactivated?: boolean
           email?: string | null
           featured?: boolean
           full_name?: string
+          github_url?: string | null
           id?: string
           last_active_date?: string | null
+          linkedin_url?: string | null
           longest_streak?: number
           monthly_points?: number
+          notify_announcements?: boolean
+          notify_digest?: boolean
+          notify_mentions?: boolean
           occupation?: string | null
           phone?: string | null
           points?: number
@@ -602,7 +627,9 @@ export type Database = {
           suspended?: boolean
           updated_at?: string
           username?: string
+          website_url?: string | null
           weekly_points?: number
+          x_url?: string | null
         }
         Relationships: []
       }
