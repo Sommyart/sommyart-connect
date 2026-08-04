@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { Flame, Sparkles, Trophy, Users } from "lucide-react";
 
 import { AppNav } from "@/components/AppNav";
+import { DailySignIn } from "@/components/DailySignIn";
 import { Logo } from "@/components/Logo";
 import { Avatar } from "@/components/Media";
 
@@ -59,6 +60,10 @@ function DashboardPage() {
           <p className="text-xs opacity-90">{profile?.points ?? 0} total points</p>
         </div>
       </section>
+
+      <div className="mt-5">
+        <DailySignIn />
+      </div>
 
       <section className="mt-5 grid grid-cols-2 gap-3">
         <Stat icon={Users} label="Members" value={stats?.members ?? 0} />
