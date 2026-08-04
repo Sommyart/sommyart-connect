@@ -61,6 +61,10 @@ function DashboardPage() {
         </div>
       </section>
 
+      <div className="mt-5">
+        <DailySignIn />
+      </div>
+
       <section className="mt-5 grid grid-cols-2 gap-3">
         <Stat icon={Users} label="Members" value={stats?.members ?? 0} />
         <Stat icon={Sparkles} label="Projects" value={stats?.projects ?? 0} />
