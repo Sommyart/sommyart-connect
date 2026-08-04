@@ -98,6 +98,44 @@ export type Database = {
         }
         Relationships: []
       }
+      check_ins: {
+        Row: {
+          bonus_awarded: number
+          check_date: string
+          created_at: string
+          id: string
+          points_awarded: number
+          streak_after: number
+          user_id: string
+        }
+        Insert: {
+          bonus_awarded?: number
+          check_date: string
+          created_at?: string
+          id?: string
+          points_awarded?: number
+          streak_after?: number
+          user_id: string
+        }
+        Update: {
+          bonus_awarded?: number
+          check_date?: string
+          created_at?: string
+          id?: string
+          points_awarded?: number
+          streak_after?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "check_ins_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           cover_url: string | null
@@ -515,6 +553,7 @@ export type Database = {
           full_name: string
           id: string
           last_active_date: string | null
+          longest_streak: number
           monthly_points: number
           occupation: string | null
           phone: string | null
@@ -534,6 +573,7 @@ export type Database = {
           full_name?: string
           id: string
           last_active_date?: string | null
+          longest_streak?: number
           monthly_points?: number
           occupation?: string | null
           phone?: string | null
@@ -553,6 +593,7 @@ export type Database = {
           full_name?: string
           id?: string
           last_active_date?: string | null
+          longest_streak?: number
           monthly_points?: number
           occupation?: string | null
           phone?: string | null
