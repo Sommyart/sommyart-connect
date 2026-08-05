@@ -7,6 +7,7 @@ import { toast } from "sonner";
 
 import { AppFooter } from "@/components/AppFooter";
 import { AppNav } from "@/components/AppNav";
+import { MediaGallery } from "@/components/MediaGallery";
 import { ProfilePhotos } from "@/components/ProfilePhotos";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -38,7 +39,7 @@ export const Route = createFileRoute("/_authenticated/profile")({
   component: ProfilePage,
 });
 
-type Tab = "profile" | "badges" | "account";
+type Tab = "profile" | "media" | "badges" | "account";
 
 function ProfilePage() {
   const router = useRouter();
@@ -117,7 +118,7 @@ function ProfilePage() {
           </section>
 
           <div className="bg-secondary mt-4 flex rounded-2xl p-1">
-            {(["profile", "badges", "account"] as const).map((value) => (
+            {(["profile", "media", "badges", "account"] as const).map((value) => (
               <button
                 key={value}
                 type="button"
@@ -135,6 +136,12 @@ function ProfilePage() {
 
           {tab === "profile" && (
             <ProfileForm profile={profile} onSave={patchProfile} />
+          )}
+
+          {tab === "media" && (
+            <div className="mt-4">
+              <MediaGallery userId={user.id} />
+            </div>
           )}
 
           {tab === "badges" && (
