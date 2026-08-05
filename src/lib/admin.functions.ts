@@ -3,11 +3,11 @@ import { z } from "zod";
 
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-async function assertAdmin(context: { supabase: { rpc: (fn: string, args: object) => Promise<{ data: unknown }> }; userId: string }) {
-  const { data } = await context.supabase.rpc("has_role", {
-    _user_id: context.userId,
-    _role: "admin",
-  });
+type AdminContext = { supabase: { rpc: (fn: "has_role", args: { _user_id: string; _role: "admin" }) => Promise<{ data: unknown }> }; userId: string };
+
+async function assertAdmin(context: unknown) {
+  const ctx = context as AdminContext;
+  const { data } = await ctx.supabase.rpc("has_role", { _user_id: ctx.userId, _role: "admin" });
   if (!data) throw new Error("Forbidden");
 }
 
@@ -48,7 +48,7 @@ export const adminUpdateMember = createServerFn({ method: "POST" })
     if (data.suspended !== undefined) patch["suspended"] = data.suspended;
     if (data.featured !== undefined) patch["featured"] = data.featured;
 
-    const { error } = await supabaseAdmin.from("profiles").update(patch).eq("id", data.userId);
+    const { error } = await supabaseAdmin.from("profiles").update(patch as never).eq("id", data.userId);
     if (error) throw new Error(error.message);
 
     await supabaseAdmin.from("audit_logs").insert({
@@ -56,7 +56,7 @@ export const adminUpdateMember = createServerFn({ method: "POST" })
       action: data.suspended !== undefined ? (data.suspended ? "suspend_member" : "unsuspend_member") : "feature_member",
       target_type: "profile",
       target_id: data.userId,
-      meta: patch,
+      meta: patch as never,
     });
 
     if (data.suspended) await notify(data.userId, "Account suspended", "Contact a moderator", "admin");
@@ -177,8 +177,8 @@ export const adminSaveContent = createServerFn({ method: "POST" })
     const values = { ...data.values } as Record<string, unknown>;
 
     const result = data.id
-      ? await supabaseAdmin.from(data.table).update(values).eq("id", data.id)
-      : await supabaseAdmin.from(data.table).insert(values);
+      ? await supabaseAdmin.from(data.table).update(values as never).eq("id", data.id)
+      : await supabaseAdmin.from(data.table).insert(values as never);
     if (result.error) throw new Error(result.error.message);
 
     await supabaseAdmin.from("audit_logs").insert({
