@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Download, Loader2, LogOut, Save, ShieldAlert, Trash2 } from "lucide-react";
@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { useMe } from "@/hooks/use-auth";
+import { useIsAdmin, useMe } from "@/hooks/use-auth";
 import { useCheckInStats } from "@/hooks/use-checkin";
 import { supabase } from "@/integrations/supabase/client";
 import { deleteMyAccount, exportMyData, setDeactivated } from "@/lib/account.functions";
@@ -46,6 +46,7 @@ function ProfilePage() {
   const queryClient = useQueryClient();
   const { user, profile, loading } = useMe();
   const { data: checkIns } = useCheckInStats(Boolean(user));
+  const { data: isAdmin } = useIsAdmin(user);
   const [tab, setTab] = useState<Tab>("profile");
 
   const counts = useQuery({
@@ -136,6 +137,15 @@ function ProfilePage() {
 
           {tab === "profile" && (
             <ProfileForm profile={profile} onSave={patchProfile} />
+          )}
+
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className="press bg-secondary text-secondary-foreground mt-4 block rounded-2xl px-4 py-3 text-center text-sm font-bold"
+            >
+              🔐 Admin console
+            </Link>
           )}
 
           {tab === "media" && (

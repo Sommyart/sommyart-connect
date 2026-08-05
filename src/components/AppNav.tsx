@@ -1,9 +1,9 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, LayoutGrid, Rocket, Trophy, Users } from "lucide-react";
+import { Gamepad2, Home, Rocket, Trophy, Users } from "lucide-react";
 
 const items = [
   { to: "/dashboard", label: "Home", icon: Home },
-  { to: "/weekly", label: "Weekly", icon: LayoutGrid },
+  { to: "/games", label: "Games", icon: Gamepad2 },
   { to: "/feed", label: "Feed", icon: Users },
   { to: "/projects", label: "Projects", icon: Rocket },
   { to: "/leaderboard", label: "Ranks", icon: Trophy },
