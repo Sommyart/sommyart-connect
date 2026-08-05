@@ -175,3 +175,84 @@ export function useFollow(userId?: string | null) {
 
   return { following: following.data ?? [], toggle };
 }
+
+export function useSavedPostIds(userId?: string | null) {
+  return useQuery({
+    queryKey: ["saved-posts", userId],
+    enabled: Boolean(userId),
+    queryFn: async () => {
+      const { data } = await supabase.from("post_saves").select("post_id").eq("user_id", userId!);
+      return (data ?? []).map((row) => row.post_id as string);
+    },
+  });
+}
+
+export function useReportPost() {
+  return useMutation({
+    mutationFn: async (input: { post_id: string; reporter_id: string; reason: string; details?: string }) => {
+      const { error } = await supabase.from("post_reports").insert({
+        post_id: input.post_id,
+        reporter_id: input.reporter_id,
+        reason: input.reason,
+        details: input.details ?? null,
+      });
+      if (error && error.code !== "23505") throw error;
+    },
+  });
+}
+
+export function useDeletePost() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (postId: string) => {
+      const { error } = await supabase.from("posts").delete().eq("id", postId);
+      if (error) throw error;
+    },
+    onSuccess: () => void queryClient.invalidateQueries({ queryKey: ["feed"] }),
+  });
+}
+
+export type GalleryItem = { id: string; path: string; kind: "photo" | "project" | "video"; title: string };
+
+/** All media a member has shared, grouped for the profile gallery. */
+export function useMemberMedia(userId?: string | null) {
+  return useQuery({
+    queryKey: ["member-media", userId],
+    enabled: Boolean(userId),
+    queryFn: async (): Promise<GalleryItem[]> => {
+      const [posts, projects] = await Promise.all([
+        supabase
+          .from("posts")
+          .select("id,content,media_urls,media_type")
+          .eq("author_id", userId!)
+          .order("created_at", { ascending: false }),
+        supabase
+          .from("projects")
+          .select("id,title,cover_url,media_urls")
+          .eq("owner_id", userId!)
+          .order("created_at", { ascending: false }),
+      ]);
+
+      const items: GalleryItem[] = [];
+      for (const post of posts.data ?? []) {
+        for (const path of (post.media_urls as string[]) ?? []) {
+          items.push({
+            id: `${post.id}-${path}`,
+            path,
+            kind: post.media_type === "video" ? "video" : "photo",
+            title: (post.content as string)?.slice(0, 60) || "Post",
+          });
+        }
+      }
+      for (const project of projects.data ?? []) {
+        const paths = [project.cover_url, ...((project.media_urls as string[]) ?? [])].filter(
+          Boolean,
+        ) as string[];
+        for (const path of paths) {
+          items.push({ id: `${project.id}-${path}`, path, kind: "project", title: project.title as string });
+        }
+      }
+      return items;
+    },
+  });
+}

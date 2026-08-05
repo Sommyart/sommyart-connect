@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { Download, Loader2, LogOut, Save, ShieldAlert, Trash2 } from "lucide-react";
@@ -7,13 +7,14 @@ import { toast } from "sonner";
 
 import { AppFooter } from "@/components/AppFooter";
 import { AppNav } from "@/components/AppNav";
+import { MediaGallery } from "@/components/MediaGallery";
 import { ProfilePhotos } from "@/components/ProfilePhotos";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { useMe } from "@/hooks/use-auth";
+import { useIsAdmin, useMe } from "@/hooks/use-auth";
 import { useCheckInStats } from "@/hooks/use-checkin";
 import { supabase } from "@/integrations/supabase/client";
 import { deleteMyAccount, exportMyData, setDeactivated } from "@/lib/account.functions";
@@ -38,13 +39,14 @@ export const Route = createFileRoute("/_authenticated/profile")({
   component: ProfilePage,
 });
 
-type Tab = "profile" | "badges" | "account";
+type Tab = "profile" | "media" | "badges" | "account";
 
 function ProfilePage() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { user, profile, loading } = useMe();
   const { data: checkIns } = useCheckInStats(Boolean(user));
+  const { data: isAdmin } = useIsAdmin(user);
   const [tab, setTab] = useState<Tab>("profile");
 
   const counts = useQuery({
@@ -117,7 +119,7 @@ function ProfilePage() {
           </section>
 
           <div className="bg-secondary mt-4 flex rounded-2xl p-1">
-            {(["profile", "badges", "account"] as const).map((value) => (
+            {(["profile", "media", "badges", "account"] as const).map((value) => (
               <button
                 key={value}
                 type="button"
@@ -135,6 +137,21 @@ function ProfilePage() {
 
           {tab === "profile" && (
             <ProfileForm profile={profile} onSave={patchProfile} />
+          )}
+
+          {isAdmin && (
+            <Link
+              to="/admin"
+              className="press bg-secondary text-secondary-foreground mt-4 block rounded-2xl px-4 py-3 text-center text-sm font-bold"
+            >
+              🔐 Admin console
+            </Link>
+          )}
+
+          {tab === "media" && (
+            <div className="mt-4">
+              <MediaGallery userId={user.id} />
+            </div>
           )}
 
           {tab === "badges" && (

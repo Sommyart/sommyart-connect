@@ -1,0 +1,127 @@
+/** Client-safe game content and rules for the SOMMYART Game Center. */
+
+export const GAMES = [
+  { key: "quiz", name: "Daily Tech Quiz", icon: "🧠", blurb: "10 questions on AI, prompting and tech", points: 10 },
+  { key: "tictactoe", name: "Tic-Tac-Toe", icon: "⭕", blurb: "Beat the AI opponent", points: 8 },
+  { key: "toolguess", name: "AI Tool Guess", icon: "🛠️", blurb: "Name the tool from the clue", points: 6 },
+  { key: "riddle", name: "Riddle Corner", icon: "🧩", blurb: "One tech riddle every day", points: 5 },
+] as const;
+
+export type GameKey = (typeof GAMES)[number]["key"];
+
+export type QuizQuestion = { q: string; options: string[]; answer: number; category: string };
+
+export const QUIZ_BANK: QuizQuestion[] = [
+  { category: "AI", q: "What does 'LLM' stand for?", options: ["Large Language Model", "Linear Learning Machine", "Logic Layer Module", "Long Latency Memory"], answer: 0 },
+  { category: "Prompting", q: "Giving an AI a few worked examples in the prompt is called…", options: ["Zero-shot", "Few-shot", "Fine-tuning", "Chaining"], answer: 1 },
+  { category: "AI", q: "Which of these is a text-to-image model?", options: ["Whisper", "Stable Diffusion", "BERT", "Pandas"], answer: 1 },
+  { category: "AI", q: "A 'token' in an LLM is closest to…", options: ["A password", "A chunk of text", "A GPU core", "A dataset"], answer: 1 },
+  { category: "Prompting", q: "Asking a model to 'think step by step' is known as…", options: ["Chain-of-thought", "Temperature", "Embedding", "Quantisation"], answer: 0 },
+  { category: "Tech", q: "Which language runs natively in the browser?", options: ["Python", "JavaScript", "Rust", "Go"], answer: 1 },
+  { category: "Tech", q: "What does API stand for?", options: ["Applied Program Input", "Application Programming Interface", "Automatic Process Integration", "App Protocol Index"], answer: 1 },
+  { category: "AI", q: "Hallucination in AI means the model…", options: ["Crashes", "Invents false information", "Runs slowly", "Refuses to answer"], answer: 1 },
+  { category: "AI", q: "Embeddings represent text as…", options: ["Images", "Vectors of numbers", "SQL rows", "HTML"], answer: 1 },
+  { category: "Tech", q: "Git is primarily used for…", options: ["Version control", "Image editing", "Database hosting", "Video calls"], answer: 0 },
+  { category: "AI", q: "Which company created ChatGPT?", options: ["OpenAI", "Meta", "IBM", "Adobe"], answer: 0 },
+  { category: "Prompting", q: "Higher 'temperature' generally makes output…", options: ["More random", "Shorter", "More factual", "Slower"], answer: 0 },
+  { category: "Tech", q: "A PWA can be…", options: ["Installed on a phone", "Only used offline", "Written in C only", "Printed"], answer: 0 },
+  { category: "AI", q: "RAG stands for retrieval-augmented…", options: ["Grouping", "Generation", "Gradient", "Graphing"], answer: 1 },
+  { category: "AI", q: "Which is an open-weight model family?", options: ["Llama", "Excel", "Figma", "Notion"], answer: 0 },
+  { category: "Tech", q: "CSS is used to…", options: ["Style pages", "Query databases", "Compile code", "Send email"], answer: 0 },
+  { category: "AI", q: "Speech-to-text is handled by models like…", options: ["Whisper", "Midjourney", "Sora", "DALL·E"], answer: 0 },
+  { category: "Prompting", q: "A 'system prompt' usually sets the model's…", options: ["Role and rules", "Screen size", "Font", "Wi-Fi"], answer: 0 },
+  { category: "Tech", q: "JSON is a format for…", options: ["Data exchange", "Video codecs", "3D printing", "Audio mixing"], answer: 0 },
+  { category: "AI", q: "Fine-tuning means…", options: ["Training a model further on your data", "Deleting a model", "Compressing images", "Renaming files"], answer: 0 },
+];
+
+export const TOOL_CLUES: { clue: string; options: string[]; answer: number }[] = [
+  { clue: "Chat assistant by OpenAI used by millions daily", options: ["ChatGPT", "Canva", "Slack", "Zoom"], answer: 0 },
+  { clue: "Discord-based AI image generator known for painterly art", options: ["Midjourney", "Trello", "Notion", "Figma"], answer: 0 },
+  { clue: "Design tool with collaborative vector editing", options: ["Figma", "Docker", "Postman", "Vercel"], answer: 0 },
+  { clue: "AI pair programmer that autocompletes code in your editor", options: ["GitHub Copilot", "Photoshop", "Airtable", "Zapier"], answer: 0 },
+  { clue: "Open-source model hub for weights and datasets", options: ["Hugging Face", "Dropbox", "Asana", "Stripe"], answer: 0 },
+  { clue: "AI search engine that cites its sources", options: ["Perplexity", "Spotify", "Grammarly", "Loom"], answer: 0 },
+  { clue: "Google's multimodal AI assistant", options: ["Gemini", "Sheets", "Meet", "Keep"], answer: 0 },
+  { clue: "Realtime voice cloning and text-to-speech studio", options: ["ElevenLabs", "Miro", "Linear", "Retool"], answer: 0 },
+];
+
+export const RIDDLES: { q: string; a: string }[] = [
+  { q: "I learn from everything but remember nothing between chats. What am I?", a: "A stateless language model" },
+  { q: "I have keys but open no doors, space but no room. What am I?", a: "A keyboard" },
+  { q: "The more you feed me, the smarter I look — but feed me junk and I embarrass you. What am I?", a: "A dataset" },
+  { q: "I turn words into numbers so machines can compare meaning. What am I?", a: "An embedding" },
+  { q: "I run in your browser, install like an app, and work offline. What am I?", a: "A PWA" },
+  { q: "I am invisible instructions that shape every answer you get. What am I?", a: "A system prompt" },
+  { q: "I never write code but I ship products daily by describing them. Who am I?", a: "A prompt engineer" },
+];
+
+/** Deterministic daily pick so everyone sees the same riddle each day. */
+export function dailyIndex(length: number, seed = new Date().toISOString().slice(0, 10)) {
+  let hash = 0;
+  for (const ch of seed) hash = (hash * 31 + ch.charCodeAt(0)) % 100000;
+  return hash % length;
+}
+
+export function shuffle<T>(items: T[]): T[] {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j]!, copy[i]!];
+  }
+  return copy;
+}
+
+/** Minimax move for the tic-tac-toe AI. */
+export function bestMove(board: (string | null)[], ai = "O", human = "X"): number {
+  const lines = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+    [0, 4, 8], [2, 4, 6],
+  ];
+  const winner = (b: (string | null)[]) => {
+    for (const [a, c, d] of lines) if (b[a!] && b[a!] === b[c!] && b[a!] === b[d!]) return b[a!];
+    return b.every(Boolean) ? "draw" : null;
+  };
+  const score = (b: (string | null)[], depth: number): number => {
+    const w = winner(b);
+    if (w === ai) return 10 - depth;
+    if (w === human) return depth - 10;
+    if (w === "draw") return 0;
+    return NaN;
+  };
+  const minimax = (b: (string | null)[], turn: string, depth: number): number => {
+    const s = score(b, depth);
+    if (!Number.isNaN(s)) return s;
+    const scores = b.map((cell, i) => {
+      if (cell) return turn === ai ? -Infinity : Infinity;
+      const next = [...b];
+      next[i] = turn;
+      return minimax(next, turn === ai ? human : ai, depth + 1);
+    });
+    return turn === ai ? Math.max(...scores) : Math.min(...scores);
+  };
+
+  let best = -Infinity;
+  let move = board.findIndex((c) => !c);
+  board.forEach((cell, i) => {
+    if (cell) return;
+    const next = [...board];
+    next[i] = ai;
+    const value = minimax(next, human, 0);
+    if (value > best) {
+      best = value;
+      move = i;
+    }
+  });
+  return move;
+}
+
+export function winnerOf(board: (string | null)[]): string | null {
+  const lines = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+    [0, 4, 8], [2, 4, 6],
+  ];
+  for (const [a, b, c] of lines) if (board[a!] && board[a!] === board[b!] && board[a!] === board[c!]) return board[a!]!;
+  return board.every(Boolean) ? "draw" : null;
+}
