@@ -4,10 +4,16 @@ import { Gamepad2, Sparkles, Trophy } from "lucide-react";
 
 import { AppNav } from "@/components/AppNav";
 import { Avatar } from "@/components/Media";
+import { CodeChallenge } from "@/components/games/CodeChallenge";
+import { Crossword } from "@/components/games/Crossword";
+import { LogicGame } from "@/components/games/LogicGame";
+import { PromptBattle } from "@/components/games/PromptBattle";
 import { QuizGame } from "@/components/games/QuizGame";
 import { RiddleCorner } from "@/components/games/RiddleCorner";
 import { TicTacToe } from "@/components/games/TicTacToe";
 import { ToolGuess } from "@/components/games/ToolGuess";
+import { Trivia } from "@/components/games/Trivia";
+import { TypingChallenge } from "@/components/games/TypingChallenge";
 import { useMe } from "@/hooks/use-auth";
 import { useGameLeaderboard, useMyGameStats } from "@/hooks/use-games";
 import { GAMES, type GameKey } from "@/lib/games";
@@ -62,7 +68,7 @@ function GamesPage() {
         </div>
       </section>
 
-      <div className="mt-4 grid grid-cols-2 gap-2">
+      <div className="mt-4 grid max-h-[420px] grid-cols-2 gap-2 overflow-y-auto pr-0.5">
         {GAMES.map((g) => (
           <button
             key={g.key}
@@ -88,6 +94,12 @@ function GamesPage() {
           {game === "tictactoe" && <TicTacToe />}
           {game === "toolguess" && <ToolGuess />}
           {game === "riddle" && <RiddleCorner />}
+          {game === "promptbattle" && <PromptBattle />}
+          {game === "typing" && <TypingChallenge />}
+          {game === "code" && <CodeChallenge />}
+          {game === "logic" && <LogicGame />}
+          {game === "crossword" && <Crossword />}
+          {game === "trivia" && <Trivia />}
         </div>
       </section>
 
