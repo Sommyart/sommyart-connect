@@ -4,14 +4,70 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 const schema = z.object({
-  game: z.enum(["quiz", "tictactoe", "toolguess", "riddle"]),
+  game: z.enum([
+    "quiz",
+    "tictactoe",
+    "toolguess",
+    "riddle",
+    "promptbattle",
+    "typing",
+    "code",
+    "logic",
+    "crossword",
+    "trivia",
+  ]),
   score: z.number().int().min(0).max(100),
   won: z.boolean().optional(),
 });
 
-const REWARD = { quiz: 10, tictactoe: 8, toolguess: 6, riddle: 5 } as const;
+const REWARD = {
+  quiz: 10,
+  tictactoe: 8,
+  toolguess: 6,
+  riddle: 5,
+  promptbattle: 8,
+  typing: 6,
+  code: 8,
+  logic: 6,
+  crossword: 10,
+  trivia: 10,
+} as const;
+
 /** Daily payout limit per game so points stay meaningful. */
-const DAILY_AWARDS = { quiz: 1, tictactoe: 3, toolguess: 2, riddle: 1 } as const;
+const DAILY_AWARDS = {
+  quiz: 1,
+  tictactoe: 3,
+  toolguess: 2,
+  riddle: 1,
+  promptbattle: 1,
+  typing: 2,
+  code: 2,
+  logic: 2,
+  crossword: 1,
+  trivia: 1,
+} as const;
+
+/** Whether a finished round is good enough to be paid, per game. */
+function qualifies(game: keyof typeof REWARD, score: number, won?: boolean) {
+  switch (game) {
+    case "quiz":
+    case "trivia":
+      return score >= 7;
+    case "riddle":
+    case "crossword":
+      return true;
+    case "promptbattle":
+      return score >= 60;
+    case "typing":
+      return score >= 40;
+    case "code":
+      return score >= 7;
+    case "logic":
+      return score >= 4;
+    default:
+      return Boolean(won);
+  }
+}
 
 /** Record a finished game and award points within the daily limits. */
 export const recordGameScore = createServerFn({ method: "POST" })
@@ -32,9 +88,8 @@ export const recordGameScore = createServerFn({ method: "POST" })
       .gte("created_at", since.toISOString());
 
     const paidToday = (today ?? []).filter((row) => (row.points_awarded ?? 0) > 0).length;
-    const qualifies =
-      data.game === "quiz" ? data.score >= 7 : data.game === "riddle" ? true : Boolean(data.won);
-    const points = qualifies && paidToday < DAILY_AWARDS[data.game] ? REWARD[data.game] : 0;
+    const points =
+      qualifies(data.game, data.score, data.won) && paidToday < DAILY_AWARDS[data.game] ? REWARD[data.game] : 0;
 
     await supabaseAdmin.from("game_scores").insert({
       user_id: userId,

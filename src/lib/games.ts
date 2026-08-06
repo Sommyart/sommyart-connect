@@ -1,10 +1,16 @@
 /** Client-safe game content and rules for the SOMMYART Game Center. */
 
 export const GAMES = [
-  { key: "quiz", name: "Daily Tech Quiz", icon: "🧠", blurb: "10 questions on AI, prompting and tech", points: 10 },
+  { key: "quiz", name: "Daily Tech Quiz", icon: "🧠", blurb: "Pick a category and difficulty", points: 10 },
   { key: "tictactoe", name: "Tic-Tac-Toe", icon: "⭕", blurb: "Beat the AI opponent", points: 8 },
   { key: "toolguess", name: "AI Tool Guess", icon: "🛠️", blurb: "Name the tool from the clue", points: 6 },
   { key: "riddle", name: "Riddle Corner", icon: "🧩", blurb: "One tech riddle every day", points: 5 },
+  { key: "promptbattle", name: "Prompt Battle", icon: "⚔️", blurb: "Write the best prompt for a brief", points: 8 },
+  { key: "typing", name: "Typing Challenge", icon: "⌨️", blurb: "60s tech-quote typing test", points: 6 },
+  { key: "code", name: "Code Challenge", icon: "💻", blurb: "What does this snippet output?", points: 8 },
+  { key: "logic", name: "Logic Games", icon: "🧠", blurb: "Memorise the rising pattern", points: 6 },
+  { key: "crossword", name: "Crossword", icon: "🔤", blurb: "Mini 5x5 AI & tech crossword", points: 10 },
+  { key: "trivia", name: "Rapid Trivia", icon: "⏱️", blurb: "10 questions, race the clock", points: 10 },
 ] as const;
 
 export type GameKey = (typeof GAMES)[number]["key"];
@@ -137,3 +143,84 @@ export function winnerOf(board: (string | null)[]): string | null {
   return board.every(Boolean) ? "draw" : null;
 }
 
+/** Creative briefs for the Prompt Battle game. */
+export const PROMPT_BRIEFS: string[] = [
+  "A cosy cyberpunk coffee shop at night, seen from the street.",
+  "A minimalist logo for an AI music startup called 'Reverb'.",
+  "A dramatic product shot of a perfume bottle for a fashion ad.",
+  "A children's book illustration of a robot learning to paint.",
+  "A cinematic portrait of an astronaut walking through a desert.",
+  "A UI mockup for a meditation app's onboarding screen.",
+];
+
+/** Keywords that indicate a specific, well-structured prompt. */
+export const PROMPT_KEYWORDS = [
+  "style", "lighting", "camera", "mood", "color", "colour", "composition",
+  "lens", "resolution", "detail", "angle", "background", "texture", "art",
+];
+
+/** Score a written prompt against the brief using simple heuristics (0-100). */
+export function scorePrompt(text: string): { score: number; tips: string[] } {
+  const trimmed = text.trim();
+  const words = trimmed.split(/\s+/).filter(Boolean);
+  const lower = trimmed.toLowerCase();
+  const tips: string[] = [];
+
+  let score = 0;
+  if (words.length >= 8) score += 25;
+  else tips.push("Add more detail — aim for at least 8 words.");
+  if (words.length >= 18) score += 10;
+
+  const keywordHits = PROMPT_KEYWORDS.filter((k) => lower.includes(k));
+  score += Math.min(keywordHits.length * 10, 40);
+  if (keywordHits.length === 0) tips.push("Mention style, lighting, camera or mood keywords.");
+
+  const hasCommaStructure = trimmed.includes(",");
+  if (hasCommaStructure) score += 10;
+  else tips.push("Break the prompt into comma-separated descriptors.");
+
+  const hasSubject = /\b(a|an|the)\b/i.test(trimmed);
+  if (hasSubject) score += 10;
+
+  if (words.length > 0 && trimmed[0] === trimmed[0]?.toUpperCase()) score += 5;
+
+  score = Math.max(0, Math.min(100, score));
+  if (score >= 80) tips.unshift("Excellent prompt craft!");
+  return { score, tips };
+}
+
+/** Tech quotes for the typing challenge. */
+export const TYPING_QUOTES: string[] = [
+  "The best way to predict the future is to invent it, one prompt at a time.",
+  "Artificial intelligence is the new electricity powering every modern product.",
+  "Good design is as little design as possible, yet always intentional.",
+  "Code is read far more often than it is written, so clarity always wins.",
+  "A well crafted prompt is worth a thousand lines of manual editing.",
+  "Automation frees creative people to focus on ideas instead of repetition.",
+];
+
+/** Multiple choice "what does this snippet output" questions. */
+export const CODE_QUESTIONS: { code: string; options: string[]; answer: number }[] = [
+  { code: "console.log(typeof null)", options: ["'object'", "'null'", "'undefined'", "'number'"], answer: 0 },
+  { code: "console.log([1,2,3].map(x => x * 2))", options: ["[1,2,3]", "[2,4,6]", "[1,4,9]", "undefined"], answer: 1 },
+  { code: "console.log(1 + '1')", options: ["2", "'11'", "NaN", "'2'"], answer: 1 },
+  { code: "console.log([...new Set([1,1,2,3])])", options: ["[1,1,2,3]", "[1,2,3]", "{1,2,3}", "Error"], answer: 1 },
+  { code: "console.log(0.1 + 0.2 === 0.3)", options: ["true", "false", "NaN", "Error"], answer: 1 },
+  { code: "console.log([1,2,3].length)", options: ["2", "3", "4", "undefined"], answer: 1 },
+  { code: "let a; console.log(a ?? 'x')", options: ["undefined", "'x'", "null", "Error"], answer: 1 },
+  { code: "console.log('5' == 5)", options: ["true", "false", "Error", "NaN"], answer: 0 },
+  { code: "console.log(typeof [])", options: ["'array'", "'object'", "'list'", "'undefined'"], answer: 1 },
+  { code: "console.log(Boolean(''))", options: ["true", "false", "undefined", "Error"], answer: 1 },
+];
+
+/** 5x5 mini crossword: blocked cells marked '#', clues reference row/col start. */
+export const CROSSWORD = {
+  size: 5,
+  grid: ["A####", "PIXEL", "I###L", "####M", "GPU##"],
+  clues: [
+    { number: 1, dir: "across" as const, row: 1, col: 0, len: 5, clue: "Smallest unit of a digital image", answer: "PIXEL" },
+    { number: 2, dir: "down" as const, row: 0, col: 0, len: 3, clue: "Interface that lets apps talk to each other", answer: "API" },
+    { number: 3, dir: "down" as const, row: 1, col: 4, len: 3, clue: "Type of model behind ChatGPT (abbr.)", answer: "LLM" },
+    { number: 4, dir: "across" as const, row: 4, col: 0, len: 3, clue: "Chip that renders graphics and trains AI", answer: "GPU" },
+  ],
+};

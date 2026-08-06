@@ -1,13 +1,26 @@
 import { useState } from "react";
-import { Bookmark, Flag, Heart, Loader2, MessageCircle, Share2, Trash2 } from "lucide-react";
+import {
+  Bookmark,
+  Flag,
+  Heart,
+  Linkedin,
+  Loader2,
+  MessageCircle,
+  Share2,
+  Star,
+  Trash2,
+  Twitter,
+} from "lucide-react";
 import { toast } from "sonner";
 
 import { Media, Avatar } from "@/components/Media";
+import { MentionInput, RichText } from "@/components/MentionInput";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
+  threadComments,
   useAddComment,
   useDeletePost,
+  useFollow,
   usePostComments,
   useReportPost,
   useSavePost,
@@ -37,19 +50,24 @@ export function PostCard({
   const report = useReportPost();
   const remove = useDeletePost();
   const addComment = useAddComment();
+  const { following, toggle: toggleFollow } = useFollow(userId);
   const [open, setOpen] = useState(false);
+  const [showShare, setShowShare] = useState(false);
   const [draft, setDraft] = useState("");
+  const [replyTo, setReplyTo] = useState<{ id: string; name: string } | null>(null);
   const comments = usePostComments(open ? post.id : null);
 
   const liked = post.post_reactions.some((r) => r.user_id === userId);
   const mine = post.author_id === userId;
+  const isFollowing = following.includes(post.author_id);
+  const shareUrl = typeof window === "undefined" ? "" : `${window.location.origin}/feed#${post.id}`;
+  const shareText = post.content.slice(0, 160) || "Check out this SOMMYART CONNECT project";
 
-  async function share() {
-    const url = `${window.location.origin}/feed#${post.id}`;
+  async function nativeShare() {
     try {
-      if (navigator.share) await navigator.share({ title: "SOMMYART CONNECT", text: post.content, url });
+      if (navigator.share) await navigator.share({ title: "SOMMYART CONNECT", text: shareText, url: shareUrl });
       else {
-        await navigator.clipboard.writeText(url);
+        await navigator.clipboard.writeText(shareUrl);
         toast.success("Link copied");
       }
     } catch {
@@ -68,6 +86,27 @@ export function PostCard({
     );
   }
 
+  function send() {
+    if (!userId) return;
+    addComment.mutate(
+      {
+        post_id: post.id,
+        author_id: userId,
+        body: draft.trim(),
+        parent_id: replyTo?.id ?? null,
+      },
+      {
+        onSuccess: () => {
+          setDraft("");
+          setReplyTo(null);
+        },
+        onError: (e) => toast.error(e.message),
+      },
+    );
+  }
+
+  const threads = threadComments(comments.data ?? []);
+
   return (
     <article
       id={post.id}
@@ -83,6 +122,27 @@ export function PostCard({
             @{post.profiles?.username ?? "member"} • {timeAgo(post.created_at)}
           </p>
         </div>
+        {!mine && userId && (
+          <button
+            aria-label={isFollowing ? "Unfavourite creator" : "Favourite creator"}
+            title={isFollowing ? "Unfavourite creator" : "Favourite creator — get notified of new posts"}
+            className="press text-muted-foreground"
+            onClick={() =>
+              toggleFollow.mutate(
+                { targetId: post.author_id, on: !isFollowing },
+                {
+                  onSuccess: () =>
+                    toast.success(
+                      isFollowing ? "Removed from favourites" : "Favourited — you'll be notified of new posts",
+                    ),
+                  onError: (e) => toast.error(e.message),
+                },
+              )
+            }
+          >
+            <Star className={`h-4 w-4 ${isFollowing ? "fill-primary text-primary" : ""}`} aria-hidden />
+          </button>
+        )}
         {mine && (
           <button
             aria-label="Delete post"
@@ -95,9 +155,7 @@ export function PostCard({
       </header>
 
       {post.content && (
-        <p className="text-card-foreground mt-3 text-sm leading-relaxed whitespace-pre-wrap">
-          {post.content}
-        </p>
+        <RichText text={post.content} className="text-card-foreground mt-3 text-sm leading-relaxed" />
       )}
 
       {post.media_urls.length > 0 && (
@@ -140,7 +198,11 @@ export function PostCard({
           <MessageCircle className="h-4 w-4" aria-hidden />
           {post.post_comments.length}
         </button>
-        <button className="press flex items-center gap-1" aria-label="Share" onClick={() => void share()}>
+        <button
+          className="press flex items-center gap-1"
+          aria-label="Share"
+          onClick={() => setShowShare((v) => !v)}
+        >
           <Share2 className="h-4 w-4" aria-hidden />
         </button>
         <button
@@ -157,43 +219,79 @@ export function PostCard({
         )}
       </div>
 
+      {showShare && (
+        <div className="border-border/60 mt-3 flex flex-wrap gap-2 border-t pt-3">
+          <a
+            href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="press bg-secondary text-secondary-foreground flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-bold"
+          >
+            <Twitter className="h-4 w-4" aria-hidden /> Share on X
+          </a>
+          <a
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="press bg-secondary text-secondary-foreground flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-bold"
+          >
+            <Linkedin className="h-4 w-4" aria-hidden /> Share on LinkedIn
+          </a>
+          <button
+            className="press bg-secondary text-secondary-foreground flex items-center gap-1.5 rounded-2xl px-3 py-2 text-xs font-bold"
+            onClick={() => void nativeShare()}
+          >
+            <Share2 className="h-4 w-4" aria-hidden /> More
+          </button>
+        </div>
+      )}
+
       {open && (
         <div className="border-border/60 mt-4 space-y-3 border-t pt-3">
           {comments.isLoading && <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" aria-hidden />}
-          {(comments.data ?? []).map((row) => {
-            const author = (row as { profiles: { full_name: string; avatar_url: string | null } | null })
-              .profiles;
-            return (
-              <div key={(row as { id: string }).id} className="flex gap-2">
-                <Avatar path={author?.avatar_url} name={author?.full_name ?? "SC"} size={28} />
-                <div className="bg-secondary min-w-0 flex-1 rounded-2xl px-3 py-2">
-                  <p className="text-secondary-foreground text-xs font-bold">{author?.full_name ?? "Member"}</p>
-                  <p className="text-secondary-foreground text-sm break-words">
-                    {(row as { body: string }).body}
-                  </p>
+          {threads.map((thread) => (
+            <div key={thread.id} className="space-y-2">
+              <CommentRow
+                comment={thread}
+                onReply={() => setReplyTo({ id: thread.id, name: thread.profiles?.username ?? "member" })}
+              />
+              {thread.replies.length > 0 && (
+                <div className="border-border/60 ml-9 space-y-2 border-l pl-3">
+                  {thread.replies.map((reply) => (
+                    <CommentRow
+                      key={reply.id}
+                      comment={reply}
+                      onReply={() => setReplyTo({ id: thread.id, name: reply.profiles?.username ?? "member" })}
+                    />
+                  ))}
                 </div>
-              </div>
-            );
-          })}
-          <div className="flex gap-2">
-            <Input
-              className="rounded-2xl"
-              placeholder="Write a comment…"
-              aria-label="Write a comment"
-              value={draft}
-              onChange={(e) => setDraft(e.target.value)}
-            />
+              )}
+            </div>
+          ))}
+
+          {replyTo && (
+            <p className="text-muted-foreground text-xs font-semibold">
+              Replying to @{replyTo.name}{" "}
+              <button className="text-primary press underline" onClick={() => setReplyTo(null)}>
+                cancel
+              </button>
+            </p>
+          )}
+
+          <div className="flex items-end gap-2">
+            <div className="flex-1">
+              <MentionInput
+                ariaLabel="Write a comment"
+                placeholder={replyTo ? "Write a reply… use @ to mention" : "Write a comment… use @ to mention"}
+                value={draft}
+                onChange={setDraft}
+              />
+            </div>
             <Button
               size="sm"
-              className="press rounded-2xl"
+              className="press h-10 rounded-2xl"
               disabled={!userId || draft.trim().length < 2 || addComment.isPending}
-              onClick={() =>
-                userId &&
-                addComment.mutate(
-                  { post_id: post.id, author_id: userId, body: draft.trim() },
-                  { onSuccess: () => setDraft("") },
-                )
-              }
+              onClick={send}
             >
               Send
             </Button>
@@ -201,5 +299,26 @@ export function PostCard({
         </div>
       )}
     </article>
+  );
+}
+
+function CommentRow({
+  comment,
+  onReply,
+}: {
+  comment: { id: string; body: string; profiles: { full_name: string; avatar_url: string | null } | null };
+  onReply: () => void;
+}) {
+  return (
+    <div className="flex gap-2">
+      <Avatar path={comment.profiles?.avatar_url} name={comment.profiles?.full_name ?? "SC"} size={28} />
+      <div className="bg-secondary min-w-0 flex-1 rounded-2xl px-3 py-2">
+        <p className="text-secondary-foreground text-xs font-bold">{comment.profiles?.full_name ?? "Member"}</p>
+        <RichText text={comment.body} className="text-secondary-foreground text-sm break-words" />
+        <button className="press text-muted-foreground mt-1 text-[11px] font-bold" onClick={onReply}>
+          Reply
+        </button>
+      </div>
+    </div>
   );
 }

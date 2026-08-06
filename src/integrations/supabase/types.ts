@@ -470,6 +470,7 @@ export type Database = {
           body: string
           created_at: string
           id: string
+          parent_id: string | null
           post_id: string
         }
         Insert: {
@@ -477,6 +478,7 @@ export type Database = {
           body: string
           created_at?: string
           id?: string
+          parent_id?: string | null
           post_id: string
         }
         Update: {
@@ -484,6 +486,7 @@ export type Database = {
           body?: string
           created_at?: string
           id?: string
+          parent_id?: string | null
           post_id?: string
         }
         Relationships: [
@@ -492,6 +495,13 @@ export type Database = {
             columns: ["author_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "post_comments"
             referencedColumns: ["id"]
           },
           {
@@ -891,6 +901,53 @@ export type Database = {
           },
         ]
       }
+      quiz_questions: {
+        Row: {
+          answer: number
+          category: string
+          created_at: string
+          created_by: string | null
+          difficulty: string
+          explanation: string | null
+          id: string
+          is_active: boolean
+          options: Json
+          question: string
+        }
+        Insert: {
+          answer?: number
+          category: string
+          created_at?: string
+          created_by?: string | null
+          difficulty?: string
+          explanation?: string | null
+          id?: string
+          is_active?: boolean
+          options: Json
+          question: string
+        }
+        Update: {
+          answer?: number
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          difficulty?: string
+          explanation?: string | null
+          id?: string
+          is_active?: boolean
+          options?: Json
+          question?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quiz_questions_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       redemptions: {
         Row: {
           cost: number
@@ -1149,6 +1206,20 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      notify_mentions: {
+        Args: { _actor: string; _context: string; _link: string; _text: string }
+        Returns: undefined
+      }
+      notify_user: {
+        Args: {
+          _body: string
+          _kind: string
+          _link: string
+          _title: string
+          _user_id: string
+        }
+        Returns: undefined
       }
     }
     Enums: {
