@@ -216,17 +216,11 @@ export const CODE_QUESTIONS: { code: string; options: string[]; answer: number }
 /** 5x5 mini crossword: blocked cells marked '#', clues reference row/col start. */
 export const CROSSWORD = {
   size: 5,
-  grid: [
-    "AI###",
-    "PIXEL",
-    "P#R#O",
-    "S#O#M",
-    "GPU##",
-  ],
+  grid: ["A####", "PIXEL", "I###L", "####M", "GPU##"],
   clues: [
     { number: 1, dir: "across" as const, row: 1, col: 0, len: 5, clue: "Smallest unit of a digital image", answer: "PIXEL" },
-    { number: 2, dir: "down" as const, row: 0, col: 0, len: 3, clue: "Abbreviation for Artificial Intelligence app", answer: "APP" },
-    { number: 3, dir: "down" as const, row: 3, col: 4, len: 2, clue: "Short for 'multiuser online model'", answer: "OM" },
+    { number: 2, dir: "down" as const, row: 0, col: 0, len: 3, clue: "Interface that lets apps talk to each other", answer: "API" },
+    { number: 3, dir: "down" as const, row: 1, col: 4, len: 3, clue: "Type of model behind ChatGPT (abbr.)", answer: "LLM" },
     { number: 4, dir: "across" as const, row: 4, col: 0, len: 3, clue: "Chip that renders graphics and trains AI", answer: "GPU" },
   ],
 };

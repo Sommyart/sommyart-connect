@@ -92,27 +92,56 @@ export function useToggleReaction() {
   });
 }
 
+export type Comment = {
+  id: string;
+  post_id: string;
+  author_id: string;
+  body: string;
+  parent_id: string | null;
+  created_at: string;
+  profiles: { username: string; full_name: string; avatar_url: string | null } | null;
+};
+
 export function usePostComments(postId: string | null) {
   return useQuery({
     queryKey: ["post-comments", postId],
     enabled: Boolean(postId),
-    queryFn: async () => {
+    queryFn: async (): Promise<Comment[]> => {
       const { data, error } = await supabase
         .from("post_comments")
         .select("*, profiles:author_id(username,full_name,avatar_url)")
         .eq("post_id", postId!)
         .order("created_at", { ascending: true });
       if (error) throw error;
-      return data ?? [];
+      return (data ?? []) as unknown as Comment[];
     },
   });
+}
+
+/** Splits a flat comment list into top-level comments with their replies. */
+export function threadComments(comments: Comment[]) {
+  const roots = comments.filter((c) => !c.parent_id);
+  return roots.map((root) => ({
+    ...root,
+    replies: comments.filter((c) => c.parent_id === root.id),
+  }));
 }
 
 export function useAddComment() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (input: { post_id: string; author_id: string; body: string }) => {
-      const { error } = await supabase.from("post_comments").insert(input);
+    mutationFn: async (input: {
+      post_id: string;
+      author_id: string;
+      body: string;
+      parent_id?: string | null;
+    }) => {
+      const { error } = await supabase.from("post_comments").insert({
+        post_id: input.post_id,
+        author_id: input.author_id,
+        body: input.body,
+        parent_id: input.parent_id ?? null,
+      });
       if (error) throw error;
     },
     onSuccess: (_d, vars) => {
