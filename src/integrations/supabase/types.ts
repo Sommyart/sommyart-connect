@@ -14,6 +14,24 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_emails: {
+        Row: {
+          created_at: string
+          email: string
+          is_super: boolean
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          is_super?: boolean
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          is_super?: boolean
+        }
+        Relationships: []
+      }
       announcements: {
         Row: {
           created_at: string
@@ -1221,6 +1239,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      sync_my_admin_role: { Args: never; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "user"
