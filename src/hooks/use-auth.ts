@@ -20,6 +20,7 @@ export type Profile = {
   suspended: boolean;
   featured: boolean;
   created_at: string;
+  is_admin?: boolean;
 };
 
 export function useSession() {
@@ -95,6 +96,19 @@ export function useIsAdmin(user: User | null) {
       const { data } = await supabase.rpc("has_role", { _user_id: user!.id, _role: "admin" });
       return Boolean(data);
     },
+  });
+}
+
+export function useAdminIds(ids: string[]) {
+  return useQuery({
+    queryKey: ["admin-ids", ...ids.slice().sort()],
+    enabled: ids.length > 0,
+    queryFn: async () => {
+      const { data, error } = await supabase.from("user_roles").select("user_id").eq("role", "admin").in("user_id", ids);
+      if (error) throw error;
+      return new Set((data ?? []).map((row) => row.user_id));
+    },
+    staleTime: 60_000,
   });
 }
 

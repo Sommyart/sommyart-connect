@@ -14,6 +14,7 @@ import {
 import { toast } from "sonner";
 
 import { Media, Avatar } from "@/components/Media";
+import { AdminBadge } from "@/components/AdminBadge";
 import { MentionInput, RichText } from "@/components/MentionInput";
 import { Button } from "@/components/ui/button";
 import {
@@ -115,9 +116,10 @@ export function PostCard({
       <header className="flex items-center gap-3">
         <Avatar path={post.profiles?.avatar_url} name={post.profiles?.full_name ?? "SC"} size={40} />
         <div className="min-w-0 flex-1">
-          <p className="text-card-foreground truncate text-sm font-bold">
-            {post.profiles?.full_name ?? "Member"}
-          </p>
+            <p className="text-card-foreground flex items-center gap-1.5 truncate text-sm font-bold">
+              <span className="truncate">{post.profiles?.full_name ?? "Member"}</span>
+              {post.profiles?.is_admin && <AdminBadge compact />}
+            </p>
           <p className="text-muted-foreground truncate text-xs">
             @{post.profiles?.username ?? "member"} • {timeAgo(post.created_at)}
           </p>
@@ -306,14 +308,17 @@ function CommentRow({
   comment,
   onReply,
 }: {
-  comment: { id: string; body: string; profiles: { full_name: string; avatar_url: string | null } | null };
+  comment: { id: string; body: string; profiles: { full_name: string; avatar_url: string | null; is_admin?: boolean } | null };
   onReply: () => void;
 }) {
   return (
     <div className="flex gap-2">
       <Avatar path={comment.profiles?.avatar_url} name={comment.profiles?.full_name ?? "SC"} size={28} />
       <div className="bg-secondary min-w-0 flex-1 rounded-2xl px-3 py-2">
-        <p className="text-secondary-foreground text-xs font-bold">{comment.profiles?.full_name ?? "Member"}</p>
+        <p className="text-secondary-foreground flex items-center gap-1.5 text-xs font-bold">
+          {comment.profiles?.full_name ?? "Member"}
+          {comment.profiles?.is_admin && <AdminBadge compact />}
+        </p>
         <RichText text={comment.body} className="text-secondary-foreground text-sm break-words" />
         <button className="press text-muted-foreground mt-1 text-[11px] font-bold" onClick={onReply}>
           Reply

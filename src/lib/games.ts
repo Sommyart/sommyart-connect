@@ -1,16 +1,15 @@
 /** Client-safe game content and rules for the SOMMYART Game Center. */
 
 export const GAMES = [
-  { key: "quiz", name: "Daily Tech Quiz", icon: "🧠", blurb: "Pick a category and difficulty", points: 10 },
-  { key: "tictactoe", name: "Tic-Tac-Toe", icon: "⭕", blurb: "Beat the AI opponent", points: 8 },
-  { key: "toolguess", name: "AI Tool Guess", icon: "🛠️", blurb: "Name the tool from the clue", points: 6 },
-  { key: "riddle", name: "Riddle Corner", icon: "🧩", blurb: "One tech riddle every day", points: 5 },
-  { key: "promptbattle", name: "Prompt Battle", icon: "⚔️", blurb: "Write the best prompt for a brief", points: 8 },
-  { key: "typing", name: "Typing Challenge", icon: "⌨️", blurb: "60s tech-quote typing test", points: 6 },
-  { key: "code", name: "Code Challenge", icon: "💻", blurb: "What does this snippet output?", points: 8 },
-  { key: "logic", name: "Logic Games", icon: "🧠", blurb: "Memorise the rising pattern", points: 6 },
-  { key: "crossword", name: "Crossword", icon: "🔤", blurb: "Mini 5x5 AI & tech crossword", points: 10 },
-  { key: "trivia", name: "Rapid Trivia", icon: "⏱️", blurb: "10 questions, race the clock", points: 10 },
+  { key: "quiz", name: "Daily Tech Quiz", icon: "brain", blurb: "Pick a category and difficulty", points: 10 },
+  { key: "tictactoe", name: "Tic-Tac-Toe", icon: "grid", blurb: "Beat the AI opponent", points: 8 },
+  { key: "toolguess", name: "AI Tool Guess", icon: "wrench", blurb: "Name the tool from the clue", points: 6 },
+  { key: "riddle", name: "Riddle Corner", icon: "puzzle", blurb: "One tech riddle every day", points: 5 },
+  { key: "promptbattle", name: "Prompt Battle", icon: "swords", blurb: "Write the best prompt for a brief", points: 8 },
+  { key: "typing", name: "Typing Challenge", icon: "keyboard", blurb: "60s tech-quote typing test", points: 6 },
+  { key: "code", name: "Code Challenge", icon: "code", blurb: "What does this snippet output?", points: 8 },
+  { key: "logic", name: "Logic Games", icon: "brain", blurb: "Memorise the rising pattern", points: 6 },
+  { key: "trivia", name: "Rapid Trivia", icon: "timer", blurb: "10 questions, race the clock", points: 10 },
 ] as const;
 
 export type GameKey = (typeof GAMES)[number]["key"];
@@ -213,14 +212,3 @@ export const CODE_QUESTIONS: { code: string; options: string[]; answer: number }
   { code: "console.log(Boolean(''))", options: ["true", "false", "undefined", "Error"], answer: 1 },
 ];
 
-/** 5x5 mini crossword: blocked cells marked '#', clues reference row/col start. */
-export const CROSSWORD = {
-  size: 5,
-  grid: ["A####", "PIXEL", "I###L", "####M", "GPU##"],
-  clues: [
-    { number: 1, dir: "across" as const, row: 1, col: 0, len: 5, clue: "Smallest unit of a digital image", answer: "PIXEL" },
-    { number: 2, dir: "down" as const, row: 0, col: 0, len: 3, clue: "Interface that lets apps talk to each other", answer: "API" },
-    { number: 3, dir: "down" as const, row: 1, col: 4, len: 3, clue: "Type of model behind ChatGPT (abbr.)", answer: "LLM" },
-    { number: 4, dir: "across" as const, row: 4, col: 0, len: 3, clue: "Chip that renders graphics and trains AI", answer: "GPU" },
-  ],
-};

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { CalendarDays, Sparkles } from "lucide-react";
+import { CalendarDays, FlaskConical, Lightbulb, MessageSquare, Rocket, Sparkles, Target, Wrench } from "lucide-react";
 
 import { AppNav } from "@/components/AppNav";
 import { useChallenges, useEvents } from "@/hooks/use-challenges";
@@ -30,6 +30,7 @@ function WeeklyPage() {
   const today = trackForToday();
   const { data: challenges = [] } = useChallenges();
   const { data: events = [] } = useEvents();
+  const trackIcons = { mission_sunday: Target, ai_tool_challenge: Wrench, tech_challenge_tuesday: Rocket, wip_wednesday: FlaskConical, knowledge_exchange: Lightbulb, demo_day: MessageSquare } as const;
 
   return (
     <main className="mx-auto min-h-dvh w-full max-w-lg px-5 pt-6 pb-32">
@@ -57,7 +58,7 @@ function WeeklyPage() {
                 {isToday ? " • today" : ""}
               </div>
               <h2 className="mt-2 text-lg font-extrabold">
-                <span aria-hidden>{track.icon}</span> {track.title}
+                {(() => { const Icon = trackIcons[track.key]; return <Icon className="mr-1 inline h-5 w-5" aria-hidden />; })()} {track.title}
               </h2>
               <p className="mt-1.5 text-sm leading-relaxed opacity-90">
                 {detail?.description ?? track.tagline}

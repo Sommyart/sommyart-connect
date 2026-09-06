@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Rocket, Sparkles, Users } from "lucide-react";
+import { ArrowRight, CalendarDays, FlaskConical, Lightbulb, MessageSquare, Rocket, Sparkles, Target, Users, Wrench } from "lucide-react";
 
 import { AppFooter } from "@/components/AppFooter";
 import { Logo } from "@/components/Logo";
@@ -29,6 +29,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Landing() {
+  const trackIcons = { mission_sunday: Target, ai_tool_challenge: Wrench, tech_challenge_tuesday: Rocket, wip_wednesday: FlaskConical, knowledge_exchange: Lightbulb, demo_day: MessageSquare } as const;
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-6 py-12">
       <div className="absolute top-5 right-5">
@@ -68,7 +69,7 @@ function Landing() {
           <ul className="mt-3 space-y-2">
             {WEEKLY_TRACKS.map((t) => (
               <li key={t.key} className="flex items-start gap-2 text-sm">
-                <span aria-hidden>{t.icon}</span>
+                {(() => { const Icon = trackIcons[t.key]; return <Icon className="text-primary mt-0.5 h-4 w-4 shrink-0" aria-hidden />; })()}
                 <span className="text-muted-foreground">
                   <span className="text-card-foreground font-bold">{t.label}:</span> {t.title}
                 </span>

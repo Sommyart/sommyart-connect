@@ -72,39 +72,6 @@ export function useRedeem() {
   });
 }
 
-export function useNotifications(userId?: string | null) {
-  const queryClient = useQueryClient();
-
-  const query = useQuery({
-    queryKey: ["notifications", userId],
-    enabled: Boolean(userId),
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("notifications")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(50);
-      if (error) throw error;
-      return data ?? [];
-    },
-  });
-
-  useEffect(() => {
-    if (!userId) return;
-    const channel = supabase
-      .channel("notifications-stream")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${userId}` },
-        () => void queryClient.invalidateQueries({ queryKey: ["notifications"] }),
-      )
-      .subscribe();
-    return () => void supabase.removeChannel(channel);
-  }, [userId, queryClient]);
-
-  return query;
-}
-
 export function useMarkNotificationsRead() {
   const queryClient = useQueryClient();
   return useMutation({

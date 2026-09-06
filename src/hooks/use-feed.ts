@@ -8,6 +8,7 @@ export type FeedAuthor = {
   full_name: string;
   avatar_url: string | null;
   occupation: string | null;
+  is_admin?: boolean;
 };
 
 export type Post = {

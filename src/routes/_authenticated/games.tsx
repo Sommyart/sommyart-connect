@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Gamepad2, Sparkles, Trophy } from "lucide-react";
+import { Brain, Code2, Gamepad2, Grid3X3, Keyboard, Puzzle, Sparkles, Swords, Timer, Trophy, Wrench } from "lucide-react";
 
 import { AppNav } from "@/components/AppNav";
 import { Avatar } from "@/components/Media";
 import { CodeChallenge } from "@/components/games/CodeChallenge";
-import { Crossword } from "@/components/games/Crossword";
 import { LogicGame } from "@/components/games/LogicGame";
 import { PromptBattle } from "@/components/games/PromptBattle";
 import { QuizGame } from "@/components/games/QuizGame";
@@ -44,6 +43,8 @@ function GamesPage() {
   const { data: top = [] } = useGameLeaderboard(game);
   const level = levelFor(profile?.points ?? 0);
   const active = GAMES.find((g) => g.key === game)!;
+  const gameIcons = { brain: Brain, grid: Grid3X3, wrench: Wrench, puzzle: Puzzle, swords: Swords, keyboard: Keyboard, code: Code2, timer: Timer } as const;
+  const ActiveIcon = gameIcons[active.icon];
 
   return (
     <main className="mx-auto min-h-dvh w-full max-w-lg px-5 pt-6 pb-32">
@@ -62,7 +63,7 @@ function GamesPage() {
         </div>
         <div>
           <p className="text-2xl font-black">
-            {level.icon} {level.level}
+            <span className="text-2xl font-black">{level.level}</span>
           </p>
           <p className="text-[11px] font-semibold opacity-90">{level.name}</p>
         </div>
@@ -77,7 +78,7 @@ function GamesPage() {
               game === g.key ? "border-primary/50 bg-primary/10" : "border-border/60 bg-card/85"
             }`}
           >
-            <p className="text-lg">{g.icon}</p>
+            {(() => { const Icon = gameIcons[g.icon]; return <Icon className="text-primary h-5 w-5" aria-hidden />; })()}
             <p className="text-card-foreground text-sm font-bold">{g.name}</p>
             <p className="text-muted-foreground text-[11px] leading-tight">{g.blurb}</p>
             <p className="text-primary mt-1 text-[11px] font-extrabold">+{g.points} pts</p>
@@ -98,7 +99,6 @@ function GamesPage() {
           {game === "typing" && <TypingChallenge />}
           {game === "code" && <CodeChallenge />}
           {game === "logic" && <LogicGame />}
-          {game === "crossword" && <Crossword />}
           {game === "trivia" && <Trivia />}
         </div>
       </section>

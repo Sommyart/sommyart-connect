@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { AtSign, Bell, CheckCheck, Heart, MessageCircle, Sparkles, Trash2, UserPlus } from "lucide-react";
+import { AtSign, Bell, CheckCheck, Heart, Loader2, MessageCircle, RefreshCw, Sparkles, Trash2, UserPlus } from "lucide-react";
 
 import { AppNav } from "@/components/AppNav";
 import { Button } from "@/components/ui/button";
@@ -60,7 +60,7 @@ function timeAgo(iso: string) {
 function NotificationsPage() {
   const { user } = useMe();
   const navigate = useNavigate();
-  const { data = [], isLoading } = useNotifications(user?.id);
+  const { data = [], isLoading, isFetching, refetch } = useNotifications(user?.id);
   const mark = useMarkNotifications(user?.id);
   const clear = useClearNotifications(user?.id);
   const [filter, setFilter] = useState<NotificationFilter>("all");
@@ -101,6 +101,17 @@ function NotificationsPage() {
       </div>
 
       <div className="mt-3 flex gap-2">
+        <Button
+          size="sm"
+          variant="secondary"
+          className="press rounded-xl"
+          aria-label="Refresh notifications"
+          disabled={isFetching}
+          onClick={() => void refetch()}
+        >
+          {isFetching ? <Loader2 className="mr-1 h-4 w-4 animate-spin" aria-hidden /> : <RefreshCw className="mr-1 h-4 w-4" aria-hidden />}
+          Refresh
+        </Button>
         <Button
           size="sm"
           variant="secondary"
