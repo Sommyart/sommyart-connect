@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Download, Loader2, LogOut, Save, ShieldAlert, ShieldCheck, Trash2 } from "lucide-react";
+import { Award, Crown, Download, Footprints, Flame, Loader2, LogOut, Medal, MessageCircle, Rocket, Save, ShieldAlert, ShieldCheck, Star, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppFooter } from "@/components/AppFooter";
@@ -80,6 +80,7 @@ function ProfilePage() {
     posts: counts.data?.posts ?? 0,
     projects: counts.data?.projects ?? 0,
   });
+  const badgeIcons = { footprints: Footprints, flame: Flame, star: Star, crown: Crown, message: MessageCircle, rocket: Rocket, "medal-bronze": Medal, "medal-silver": Medal, "medal-gold": Award } as const;
 
   return (
     <main className="mx-auto min-h-dvh w-full max-w-lg px-5 pt-6 pb-32">
@@ -164,7 +165,7 @@ function ProfilePage() {
                   }`}
                   title={badge.description}
                 >
-                  <p className="text-2xl">{badge.icon}</p>
+                   {(() => { const Icon = badgeIcons[badge.icon as keyof typeof badgeIcons] ?? Award; return <Icon className="text-primary mx-auto h-6 w-6" aria-hidden />; })()}
                   <p className="text-secondary-foreground mt-1 text-[11px] leading-tight font-bold">
                     {badge.name}
                   </p>

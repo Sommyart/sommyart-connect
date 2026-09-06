@@ -21,12 +21,12 @@ export const POINT_LABELS: Record<PointReason, string> = {
 export type LevelDef = { min: number; name: string; icon: string };
 
 export const LEVELS: LevelDef[] = [
-  { min: 0, name: "Explorer", icon: "🌱" },
-  { min: 150, name: "Builder", icon: "🔧" },
-  { min: 400, name: "Creator", icon: "🎨" },
-  { min: 900, name: "Innovator", icon: "🚀" },
-  { min: 1800, name: "Mentor", icon: "🧠" },
-  { min: 3500, name: "Luminary", icon: "👑" },
+  { min: 0, name: "Explorer", icon: "compass" },
+  { min: 150, name: "Builder", icon: "wrench" },
+  { min: 400, name: "Creator", icon: "palette" },
+  { min: 900, name: "Innovator", icon: "rocket" },
+  { min: 1800, name: "Mentor", icon: "brain" },
+  { min: 3500, name: "Luminary", icon: "crown" },
 ];
 
 export function levelFor(points: number) {
@@ -49,7 +49,7 @@ export const WEEKLY_TRACKS = [
     title: "Mission Sunday",
     tagline: "Set your weekly AI goal",
     prompt: "What's one AI or tech project you'll complete this week?",
-    icon: "🎯",
+    icon: "target",
   },
   {
     day: 1,
@@ -58,7 +58,7 @@ export const WEEKLY_TRACKS = [
     title: "AI Tool Challenge",
     tagline: "One tool. 24 hours. Build something.",
     prompt: "Build something using this week's featured AI tool.",
-    icon: "🛠️",
+    icon: "wrench",
   },
   {
     day: 2,
@@ -67,7 +67,7 @@ export const WEEKLY_TRACKS = [
     title: "Tech Challenge Tuesday",
     tagline: "Same challenge, everyone",
     prompt: "Complete today's community-wide tech challenge.",
-    icon: "⚡",
+    icon: "zap",
   },
   {
     day: 3,
@@ -76,7 +76,7 @@ export const WEEKLY_TRACKS = [
     title: "Work-in-Progress Wednesday",
     tagline: "Share and review two projects",
     prompt: "Post your work in progress, then review two others.",
-    icon: "🧪",
+    icon: "flask",
   },
   {
     day: 4,
@@ -85,7 +85,7 @@ export const WEEKLY_TRACKS = [
     title: "Knowledge Exchange",
     tagline: "Teach a 5–10 minute lesson",
     prompt: "Host or attend a community lesson.",
-    icon: "📚",
+    icon: "book",
   },
   {
     day: 5,
@@ -94,17 +94,17 @@ export const WEEKLY_TRACKS = [
     title: "Demo Day",
     tagline: "Showcase and vote",
     prompt: "Show what you finished this week.",
-    icon: "🏁",
+    icon: "flag",
   },
 ] as const;
 
 export type TrackKey = (typeof WEEKLY_TRACKS)[number]["key"];
 
 export const VOTE_CATEGORIES = [
-  { key: "project_of_the_week", label: "Project of the Week", icon: "🏆" },
-  { key: "best_design", label: "Best Design", icon: "🎨" },
-  { key: "best_ai_workflow", label: "Best AI Workflow", icon: "🤖" },
-  { key: "most_innovative", label: "Most Innovative Idea", icon: "💡" },
+  { key: "project_of_the_week", label: "Project of the Week", icon: "trophy" },
+  { key: "best_design", label: "Best Design", icon: "palette" },
+  { key: "best_ai_workflow", label: "Best AI Workflow", icon: "bot" },
+  { key: "most_innovative", label: "Most Innovative Idea", icon: "lightbulb" },
 ] as const;
 
 export function trackForToday(date = new Date()): (typeof WEEKLY_TRACKS)[number] {
