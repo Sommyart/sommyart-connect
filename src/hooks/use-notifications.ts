@@ -27,13 +27,14 @@ export function useNotifications(userId?: string | null) {
       const { data, error } = await supabase
         .from("notifications")
         .select("*")
-        .eq("user_id", userId!)
+      .eq("user_id", userId ?? "")
         .order("created_at", { ascending: false })
         .limit(100);
       if (error) throw error;
       return (data ?? []) as AppNotification[];
     },
-    staleTime: 10_000,
+     staleTime: 10_000,
+     refetchOnWindowFocus: true,
   });
 
   useEffect(() => {
