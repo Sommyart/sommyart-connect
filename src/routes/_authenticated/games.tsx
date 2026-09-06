@@ -63,7 +63,7 @@ function GamesPage() {
         </div>
         <div>
           <p className="text-2xl font-black">
-            {level.icon} {level.level}
+            <ActiveIcon className="mx-auto h-6 w-6" aria-hidden />
           </p>
           <p className="text-[11px] font-semibold opacity-90">{level.name}</p>
         </div>

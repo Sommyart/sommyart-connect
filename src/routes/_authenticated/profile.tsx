@@ -2,7 +2,7 @@ import { useState } from "react";
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Download, Loader2, LogOut, Save, ShieldAlert, Trash2 } from "lucide-react";
+import { Download, Loader2, LogOut, Save, ShieldAlert, ShieldCheck, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppFooter } from "@/components/AppFooter";
@@ -105,7 +105,7 @@ function ProfilePage() {
             <p className="text-card-foreground text-lg font-extrabold">{profile.full_name}</p>
             <p className="text-muted-foreground text-sm">@{profile.username}</p>
             <p className="text-primary mt-1 text-xs font-bold">
-              {level.icon} {level.name} • {profile.points} pts
+              <ShieldCheck className="mr-1 inline h-3.5 w-3.5" aria-hidden /> {level.name} • {profile.points} pts
             </p>
             <div className="bg-secondary mt-3 h-1.5 overflow-hidden rounded-full">
               <div className="bg-gradient-brand h-full" style={{ width: `${level.progress}%` }} />
@@ -144,7 +144,7 @@ function ProfilePage() {
               to="/admin"
               className="press bg-secondary text-secondary-foreground mt-4 block rounded-2xl px-4 py-3 text-center text-sm font-bold"
             >
-              🔐 Admin console
+               <ShieldCheck className="mr-1 inline h-4 w-4" aria-hidden /> Admin console
             </Link>
           )}
 
