@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import confetti from "canvas-confetti";
 import { toast } from "sonner";
+import { Check, Handshake } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { useRecordScore } from "@/hooks/use-games";
@@ -169,8 +170,8 @@ export function TicTacToe() {
       <p className="text-foreground mt-3 text-center text-base font-extrabold">
         {result
           ? result === "draw"
-            ? "🤝 It's a Draw!"
-            : `🎉 Player ${result} Wins!`
+             ? <><Handshake className="mr-1 inline h-4 w-4" aria-hidden /> Draw game</>
+             : <><Check className="mr-1 inline h-4 w-4" aria-hidden /> Player {result} wins</>
           : `${turn}'s turn`}
       </p>
       {result && <p className="text-muted-foreground mt-0.5 text-center text-xs">New round starting…</p>}

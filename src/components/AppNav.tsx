@@ -8,9 +8,9 @@ const items = [
   { to: "/dashboard", label: "Home", icon: Home },
   { to: "/games", label: "Games", icon: Gamepad2 },
   { to: "/feed", label: "Feed", icon: Users },
-  { to: "/notifications", label: "Alerts", icon: Bell },
   { to: "/projects", label: "Projects", icon: Rocket },
   { to: "/leaderboard", label: "Ranks", icon: Trophy },
+  { to: "/notifications", label: "Notifications", icon: Bell },
 ] as const;
 
 export function AppNav() {

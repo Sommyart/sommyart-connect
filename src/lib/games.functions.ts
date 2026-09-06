@@ -13,7 +13,6 @@ const schema = z.object({
     "typing",
     "code",
     "logic",
-    "crossword",
     "trivia",
   ]),
   score: z.number().int().min(0).max(100),
@@ -29,7 +28,6 @@ const REWARD = {
   typing: 6,
   code: 8,
   logic: 6,
-  crossword: 10,
   trivia: 10,
 } as const;
 
@@ -43,7 +41,6 @@ const DAILY_AWARDS = {
   typing: 2,
   code: 2,
   logic: 2,
-  crossword: 1,
   trivia: 1,
 } as const;
 
@@ -54,7 +51,6 @@ function qualifies(game: keyof typeof REWARD, score: number, won?: boolean) {
     case "trivia":
       return score >= 7;
     case "riddle":
-    case "crossword":
       return true;
     case "promptbattle":
       return score >= 60;
