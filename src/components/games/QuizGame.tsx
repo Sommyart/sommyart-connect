@@ -14,13 +14,17 @@ export function QuizGame() {
   const record = useRecordScore();
   const { data: categories = [] } = useQuizCategories();
   const [filters, setFilters] = useState<QuizFilters | null>(null);
-  const { data: questions = [], isFetching } = useQuizBank(filters ?? { category: "All", difficulty: "Any", count: 10 }, Boolean(filters));
+  const { data: questions = [], isFetching } = useQuizBank(
+    filters ?? { category: "All", difficulty: "Any", count: 10, mode: "practice" },
+    Boolean(filters),
+  );
 
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [done, setDone] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
+  const [timerStarted, setTimerStarted] = useState(false);
   const scoreRef = useRef(0);
 
   function complete(final: number, total: number) {
@@ -28,7 +32,7 @@ export function QuizGame() {
     setDone(true);
     const scaled = Math.round((final / total) * 10);
     if (scaled >= 7) void confetti({ particleCount: 90, spread: 70, origin: { y: 0.7 } });
-    if (filters.mode === "practice") {
+    if (filters?.mode === "practice") {
       toast.success(`Practice complete: ${final}/${total}`);
       return;
     }
@@ -44,15 +48,16 @@ export function QuizGame() {
   useEffect(() => {
     if (!filters || filters.mode !== "timed" || questions.length === 0 || done) return;
     setTimeLeft(filters.count * 15);
+    setTimerStarted(true);
     const timer = window.setInterval(() => setTimeLeft((left) => Math.max(0, left - 1)), 1000);
     return () => window.clearInterval(timer);
   }, [filters, questions.length, done]);
 
   useEffect(() => {
-    if (filters?.mode === "timed" && timeLeft === 0 && questions.length > 0 && !done) {
+    if (timerStarted && filters?.mode === "timed" && timeLeft === 0 && questions.length > 0 && !done) {
       complete(scoreRef.current, questions.length);
     }
-  }, [timeLeft, filters, questions.length, done]);
+  }, [timeLeft, timerStarted, filters, questions.length, done]);
 
   if (!filters) {
     return <QuizSetup categories={categories} onStart={setFilters} />;
@@ -91,6 +96,7 @@ export function QuizGame() {
     setScore(0);
     scoreRef.current = 0;
     setDone(false);
+    setTimerStarted(false);
   }
 
   if (done) {
