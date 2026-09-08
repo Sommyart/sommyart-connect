@@ -50,8 +50,8 @@ export function ProfilePhotos({ userId, name, avatarPath, coverPath, onChange }:
 
   return (
     <section className="bg-card/85 shadow-card border-border/60 overflow-hidden rounded-3xl border backdrop-blur-xl">
-      <div className="bg-gradient-brand relative h-32 w-full">
-        {coverPath && <Media path={coverPath} alt="Cover photo" className="h-32 w-full object-cover" />}
+      <div className="bg-gradient-brand relative aspect-[16/9] w-full">
+        {coverPath && <Media path={coverPath} alt="Cover photo" className="h-full w-full object-cover" />}
         <div className="absolute top-2 right-2 flex gap-2">
           <Button
             size="sm"
@@ -121,7 +121,6 @@ export function ProfilePhotos({ userId, name, avatarPath, coverPath, onChange }:
         ref={avatarInput}
         type="file"
         accept="image/jpeg,image/png,image/webp"
-        capture="user"
         hidden
         onChange={(e) => void handle("avatar", e.target.files?.[0])}
       />

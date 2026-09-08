@@ -5,6 +5,7 @@ import { AppNav } from "@/components/AppNav";
 import { DailySignIn } from "@/components/DailySignIn";
 import { Logo } from "@/components/Logo";
 import { Avatar } from "@/components/Media";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 import { useMe } from "@/hooks/use-auth";
 import { useCommunityStats, useLeaderboard } from "@/hooks/use-platform";
@@ -45,6 +46,7 @@ function DashboardPage() {
         <Link to="/profile" aria-label="My profile" className="press">
           <Avatar path={profile?.avatar_url} name={profile?.full_name ?? "SC"} size={40} />
         </Link>
+        <ThemeToggle />
       </header>
 
 

@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Brain, Code2, Gamepad2, Grid3X3, Keyboard, Puzzle, Sparkles, Swords, Timer, Trophy, Wrench } from "lucide-react";
 
 import { AppNav } from "@/components/AppNav";
+import { AdminBadge } from "@/components/AdminBadge";
 import { Avatar } from "@/components/Media";
 import { CodeChallenge } from "@/components/games/CodeChallenge";
 import { LogicGame } from "@/components/games/LogicGame";
@@ -13,7 +14,7 @@ import { TicTacToe } from "@/components/games/TicTacToe";
 import { ToolGuess } from "@/components/games/ToolGuess";
 import { Trivia } from "@/components/games/Trivia";
 import { TypingChallenge } from "@/components/games/TypingChallenge";
-import { useMe } from "@/hooks/use-auth";
+import { useAdminIds, useMe } from "@/hooks/use-auth";
 import { useGameLeaderboard, useMyGameStats } from "@/hooks/use-games";
 import { GAMES, type GameKey } from "@/lib/games";
 import { levelFor } from "@/lib/points";
@@ -41,6 +42,7 @@ function GamesPage() {
   const [game, setGame] = useState<GameKey>("quiz");
   const { data: stats } = useMyGameStats(user?.id);
   const { data: top = [] } = useGameLeaderboard(game);
+  const { data: adminIds = new Set<string>() } = useAdminIds(top.map((row) => row.user_id));
   const level = levelFor(profile?.points ?? 0);
   const active = GAMES.find((g) => g.key === game)!;
   const gameIcons = { brain: Brain, grid: Grid3X3, wrench: Wrench, puzzle: Puzzle, swords: Swords, keyboard: Keyboard, code: Code2, timer: Timer } as const;
@@ -114,7 +116,8 @@ function GamesPage() {
               <span className="text-primary w-5 text-center text-sm font-extrabold">{i + 1}</span>
               <Avatar path={row.profiles?.avatar_url} name={row.profiles?.full_name ?? "SC"} size={32} />
               <p className="text-secondary-foreground min-w-0 flex-1 truncate text-sm font-bold">
-                {row.profiles?.full_name ?? "Member"}
+                 <span className="truncate">{row.profiles?.full_name ?? "Member"}</span>
+                 {adminIds.has(row.user_id) && <AdminBadge compact />}
               </p>
               <span className="text-primary text-sm font-extrabold">{row.score}</span>
             </div>

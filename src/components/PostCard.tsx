@@ -28,6 +28,7 @@ import {
   useToggleReaction,
   type Post,
 } from "@/hooks/use-feed";
+import { useAdminIds } from "@/hooks/use-auth";
 
 function timeAgo(iso: string) {
   const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
@@ -57,6 +58,8 @@ export function PostCard({
   const [draft, setDraft] = useState("");
   const [replyTo, setReplyTo] = useState<{ id: string; name: string } | null>(null);
   const comments = usePostComments(open ? post.id : null);
+  const commentAuthorIds = (comments.data ?? []).map((comment) => comment.author_id);
+  const { data: adminIds = new Set<string>() } = useAdminIds([post.author_id, ...commentAuthorIds]);
 
   const liked = post.post_reactions.some((r) => r.user_id === userId);
   const mine = post.author_id === userId;
@@ -118,7 +121,7 @@ export function PostCard({
         <div className="min-w-0 flex-1">
             <p className="text-card-foreground flex items-center gap-1.5 truncate text-sm font-bold">
               <span className="truncate">{post.profiles?.full_name ?? "Member"}</span>
-              {post.profiles?.is_admin && <AdminBadge compact />}
+              {adminIds.has(post.author_id) && <AdminBadge compact />}
             </p>
           <p className="text-muted-foreground truncate text-xs">
             @{post.profiles?.username ?? "member"} • {timeAgo(post.created_at)}
@@ -256,6 +259,7 @@ export function PostCard({
               <CommentRow
                 comment={thread}
                 onReply={() => setReplyTo({ id: thread.id, name: thread.profiles?.username ?? "member" })}
+                isAdmin={adminIds.has(thread.author_id)}
               />
               {thread.replies.length > 0 && (
                 <div className="border-border/60 ml-9 space-y-2 border-l pl-3">
@@ -264,6 +268,7 @@ export function PostCard({
                       key={reply.id}
                       comment={reply}
                       onReply={() => setReplyTo({ id: thread.id, name: reply.profiles?.username ?? "member" })}
+                      isAdmin={adminIds.has(reply.author_id)}
                     />
                   ))}
                 </div>
@@ -307,9 +312,11 @@ export function PostCard({
 function CommentRow({
   comment,
   onReply,
+  isAdmin,
 }: {
-  comment: { id: string; body: string; profiles: { full_name: string; avatar_url: string | null; is_admin?: boolean } | null };
+  comment: { id: string; body: string; author_id: string; profiles: { full_name: string; avatar_url: string | null } | null };
   onReply: () => void;
+  isAdmin: boolean;
 }) {
   return (
     <div className="flex gap-2">
@@ -317,7 +324,7 @@ function CommentRow({
       <div className="bg-secondary min-w-0 flex-1 rounded-2xl px-3 py-2">
         <p className="text-secondary-foreground flex items-center gap-1.5 text-xs font-bold">
           {comment.profiles?.full_name ?? "Member"}
-          {comment.profiles?.is_admin && <AdminBadge compact />}
+          {isAdmin && <AdminBadge compact />}
         </p>
         <RichText text={comment.body} className="text-secondary-foreground text-sm break-words" />
         <button className="press text-muted-foreground mt-1 text-[11px] font-bold" onClick={onReply}>

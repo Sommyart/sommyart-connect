@@ -8,8 +8,11 @@ import {
   adminDeleteContent,
   adminListMembers,
   adminListReports,
+  adminListQuizQuestions,
+  adminDeleteQuizQuestion,
   adminResolveReport,
   adminSaveContent,
+  adminSaveQuizQuestion,
   adminUpdateMember,
 } from "@/lib/admin.functions";
 
@@ -100,5 +103,28 @@ export function useDeleteContent() {
     mutationFn: (input: { table: ContentTable; id: string }) => run({ data: input }),
     onSuccess: (_d, vars) =>
       void queryClient.invalidateQueries({ queryKey: ["admin-content", vars.table] }),
+  });
+}
+
+export function useAdminQuizQuestions(enabled: boolean) {
+  const run = useServerFn(adminListQuizQuestions);
+  return useQuery({ queryKey: ["admin-quiz-questions"], enabled, queryFn: () => run() });
+}
+
+export function useSaveQuizQuestion() {
+  const run = useServerFn(adminSaveQuizQuestion);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { id?: string; category: string; difficulty: "easy" | "medium" | "hard"; question: string; options: string[]; answer: number; is_active?: boolean }) => run({ data: input }),
+    onSuccess: () => void queryClient.invalidateQueries({ queryKey: ["admin-quiz-questions"] }),
+  });
+}
+
+export function useDeleteQuizQuestion() {
+  const run = useServerFn(adminDeleteQuizQuestion);
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => run({ data: { id } }),
+    onSuccess: () => void queryClient.invalidateQueries({ queryKey: ["admin-quiz-questions"] }),
   });
 }

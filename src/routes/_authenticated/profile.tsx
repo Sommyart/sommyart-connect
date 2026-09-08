@@ -15,6 +15,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useIsAdmin, useMe } from "@/hooks/use-auth";
+import { AdminBadge } from "@/components/AdminBadge";
 import { useCheckInStats } from "@/hooks/use-checkin";
 import { supabase } from "@/integrations/supabase/client";
 import { deleteMyAccount, exportMyData, setDeactivated } from "@/lib/account.functions";
@@ -103,7 +104,9 @@ function ProfilePage() {
           </div>
 
           <section className="bg-card/85 shadow-card border-border/60 mt-4 rounded-3xl border p-5 backdrop-blur-xl">
-            <p className="text-card-foreground text-lg font-extrabold">{profile.full_name}</p>
+            <p className="text-card-foreground flex items-center gap-2 text-lg font-extrabold">
+              {profile.full_name} {isAdmin && <AdminBadge />}
+            </p>
             <p className="text-muted-foreground text-sm">@{profile.username}</p>
             <p className="text-primary mt-1 text-xs font-bold">
               <ShieldCheck className="mr-1 inline h-3.5 w-3.5" aria-hidden /> {level.name} • {profile.points} pts

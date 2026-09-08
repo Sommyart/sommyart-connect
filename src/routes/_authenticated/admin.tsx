@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Loader2, ShieldCheck, Trash2 } from "lucide-react";
+import { Flame, Loader2, ShieldCheck, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppNav } from "@/components/AppNav";
@@ -14,10 +14,13 @@ import {
   useAdminContent,
   useAdminMemberAction,
   useAdminMembers,
+  useAdminQuizQuestions,
   useAdminReports,
+  useDeleteQuizQuestion,
   useDeleteContent,
   useResolveReport,
   useSaveContent,
+  useSaveQuizQuestion,
 } from "@/hooks/use-admin";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -38,8 +41,8 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
-type Tab = "overview" | "members" | "moderation" | "content" | "audit";
-const TABS: Tab[] = ["overview", "members", "moderation", "content", "audit"];
+type Tab = "overview" | "members" | "moderation" | "content" | "quiz" | "audit";
+const TABS: Tab[] = ["overview", "members", "moderation", "content", "quiz", "audit"];
 
 function AdminPage() {
   const { user } = useMe();
@@ -91,6 +94,7 @@ function AdminPage() {
       {tab === "members" && <Members />}
       {tab === "moderation" && <Moderation />}
       {tab === "content" && <Content />}
+      {tab === "quiz" && <QuizManager />}
       {tab === "audit" && <Audit />}
 
       <AppNav />
@@ -155,7 +159,7 @@ function Members() {
               <div className="min-w-0 flex-1">
                 <p className="text-secondary-foreground truncate text-sm font-bold">{m.full_name}</p>
                 <p className="text-muted-foreground truncate text-xs">
-                  @{m.username} • {m.points} pts • {m.streak}🔥
+                  @{m.username} • {m.points} pts • <Flame className="inline h-3 w-3" aria-hidden /> {m.streak}
                   {m.suspended ? " • suspended" : ""}
                 </p>
               </div>
@@ -384,6 +388,70 @@ function Audit() {
             </div>
           );
         })}
+      </div>
+    </Card>
+  );
+}
+
+function QuizManager() {
+  const { data: questions = [] } = useAdminQuizQuestions(true);
+  const save = useSaveQuizQuestion();
+  const remove = useDeleteQuizQuestion();
+  const [draft, setDraft] = useState({
+    category: "AI",
+    difficulty: "easy" as "easy" | "medium" | "hard",
+    question: "",
+    options: "",
+    answer: "0",
+  });
+
+  function create() {
+    const options = draft.options.split("|").map((item) => item.trim()).filter(Boolean);
+    const answer = Number(draft.answer);
+    if (options.length < 2 || !draft.question.trim() || !Number.isInteger(answer) || answer < 0 || answer >= options.length) {
+      toast.error("Add a question, options separated by |, and a valid answer number");
+      return;
+    }
+    save.mutate(
+      { category: draft.category.trim(), difficulty: draft.difficulty, question: draft.question.trim(), options, answer },
+      {
+        onSuccess: () => {
+          setDraft({ category: "AI", difficulty: "easy", question: "", options: "", answer: "0" });
+          toast.success("Quiz question added");
+        },
+        onError: (error) => toast.error(error.message),
+      },
+    );
+  }
+
+  return (
+    <Card>
+      <h2 className="text-card-foreground text-lg font-extrabold">Quiz question bank</h2>
+      <p className="text-muted-foreground mt-1 text-xs">Use | between answer options. Answer number starts at 0.</p>
+      <div className="mt-3 space-y-2">
+        <Input className="rounded-2xl" placeholder="Category" aria-label="Quiz category" value={draft.category} onChange={(e) => setDraft({ ...draft, category: e.target.value })} />
+        <select className="bg-secondary text-secondary-foreground h-10 w-full rounded-2xl px-3 text-sm" aria-label="Quiz difficulty" value={draft.difficulty} onChange={(e) => setDraft({ ...draft, difficulty: e.target.value as "easy" | "medium" | "hard" })}>
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
+        <Textarea className="rounded-2xl" rows={2} placeholder="Question" aria-label="Quiz question" value={draft.question} onChange={(e) => setDraft({ ...draft, question: e.target.value })} />
+        <Input className="rounded-2xl" placeholder="Option one | Option two | Option three" aria-label="Quiz options" value={draft.options} onChange={(e) => setDraft({ ...draft, options: e.target.value })} />
+        <Input className="rounded-2xl" type="number" min={0} placeholder="Correct answer number" aria-label="Correct answer number" value={draft.answer} onChange={(e) => setDraft({ ...draft, answer: e.target.value })} />
+        <Button className="press w-full rounded-2xl" onClick={create} disabled={save.isPending}>Add question</Button>
+      </div>
+      <div className="mt-4 space-y-2">
+        {questions.map((question) => (
+          <div key={question.id} className="bg-secondary flex items-start gap-2 rounded-2xl p-3">
+            <div className="min-w-0 flex-1">
+              <p className="text-secondary-foreground text-sm font-semibold">{question.question}</p>
+              <p className="text-muted-foreground mt-1 text-xs">{question.category} • {question.difficulty} • {question.is_active ? "Live" : "Off"}</p>
+            </div>
+            <button aria-label={`Delete quiz question ${question.question}`} className="press text-muted-foreground" onClick={() => remove.mutate(question.id)}>
+              <Trash2 className="h-4 w-4" aria-hidden />
+            </button>
+          </div>
+        ))}
       </div>
     </Card>
   );

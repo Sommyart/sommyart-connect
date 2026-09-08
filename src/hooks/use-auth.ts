@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
 
 import { supabase } from "@/integrations/supabase/client";
 
@@ -20,7 +21,6 @@ export type Profile = {
   suspended: boolean;
   featured: boolean;
   created_at: string;
-  is_admin?: boolean;
 };
 
 export function useSession() {
@@ -79,9 +79,10 @@ export function useProfileByUsername(username: string) {
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async (patch: Partial<Profile> & { id: string }) => {
-      const { id, ...rest } = patch;
-      const { error } = await supabase.from("profiles").update(rest).eq("id", id);
+    mutationFn: async (patch: Partial<Profile> & { id: string; is_admin?: boolean }) => {
+      const { id, is_admin: _ignoredAdminField, ...rest } = patch;
+      const safePatch = rest as Database["public"]["Tables"]["profiles"]["Update"];
+      const { error } = await supabase.from("profiles").update(safePatch).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => void queryClient.invalidateQueries({ queryKey: ["profile"] }),

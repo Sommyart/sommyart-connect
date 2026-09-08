@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { QUIZ_BANK, shuffle, type QuizQuestion } from "@/lib/games";
 
-export type QuizFilters = { category: string; difficulty: string; count: number };
+export type QuizFilters = { category: string; difficulty: string; count: number; mode: "practice" | "timed" };
 
 /** Distinct active categories available in the quiz bank, for the setup screen. */
 export function useQuizCategories() {

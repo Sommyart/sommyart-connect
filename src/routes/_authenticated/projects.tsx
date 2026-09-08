@@ -4,11 +4,12 @@ import { ExternalLink, Heart, Plus, Rocket } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppNav } from "@/components/AppNav";
+import { AdminBadge } from "@/components/AdminBadge";
 import { Avatar } from "@/components/Media";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useMe } from "@/hooks/use-auth";
+import { useAdminIds, useMe } from "@/hooks/use-auth";
 import { useCreateProject, useProjects, useToggleProjectLike } from "@/hooks/use-projects";
 
 export const Route = createFileRoute("/_authenticated/projects")({
@@ -32,6 +33,7 @@ export const Route = createFileRoute("/_authenticated/projects")({
 function ProjectsPage() {
   const { user } = useMe();
   const { data: projects = [], isLoading } = useProjects();
+  const { data: adminIds = new Set<string>() } = useAdminIds(projects.map((project) => project.owner_id));
   const create = useCreateProject();
   const like = useToggleProjectLike();
   const [open, setOpen] = useState(false);
@@ -134,6 +136,7 @@ function ProjectsPage() {
                 <p className="text-muted-foreground truncate text-xs font-semibold">
                   @{project.profiles?.username ?? "member"}
                 </p>
+                {adminIds.has(project.owner_id) && <AdminBadge compact />}
                 {project.featured && (
                   <span className="bg-primary/10 text-primary ml-auto rounded-full px-2 py-0.5 text-[10px] font-bold uppercase">
                     Featured
