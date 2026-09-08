@@ -9,7 +9,7 @@ const PER_QUESTION_SECONDS = 8;
 /** Rapid 10-question trivia round with a per-question countdown timer. */
 export function Trivia() {
   const record = useRecordScore();
-  const { data: questions = [], isFetching } = useQuizBank({ category: "All", difficulty: "Any", count: 10 });
+  const { data: questions = [], isFetching } = useQuizBank({ category: "All", difficulty: "Any", count: 10, mode: "timed" });
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
   const [score, setScore] = useState(0);
