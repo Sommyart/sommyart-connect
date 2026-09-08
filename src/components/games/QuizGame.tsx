@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import confetti from "canvas-confetti";
 import { toast } from "sonner";
 
@@ -7,7 +7,7 @@ import { useRecordScore } from "@/hooks/use-games";
 import { useQuizBank, useQuizCategories, type QuizFilters } from "@/hooks/use-quiz-bank";
 
 const DIFFICULTIES = ["Any", "Easy", "Medium", "Hard"] as const;
-const COUNTS = [5, 10, 20] as const;
+const COUNTS = [10, 20, 50] as const;
 
 /** Setup screen + instant-scoring quiz backed by the quiz_questions bank. */
 export function QuizGame() {
@@ -20,6 +20,39 @@ export function QuizGame() {
   const [picked, setPicked] = useState<number | null>(null);
   const [score, setScore] = useState(0);
   const [done, setDone] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0);
+  const scoreRef = useRef(0);
+
+  function complete(final: number, total: number) {
+    if (done) return;
+    setDone(true);
+    const scaled = Math.round((final / total) * 10);
+    if (scaled >= 7) void confetti({ particleCount: 90, spread: 70, origin: { y: 0.7 } });
+    if (filters.mode === "practice") {
+      toast.success(`Practice complete: ${final}/${total}`);
+      return;
+    }
+    record.mutate(
+      { game: "quiz", score: scaled },
+      {
+        onSuccess: (res) => toast.success(res.points ? `+${res.points} points earned!` : `Scored ${final}/${total}`),
+        onError: (e) => toast.error(e.message),
+      },
+    );
+  }
+
+  useEffect(() => {
+    if (!filters || filters.mode !== "timed" || questions.length === 0 || done) return;
+    setTimeLeft(filters.count * 15);
+    const timer = window.setInterval(() => setTimeLeft((left) => Math.max(0, left - 1)), 1000);
+    return () => window.clearInterval(timer);
+  }, [filters, questions.length, done]);
+
+  useEffect(() => {
+    if (filters?.mode === "timed" && timeLeft === 0 && questions.length > 0 && !done) {
+      complete(scoreRef.current, questions.length);
+    }
+  }, [timeLeft, filters, questions.length, done]);
 
   if (!filters) {
     return <QuizSetup categories={categories} onStart={setFilters} />;
@@ -36,22 +69,14 @@ export function QuizGame() {
     if (picked !== null) return;
     setPicked(option);
     const correct = option === question.answer;
-    if (correct) setScore((s) => s + 1);
+    if (correct) {
+      scoreRef.current += 1;
+      setScore((s) => s + 1);
+    }
 
     setTimeout(() => {
       if (index === total - 1) {
-        const final = score + (correct ? 1 : 0);
-        setDone(true);
-        const scaled = Math.round((final / total) * 10);
-        if (scaled >= 7) void confetti({ particleCount: 90, spread: 70, origin: { y: 0.7 } });
-        record.mutate(
-          { game: "quiz", score: scaled },
-          {
-            onSuccess: (res) =>
-              toast.success(res.points ? `+${res.points} points earned!` : `Scored ${final}/${total}`),
-            onError: (e) => toast.error(e.message),
-          },
-        );
+        complete(scoreRef.current, total);
       } else {
         setIndex((i) => i + 1);
         setPicked(null);
@@ -64,6 +89,7 @@ export function QuizGame() {
     setIndex(0);
     setPicked(null);
     setScore(0);
+    scoreRef.current = 0;
     setDone(false);
   }
 
@@ -71,7 +97,7 @@ export function QuizGame() {
     return (
       <div className="text-center">
         <p className="text-primary text-5xl font-black">
-          {score}/{total}
+           {score}/{total}
         </p>
         <p className="text-muted-foreground mt-1 text-sm">
           {score / total >= 0.7 ? "Great work — points awarded (once a day)." : "Score 70%+ to earn points."}
@@ -87,9 +113,9 @@ export function QuizGame() {
     <div>
       <div className="text-muted-foreground flex items-center justify-between text-xs font-bold">
         <span>
-          Question {index + 1}/{total} • {question.category}
+           Question {index + 1}/{total} • {question.category}
         </span>
-        <span>Score {score}</span>
+         <span>{filters.mode === "timed" ? `${timeLeft}s • ` : "Practice • "}Score {score}</span>
       </div>
       <div className="bg-secondary mt-2 h-1.5 overflow-hidden rounded-full">
         <div className="bg-gradient-brand h-full" style={{ width: `${(index / total) * 100}%` }} />
@@ -131,6 +157,7 @@ function QuizSetup({
   const [category, setCategory] = useState("All");
   const [difficulty, setDifficulty] = useState<(typeof DIFFICULTIES)[number]>("Any");
   const [count, setCount] = useState<(typeof COUNTS)[number]>(10);
+  const [mode, setMode] = useState<"practice" | "timed">("practice");
 
   return (
     <div>
