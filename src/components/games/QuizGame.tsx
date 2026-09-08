@@ -18,6 +18,7 @@ export function QuizGame() {
     filters ?? { category: "All", difficulty: "Any", count: 10, mode: "practice" },
     Boolean(filters),
   );
+  const activeFilters = filters;
 
   const [index, setIndex] = useState(0);
   const [picked, setPicked] = useState<number | null>(null);
@@ -32,7 +33,7 @@ export function QuizGame() {
     setDone(true);
     const scaled = Math.round((final / total) * 10);
     if (scaled >= 7) void confetti({ particleCount: 90, spread: 70, origin: { y: 0.7 } });
-    if (filters?.mode === "practice") {
+    if (activeFilters?.mode === "practice") {
       toast.success(`Practice complete: ${final}/${total}`);
       return;
     }
@@ -46,18 +47,18 @@ export function QuizGame() {
   }
 
   useEffect(() => {
-    if (!filters || filters.mode !== "timed" || questions.length === 0 || done) return;
-    setTimeLeft(filters.count * 15);
+    if (!activeFilters || activeFilters.mode !== "timed" || questions.length === 0 || done) return;
+    setTimeLeft(activeFilters.count * 15);
     setTimerStarted(true);
     const timer = window.setInterval(() => setTimeLeft((left) => Math.max(0, left - 1)), 1000);
     return () => window.clearInterval(timer);
-  }, [filters, questions.length, done]);
+  }, [activeFilters, questions.length, done]);
 
   useEffect(() => {
-    if (timerStarted && filters?.mode === "timed" && timeLeft === 0 && questions.length > 0 && !done) {
+    if (timerStarted && activeFilters?.mode === "timed" && timeLeft === 0 && questions.length > 0 && !done) {
       complete(scoreRef.current, questions.length);
     }
-  }, [timeLeft, timerStarted, filters, questions.length, done]);
+  }, [timeLeft, timerStarted, activeFilters, questions.length, done]);
 
   if (!filters) {
     return <QuizSetup categories={categories} onStart={setFilters} />;

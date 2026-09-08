@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
 
 import { supabase } from "@/integrations/supabase/client";
 
@@ -80,7 +81,8 @@ export function useUpdateProfile() {
   return useMutation({
     mutationFn: async (patch: Partial<Profile> & { id: string; is_admin?: boolean }) => {
       const { id, is_admin: _ignoredAdminField, ...rest } = patch;
-      const { error } = await supabase.from("profiles").update(rest).eq("id", id);
+      const safePatch = rest as Database["public"]["Tables"]["profiles"]["Update"];
+      const { error } = await supabase.from("profiles").update(safePatch).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => void queryClient.invalidateQueries({ queryKey: ["profile"] }),
