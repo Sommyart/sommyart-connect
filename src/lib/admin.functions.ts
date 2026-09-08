@@ -214,3 +214,39 @@ export const adminDeleteContent = createServerFn({ method: "POST" })
     });
     return { ok: true };
   });
+
+export const adminListQuizQuestions = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data, error } = await supabaseAdmin.from("quiz_questions").select("id,category,difficulty,question,options,answer,is_active,created_at").order("created_at", { ascending: false }).limit(200);
+    if (error) throw new Error(error.message);
+    return data ?? [];
+  });
+
+export const adminSaveQuizQuestion = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({
+    id: z.string().uuid().optional(), category: z.string().min(1).max(50), difficulty: z.enum(["easy", "medium", "hard"]),
+    question: z.string().min(5).max(500), options: z.array(z.string().min(1).max(200)).min(2).max(6), answer: z.number().int().min(0).max(5), is_active: z.boolean().default(true),
+  }).refine((value) => value.answer < value.options.length, { message: "Answer must match an option" }).parse(d))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const values = { category: data.category, difficulty: data.difficulty, question: data.question, options: data.options, answer: data.answer, is_active: data.is_active, created_by: context.userId };
+    const result = data.id ? await supabaseAdmin.from("quiz_questions").update(values as never).eq("id", data.id) : await supabaseAdmin.from("quiz_questions").insert(values as never);
+    if (result.error) throw new Error(result.error.message);
+    return { ok: true };
+  });
+
+export const adminDeleteQuizQuestion = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.from("quiz_questions").delete().eq("id", data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
