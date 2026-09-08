@@ -206,7 +206,22 @@ function QuizSetup({
         ))}
       </div>
 
-      <Button className="press mt-5 w-full rounded-2xl" onClick={() => onStart({ category, difficulty, count })}>
+      <p className="text-muted-foreground mt-4 text-xs font-bold uppercase">Mode</p>
+      <div className="mt-2 flex gap-2">
+        {(["practice", "timed"] as const).map((value) => (
+          <button
+            key={value}
+            onClick={() => setMode(value)}
+            className={`press rounded-xl px-3 py-1.5 text-xs font-bold capitalize ${
+              mode === value ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"
+            }`}
+          >
+            {value}
+          </button>
+        ))}
+      </div>
+
+      <Button className="press mt-5 w-full rounded-2xl" onClick={() => onStart({ category, difficulty, count, mode })}>
         Start quiz
       </Button>
     </div>
