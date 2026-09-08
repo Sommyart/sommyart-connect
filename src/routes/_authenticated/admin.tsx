@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { Loader2, ShieldCheck, Trash2 } from "lucide-react";
+import { Flame, Loader2, ShieldCheck, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppNav } from "@/components/AppNav";
@@ -155,7 +155,7 @@ function Members() {
               <div className="min-w-0 flex-1">
                 <p className="text-secondary-foreground truncate text-sm font-bold">{m.full_name}</p>
                 <p className="text-muted-foreground truncate text-xs">
-                  @{m.username} • {m.points} pts • {m.streak}🔥
+                  @{m.username} • {m.points} pts • <Flame className="inline h-3 w-3" aria-hidden /> {m.streak}
                   {m.suspended ? " • suspended" : ""}
                 </p>
               </div>

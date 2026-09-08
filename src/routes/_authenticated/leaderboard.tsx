@@ -3,9 +3,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Flame, Trophy } from "lucide-react";
 
 import { AppNav } from "@/components/AppNav";
+import { AdminBadge } from "@/components/AdminBadge";
 import { Avatar } from "@/components/Media";
 import { Button } from "@/components/ui/button";
-import { useMe } from "@/hooks/use-auth";
+import { useAdminIds, useMe } from "@/hooks/use-auth";
 import { useLeaderboard, type LeaderScope } from "@/hooks/use-platform";
 import { levelFor } from "@/lib/points";
 
@@ -37,6 +38,7 @@ function LeaderboardPage() {
   const { user } = useMe();
   const [scope, setScope] = useState<LeaderScope>("weekly_points");
   const { data: rows = [], isLoading } = useLeaderboard(scope, 50);
+  const { data: adminIds = new Set<string>() } = useAdminIds(rows.map((row) => row.id));
 
   return (
     <main className="mx-auto min-h-dvh w-full max-w-lg px-5 pt-6 pb-32">
@@ -78,9 +80,12 @@ function LeaderboardPage() {
               </span>
               <Avatar path={row.avatar_url} name={row.full_name ?? "SC"} size={40} />
               <div className="min-w-0 flex-1">
-                <p className="text-card-foreground truncate text-sm font-bold">{row.full_name}</p>
+                 <p className="text-card-foreground flex items-center gap-1.5 truncate text-sm font-bold">
+                   <span className="truncate">{row.full_name}</span>
+                   {adminIds.has(row.id) && <AdminBadge compact />}
+                 </p>
                 <p className="text-muted-foreground truncate text-xs">
-                  {level.icon} {level.name} • @{row.username}
+                   {level.name} • @{row.username}
                 </p>
               </div>
               <div className="text-right">

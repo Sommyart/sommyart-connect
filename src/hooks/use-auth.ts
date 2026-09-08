@@ -20,7 +20,6 @@ export type Profile = {
   suspended: boolean;
   featured: boolean;
   created_at: string;
-  is_admin?: boolean;
 };
 
 export function useSession() {
@@ -80,7 +79,7 @@ export function useUpdateProfile() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: async (patch: Partial<Profile> & { id: string }) => {
-      const { id, ...rest } = patch;
+      const { id, is_admin: _ignoredAdminField, ...rest } = patch;
       const { error } = await supabase.from("profiles").update(rest).eq("id", id);
       if (error) throw error;
     },

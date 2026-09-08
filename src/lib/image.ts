@@ -31,11 +31,11 @@ export function validateImageFile(file: File): string | null {
   return null;
 }
 
-/** Crop an image to a 3:1 banner and compress it to a JPEG. */
+/** Crop an image to a 16:9 banner and compress it to a JPEG. */
 export async function cropBannerAndCompress(file: File, width = 1200, quality = 0.82): Promise<Blob> {
   const bitmap = await createImageBitmap(file);
-  const height = Math.round(width / 3);
-  const targetRatio = 3;
+  const height = Math.round(width * 9 / 16);
+  const targetRatio = 16 / 9;
   const srcRatio = bitmap.width / bitmap.height;
   let sw = bitmap.width;
   let sh = bitmap.height;

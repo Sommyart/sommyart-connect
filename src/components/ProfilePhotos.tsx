@@ -121,7 +121,6 @@ export function ProfilePhotos({ userId, name, avatarPath, coverPath, onChange }:
         ref={avatarInput}
         type="file"
         accept="image/jpeg,image/png,image/webp"
-        capture="user"
         hidden
         onChange={(e) => void handle("avatar", e.target.files?.[0])}
       />
