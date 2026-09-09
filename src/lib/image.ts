@@ -20,6 +20,30 @@ export async function cropSquareAndCompress(file: File, size = 512, quality = 0.
   return blob;
 }
 
+export type PixelCrop = { x: number; y: number; width: number; height: number };
+
+/** Crop a selected image area and compress it to a JPEG at a stable output size. */
+export async function cropAreaAndCompress(
+  imageUrl: string,
+  area: PixelCrop,
+  outputWidth: number,
+  outputHeight: number,
+  quality = 0.84,
+): Promise<Blob> {
+  const image = new Image();
+  image.src = imageUrl;
+  await image.decode();
+  const canvas = document.createElement("canvas");
+  canvas.width = outputWidth;
+  canvas.height = outputHeight;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("Could not process image");
+  ctx.drawImage(image, area.x, area.y, area.width, area.height, 0, 0, outputWidth, outputHeight);
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
+  if (!blob) throw new Error("Could not compress image");
+  return blob;
+}
+
 export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 export const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
 

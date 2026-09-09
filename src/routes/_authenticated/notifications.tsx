@@ -57,6 +57,17 @@ function timeAgo(iso: string) {
   return `${Math.round(mins / 1440)}d`;
 }
 
+function notificationTarget(link: string | null) {
+  if (!link) return null;
+  const [path, hash] = link.split("#");
+  if (path === "/feed") return { to: "/feed" as const, hash: hash || undefined };
+  if (path === "/projects") return { to: "/projects" as const };
+  if (path === "/profile") return { to: "/profile" as const };
+  if (path === "/games") return { to: "/games" as const };
+  if (path === "/leaderboard") return { to: "/leaderboard" as const };
+  return { to: "/feed" as const };
+}
+
 function NotificationsPage() {
   const { user } = useMe();
   const navigate = useNavigate();
@@ -157,7 +168,8 @@ function NotificationsPage() {
                   }`}
                   onClick={() => {
                     if (!item.is_read) mark.mutate({ ids: [item.id] });
-                    if (item.link) void navigate({ to: item.link.split("#")[0] || "/feed" });
+                    const target = notificationTarget(item.link);
+                    if (target) void navigate(target);
                   }}
                 >
                   <span className="bg-gradient-brand text-primary-foreground mt-0.5 rounded-xl p-2">
