@@ -3,8 +3,9 @@ import { Camera, Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Media, Avatar } from "@/components/Media";
+import { PhotoCropDialog } from "@/components/PhotoCropDialog";
 import { Button } from "@/components/ui/button";
-import { cropBannerAndCompress, cropSquareAndCompress, validateImageFile } from "@/lib/image";
+import { cropAreaAndCompress, type PixelCrop, validateImageFile } from "@/lib/image";
 import { uploadMedia } from "@/lib/storage";
 
 type Props = {
@@ -19,18 +20,30 @@ export function ProfilePhotos({ userId, name, avatarPath, coverPath, onChange }:
   const avatarInput = useRef<HTMLInputElement>(null);
   const coverInput = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState<"avatar" | "cover" | null>(null);
+  const [pending, setPending] = useState<{ kind: "avatar" | "cover"; url: string } | null>(null);
 
   async function handle(kind: "avatar" | "cover", file: File | undefined) {
     if (!file) return;
     const problem = validateImageFile(file);
     if (problem) return toast.error(problem);
+    setPending({ kind, url: URL.createObjectURL(file) });
+  }
+
+  function closeCrop() {
+    if (pending) URL.revokeObjectURL(pending.url);
+    setPending(null);
+  }
+
+  async function uploadCrop(area: PixelCrop) {
+    if (!pending) return;
+    const kind = pending.kind;
     setBusy(kind);
     try {
-      const blob =
-        kind === "avatar" ? await cropSquareAndCompress(file, 512) : await cropBannerAndCompress(file);
+      const blob = await cropAreaAndCompress(pending.url, area, kind === "avatar" ? 512 : 1200, kind === "avatar" ? 512 : 675);
       const path = await uploadMedia(userId, blob, "jpg");
       await onChange(kind === "avatar" ? { avatar_url: path } : { cover_url: path });
       toast.success(kind === "avatar" ? "Profile photo updated" : "Cover photo updated");
+      closeCrop();
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Upload failed");
     } finally {
@@ -130,6 +143,14 @@ export function ProfilePhotos({ userId, name, avatarPath, coverPath, onChange }:
         accept="image/jpeg,image/png,image/webp"
         hidden
         onChange={(e) => void handle("cover", e.target.files?.[0])}
+      />
+      <PhotoCropDialog
+        key={pending?.url ?? "closed"}
+        imageUrl={pending?.url ?? null}
+        kind={pending?.kind ?? "avatar"}
+        busy={busy !== null}
+        onCancel={closeCrop}
+        onConfirm={(area) => void uploadCrop(area)}
       />
     </section>
   );

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { AppNav } from "@/components/AppNav";
@@ -33,6 +33,12 @@ function FeedPage() {
   const [view, setView] = useState<"all" | "saved">("all");
 
   const visible = view === "saved" ? posts.filter((p) => savedIds.includes(p.id)) : posts;
+
+  useEffect(() => {
+    if (posts.length === 0 || !window.location.hash) return;
+    const id = decodeURIComponent(window.location.hash.slice(1));
+    window.requestAnimationFrame(() => document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "center" }));
+  }, [posts]);
 
   return (
     <main className="mx-auto min-h-dvh w-full max-w-lg px-5 pt-6 pb-32">
