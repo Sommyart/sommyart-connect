@@ -34,7 +34,7 @@ function DashboardPage() {
   const { data: leaders = [] } = useLeaderboard("weekly_points", 5);
 
   return (
-    <main className="mx-auto min-h-dvh w-full max-w-lg px-5 pt-6 pb-32">
+    <main className="mx-auto min-h-dvh w-full max-w-lg px-5 pt-6 pb-32 sm:px-6 md:max-w-3xl md:px-8 md:pt-10 lg:max-w-5xl xl:max-w-6xl">
       <header className="flex items-center gap-3">
         <Logo size={44} className="h-11 w-11" />
         <div className="min-w-0 flex-1">

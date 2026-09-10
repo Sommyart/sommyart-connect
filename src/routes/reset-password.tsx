@@ -45,7 +45,7 @@ function ResetPasswordPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-5 py-10">
+    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-5 py-10 sm:max-w-lg">
       <div className="flex flex-col items-center text-center">
         <Logo size={88} className="h-22 w-22" />
         <h1 className="text-foreground mt-3 text-2xl font-black">Set a new password</h1>

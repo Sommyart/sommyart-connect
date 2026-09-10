@@ -84,7 +84,7 @@ function ProfilePage() {
   const badgeIcons = { footprints: Footprints, flame: Flame, star: Star, crown: Crown, message: MessageCircle, rocket: Rocket, "medal-bronze": Medal, "medal-silver": Medal, "medal-gold": Award } as const;
 
   return (
-    <main className="mx-auto min-h-dvh w-full max-w-lg px-5 pt-6 pb-32">
+    <main className="mx-auto min-h-dvh w-full max-w-lg px-5 pt-6 pb-32 sm:px-6 md:max-w-3xl md:px-8 md:pt-10 lg:max-w-5xl xl:max-w-6xl">
       <h1 className="text-foreground text-2xl font-extrabold">My profile</h1>
 
       {loading && <div className="bg-muted mt-4 h-40 animate-pulse rounded-3xl" />}

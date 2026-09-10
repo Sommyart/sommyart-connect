@@ -59,7 +59,7 @@ function AdminPage() {
 
   if (!isAdmin) {
     return (
-      <main className="mx-auto grid min-h-dvh w-full max-w-lg place-items-center px-5 text-center">
+      <main className="mx-auto grid min-h-dvh w-full max-w-lg place-items-center px-5 text-center md:max-w-3xl">
         <div>
           <ShieldCheck className="text-muted-foreground mx-auto h-8 w-8" aria-hidden />
           <p className="text-foreground mt-3 font-bold">Admins only</p>
@@ -71,7 +71,7 @@ function AdminPage() {
   }
 
   return (
-    <main className="mx-auto min-h-dvh w-full max-w-lg px-5 pt-6 pb-32">
+    <main className="mx-auto min-h-dvh w-full max-w-lg px-5 pt-6 pb-32 sm:px-6 md:max-w-3xl md:px-8 md:pt-10 lg:max-w-5xl xl:max-w-6xl">
       <h1 className="text-foreground flex items-center gap-2 text-2xl font-extrabold">
         <ShieldCheck className="text-primary h-6 w-6" aria-hidden /> Admin console
       </h1>

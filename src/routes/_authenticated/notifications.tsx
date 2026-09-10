@@ -85,7 +85,7 @@ function NotificationsPage() {
   const unread = data.filter((n) => !n.is_read).length;
 
   return (
-    <main className="mx-auto min-h-dvh w-full max-w-lg px-5 pt-6 pb-32">
+    <main className="mx-auto min-h-dvh w-full max-w-lg px-5 pt-6 pb-32 sm:px-6 md:max-w-3xl md:px-8 md:pt-10 lg:max-w-5xl xl:max-w-6xl">
       <div className="flex items-center gap-2">
         <h1 className="text-foreground flex items-center gap-2 text-2xl font-extrabold">
           <Bell className="text-primary h-6 w-6" aria-hidden /> Notifications
