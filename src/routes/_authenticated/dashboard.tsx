@@ -67,7 +67,7 @@ function DashboardPage() {
         <DailySignIn />
       </div>
 
-      <section className="mt-5 grid grid-cols-2 gap-3">
+      <section className="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat icon={Users} label="Members" value={stats?.members ?? 0} />
         <Stat icon={Sparkles} label="Projects" value={stats?.projects ?? 0} />
       </section>

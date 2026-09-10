@@ -71,7 +71,7 @@ function GamesPage() {
         </div>
       </section>
 
-      <div className="mt-4 grid max-h-[420px] grid-cols-2 gap-2 overflow-y-auto pr-0.5">
+      <div className="mt-4 grid max-h-[420px] grid-cols-2 gap-2 overflow-y-auto pr-0.5 md:max-h-none md:grid-cols-3 lg:grid-cols-4 lg:overflow-visible">
         {GAMES.map((g) => (
           <button
             key={g.key}
