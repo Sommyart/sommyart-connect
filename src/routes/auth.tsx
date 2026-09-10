@@ -85,7 +85,7 @@ function AuthPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-5 py-10">
+    <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-5 py-10 sm:max-w-lg">
       <div className="flex flex-col items-center text-center">
         <Logo size={104} className="h-26 w-26 animate-float" />
         <h1 className="text-foreground mt-3 text-2xl font-black tracking-tight">SOMMYART CONNECT</h1>

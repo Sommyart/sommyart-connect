@@ -49,7 +49,7 @@ function GamesPage() {
   const ActiveIcon = gameIcons[active.icon];
 
   return (
-    <main className="mx-auto min-h-dvh w-full max-w-lg px-5 pt-6 pb-32">
+    <main className="mx-auto min-h-dvh w-full max-w-lg px-5 pt-6 pb-32 sm:px-6 md:max-w-3xl md:px-8 md:pt-10 lg:max-w-5xl xl:max-w-6xl">
       <h1 className="text-foreground flex items-center gap-2 text-2xl font-extrabold">
         <Gamepad2 className="text-primary h-6 w-6" aria-hidden /> Game Center
       </h1>
@@ -71,7 +71,7 @@ function GamesPage() {
         </div>
       </section>
 
-      <div className="mt-4 grid max-h-[420px] grid-cols-2 gap-2 overflow-y-auto pr-0.5">
+      <div className="mt-4 grid max-h-[420px] grid-cols-2 gap-2 overflow-y-auto pr-0.5 md:max-h-none md:grid-cols-3 lg:grid-cols-4 lg:overflow-visible">
         {GAMES.map((g) => (
           <button
             key={g.key}

@@ -33,7 +33,7 @@ function WeeklyPage() {
   const trackIcons = { mission_sunday: Target, ai_tool_challenge: Wrench, tech_challenge_tuesday: Rocket, wip_wednesday: FlaskConical, knowledge_exchange: Lightbulb, demo_day: MessageSquare } as const;
 
   return (
-    <main className="mx-auto min-h-dvh w-full max-w-lg px-5 pt-6 pb-32">
+    <main className="mx-auto min-h-dvh w-full max-w-lg px-5 pt-6 pb-32 sm:px-6 md:max-w-3xl md:px-8 md:pt-10 lg:max-w-5xl xl:max-w-6xl">
       <h1 className="text-foreground text-2xl font-extrabold">Weekly activities</h1>
       <p className="text-muted-foreground mt-1 text-sm">
         Build, share, review and demo — every week, together.

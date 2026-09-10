@@ -64,7 +64,7 @@ function ProjectsPage() {
   }
 
   return (
-    <main className="mx-auto min-h-dvh w-full max-w-lg px-5 pt-6 pb-32">
+    <main className="mx-auto min-h-dvh w-full max-w-lg px-5 pt-6 pb-32 sm:px-6 md:max-w-3xl md:px-8 md:pt-10 lg:max-w-5xl xl:max-w-6xl">
       <div className="flex items-center justify-between gap-3">
         <h1 className="text-foreground text-2xl font-extrabold">Projects</h1>
         <Button size="sm" className="press rounded-xl" onClick={() => setOpen((v) => !v)}>

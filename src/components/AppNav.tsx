@@ -20,7 +20,7 @@ export function AppNav() {
 
   return (
     <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center px-3 pb-3">
-      <div className="bg-card/80 shadow-card border-border/60 pointer-events-auto flex w-full max-w-lg items-center justify-around gap-1 rounded-3xl border p-1.5 backdrop-blur-xl">
+      <div className="bg-card/80 shadow-card border-border/60 pointer-events-auto flex w-full max-w-lg items-center justify-around md:max-w-xl gap-1 rounded-3xl border p-1.5 backdrop-blur-xl">
         {items.map(({ to, label, icon: Icon }) => {
           const active = pathname.startsWith(to);
           const badge = to === "/notifications" && unread > 0;
