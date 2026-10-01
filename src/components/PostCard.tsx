@@ -166,7 +166,7 @@ export function PostCard({
 
       {post.media_urls.length > 0 && post.media_type === "video" && (
         <div className="mt-3">
-          <MediaCarousel paths={post.media_urls} />
+          <Media path={post.media_urls[0]} alt="Post video" video className="w-full rounded-xl" />
         </div>
       )}
 
