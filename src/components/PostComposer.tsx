@@ -1,15 +1,17 @@
 import { useRef, useState } from "react";
-import { ImagePlus, Link2, Loader2, Send, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, ImagePlus, Link2, Loader2, Send, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { MentionInput } from "@/components/MentionInput";
 import { useCreatePost } from "@/hooks/use-feed";
 import { compressImage, validateImageFile } from "@/lib/image";
 import { uploadMedia } from "@/lib/storage";
 
-/** Composer for text, up to four images and an optional link. */
+const MAX_IMAGES = 8;
+
+/** Composer for text with mentions/hashtags, multiple images (reorderable), and a link. */
 export function PostComposer({ userId }: { userId: string }) {
   const createPost = useCreatePost();
   const fileInput = useRef<HTMLInputElement>(null);
@@ -23,7 +25,10 @@ export function PostComposer({ userId }: { userId: string }) {
     if (!list) return;
     const next = [...files];
     for (const file of Array.from(list)) {
-      if (next.length >= 4) break;
+      if (next.length >= MAX_IMAGES) {
+        toast.error(`Up to ${MAX_IMAGES} images per post`);
+        break;
+      }
       const problem = validateImageFile(file);
       if (problem) {
         toast.error(problem);
@@ -32,6 +37,19 @@ export function PostComposer({ userId }: { userId: string }) {
       next.push({ file, preview: URL.createObjectURL(file) });
     }
     setFiles(next);
+  }
+
+  function move(from: number, to: number) {
+    if (to < 0 || to >= files.length) return;
+    const next = [...files];
+    const [item] = next.splice(from, 1);
+    next.splice(to, 0, item);
+    setFiles(next);
+  }
+
+  function removeAt(index: number) {
+    URL.revokeObjectURL(files[index].preview);
+    setFiles(files.filter((_, i) => i !== index));
   }
 
   async function publish() {
@@ -64,32 +82,51 @@ export function PostComposer({ userId }: { userId: string }) {
   }
 
   return (
-    <section className="bg-card/85 shadow-card border-border/60 rounded-3xl border p-4 backdrop-blur-xl">
-      <Textarea
-        aria-label="Share an update"
-        rows={3}
-        className="rounded-2xl"
-        placeholder="Share a win, a question, AI art or what you're building…"
+    <section className="bg-card border-border shadow-soft rounded-xl border p-4">
+      <MentionInput
+        ariaLabel="Share an update"
+        multiline
+        rows={4}
+        placeholder="Share a win, a question, AI art or what you're building… use @ to mention and # for topics"
         value={content}
-        onChange={(e) => setContent(e.target.value)}
+        onChange={setContent}
       />
 
       {files.length > 0 && (
-        <div className="mt-3 grid grid-cols-4 gap-2">
+        <div className="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-8">
           {files.map((item, index) => (
-            <div key={item.preview} className="relative">
+            <div key={item.preview} className="group relative">
               <img
                 src={item.preview}
                 alt={`Attachment ${index + 1}`}
-                className="aspect-square w-full rounded-xl object-cover"
+                loading="lazy"
+                className="aspect-square w-full rounded-lg object-cover"
               />
               <button
-                aria-label="Remove image"
+                aria-label={`Remove image ${index + 1}`}
                 className="bg-background/90 absolute -top-1.5 -right-1.5 rounded-full p-1 shadow"
-                onClick={() => setFiles(files.filter((_, i) => i !== index))}
+                onClick={() => removeAt(index)}
               >
                 <X className="h-3.5 w-3.5" aria-hidden />
               </button>
+              {index > 0 && (
+                <button
+                  aria-label={`Move image ${index + 1} earlier`}
+                  className="bg-background/90 absolute bottom-1 left-1 rounded-full p-0.5 opacity-80 shadow"
+                  onClick={() => move(index, index - 1)}
+                >
+                  <ChevronLeft className="h-3.5 w-3.5" aria-hidden />
+                </button>
+              )}
+              {index < files.length - 1 && (
+                <button
+                  aria-label={`Move image ${index + 1} later`}
+                  className="bg-background/90 absolute right-1 bottom-1 rounded-full p-0.5 opacity-80 shadow"
+                  onClick={() => move(index, index + 1)}
+                >
+                  <ChevronRight className="h-3.5 w-3.5" aria-hidden />
+                </button>
+              )}
             </div>
           ))}
         </div>
@@ -97,7 +134,7 @@ export function PostComposer({ userId }: { userId: string }) {
 
       {showLink && (
         <Input
-          className="mt-3 rounded-2xl"
+          className="mt-3 rounded-xl"
           placeholder="https://…"
           value={link}
           onChange={(e) => setLink(e.target.value)}
@@ -121,7 +158,7 @@ export function PostComposer({ userId }: { userId: string }) {
           type="button"
           size="icon"
           variant="secondary"
-          className="press rounded-2xl"
+          className="press rounded-xl"
           aria-label="Add images"
           onClick={() => fileInput.current?.click()}
         >
@@ -131,14 +168,17 @@ export function PostComposer({ userId }: { userId: string }) {
           type="button"
           size="icon"
           variant={showLink ? "default" : "secondary"}
-          className="press rounded-2xl"
+          className="press rounded-xl"
           aria-label="Add link"
           onClick={() => setShowLink((v) => !v)}
         >
           <Link2 className="h-4 w-4" aria-hidden />
         </Button>
+        <span className="text-muted-foreground text-xs font-semibold tabular-nums">
+          {files.length}/{MAX_IMAGES}
+        </span>
         <Button
-          className="press h-11 flex-1 rounded-2xl"
+          className="press ml-auto h-11 flex-1 rounded-xl"
           disabled={busy || (content.trim().length < 3 && files.length === 0)}
           onClick={() => void publish()}
         >

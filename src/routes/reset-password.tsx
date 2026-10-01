@@ -41,7 +41,7 @@ function ResetPasswordPage() {
     setBusy(false);
     if (error) return toast.error(error.message);
     toast.success("Password updated");
-    void navigate({ to: "/dashboard" });
+    void navigate({ to: "/feed" });
   }
 
   return (
