@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Bell, Gamepad2, Home, Rocket, Trophy, Users } from "lucide-react";
+import { Bell, Gamepad2, Home, Newspaper, Rocket, Trophy } from "lucide-react";
 
 import { useMe } from "@/hooks/use-auth";
 import { useUnreadCount } from "@/hooks/use-notifications";
