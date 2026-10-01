@@ -115,7 +115,7 @@ export function PostCard({
   return (
     <article
       id={post.id}
-      className="bg-card/85 shadow-card border-border/60 animate-fade-up rounded-3xl border p-5 backdrop-blur-xl"
+      className="bg-card border-border shadow-soft animate-fade-up rounded-xl border p-4 sm:p-5"
     >
       <header className="flex items-center gap-3">
         <Avatar path={post.profiles?.avatar_url} name={post.profiles?.full_name ?? "SC"} size={40} />
