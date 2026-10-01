@@ -13,7 +13,8 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-import { Media, Avatar } from "@/components/Media";
+import { Avatar } from "@/components/Media";
+import { MediaCarousel } from "@/components/MediaCarousel";
 import { AdminBadge } from "@/components/AdminBadge";
 import { MentionInput, RichText } from "@/components/MentionInput";
 import { Button } from "@/components/ui/button";
@@ -163,19 +164,15 @@ export function PostCard({
         <RichText text={post.content} className="text-card-foreground mt-3 text-sm leading-relaxed" />
       )}
 
-      {post.media_urls.length > 0 && (
-        <div
-          className={`mt-3 grid gap-2 ${post.media_urls.length === 1 ? "grid-cols-1" : "grid-cols-2"}`}
-        >
-          {post.media_urls.map((path) => (
-            <Media
-              key={path}
-              path={path}
-              alt="Post media"
-              video={post.media_type === "video"}
-              className="max-h-80 w-full rounded-2xl object-cover"
-            />
-          ))}
+      {post.media_urls.length > 0 && post.media_type === "video" && (
+        <div className="mt-3">
+          <MediaCarousel paths={post.media_urls} />
+        </div>
+      )}
+
+      {post.media_urls.length > 0 && post.media_type !== "video" && (
+        <div className="mt-3">
+          <MediaCarousel paths={post.media_urls} />
         </div>
       )}
 
