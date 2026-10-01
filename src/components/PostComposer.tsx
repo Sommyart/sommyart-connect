@@ -85,6 +85,8 @@ export function PostComposer({ userId }: { userId: string }) {
     <section className="bg-card border-border shadow-soft rounded-xl border p-4">
       <MentionInput
         ariaLabel="Share an update"
+        multiline
+        rows={4}
         placeholder="Share a win, a question, AI art or what you're building… use @ to mention and # for topics"
         value={content}
         onChange={setContent}
