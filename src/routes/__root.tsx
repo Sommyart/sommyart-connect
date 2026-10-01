@@ -88,7 +88,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "SOMMYART CONNECT: weekly AI build challenges, project showcases and a community of African AI creators.",
       },
-      { name: "theme-color", content: "#FF7A00" },
+      { name: "theme-color", content: "#16A34A" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-title", content: "SOMMYART CONNECT" },
       { name: "apple-mobile-web-app-status-bar-style", content: "default" },

@@ -76,7 +76,7 @@ function AuthPage() {
         });
         if (error) throw error;
       }
-      void navigate({ to: "/dashboard" });
+      void navigate({ to: "/feed" });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Something went wrong");
     } finally {

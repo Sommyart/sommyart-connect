@@ -5,12 +5,12 @@ import { useMe } from "@/hooks/use-auth";
 import { useUnreadCount } from "@/hooks/use-notifications";
 
 const items = [
+  { to: "/feed", label: "Feed", icon: Newspaper },
   { to: "/dashboard", label: "Home", icon: Home },
   { to: "/games", label: "Games", icon: Gamepad2 },
-  { to: "/feed", label: "Feed", icon: Users },
   { to: "/projects", label: "Projects", icon: Rocket },
   { to: "/leaderboard", label: "Ranks", icon: Trophy },
-  { to: "/notifications", label: "Notifications", icon: Bell },
+  { to: "/notifications", label: "Alerts", icon: Bell },
 ] as const;
 
 export function AppNav() {
