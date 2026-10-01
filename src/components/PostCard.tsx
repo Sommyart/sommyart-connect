@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-import { Avatar } from "@/components/Media";
+import { Avatar, Media } from "@/components/Media";
 import { MediaCarousel } from "@/components/MediaCarousel";
 import { AdminBadge } from "@/components/AdminBadge";
 import { MentionInput, RichText } from "@/components/MentionInput";
