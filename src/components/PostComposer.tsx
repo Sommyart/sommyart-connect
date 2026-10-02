@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MentionInput } from "@/components/MentionInput";
 import { useCreatePost } from "@/hooks/use-feed";
+import { useIsAdmin } from "@/hooks/use-auth";
 import { compressImage, validateImageFile } from "@/lib/image";
 import { uploadMedia } from "@/lib/storage";
 
