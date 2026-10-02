@@ -22,6 +22,7 @@ export function MentionInput({
   multiline = false,
   rows = 3,
   className = "",
+  allowAll = false,
 }: {
   value: string;
   onChange: (next: string) => void;
@@ -30,6 +31,8 @@ export function MentionInput({
   multiline?: boolean;
   rows?: number;
   className?: string;
+  /** Admins only: offers "@all" to tag every member. */
+  allowAll?: boolean;
 }) {
   const ref = useRef<HTMLTextAreaElement & HTMLInputElement>(null);
   const [caret, setCaret] = useState(0);
@@ -37,7 +40,7 @@ export function MentionInput({
 
   useEffect(() => setQuery(activeHandle(value, caret)), [value, caret]);
 
-  const { data: people = [] } = useQuery({
+  const { data: found = [] } = useQuery({
     queryKey: ["mention-search", query],
     enabled: Boolean(query && query.length >= 1),
     queryFn: async (): Promise<Suggestion[]> => {
@@ -49,6 +52,10 @@ export function MentionInput({
       return (data ?? []) as Suggestion[];
     },
   });
+  const showAll = allowAll && query !== null && "all".startsWith(query.toLowerCase());
+  const people: Suggestion[] = showAll
+    ? [{ id: "__all__", username: "all", full_name: "Tag all members" }, ...found]
+    : found;
 
   function pick(username: string) {
     const upto = value.slice(0, caret).replace(/@([A-Za-z0-9_.]{1,30})$/, `@${username} `);
