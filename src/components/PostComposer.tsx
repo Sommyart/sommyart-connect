@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import type { User } from "@supabase/supabase-js";
 import { ChevronLeft, ChevronRight, ImagePlus, Link2, Loader2, Send, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -6,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { MentionInput } from "@/components/MentionInput";
 import { useCreatePost } from "@/hooks/use-feed";
+import { useIsAdmin } from "@/hooks/use-auth";
 import { compressImage, validateImageFile } from "@/lib/image";
 import { uploadMedia } from "@/lib/storage";
 
@@ -14,6 +16,7 @@ const MAX_IMAGES = 8;
 /** Composer for text with mentions/hashtags, multiple images (reorderable), and a link. */
 export function PostComposer({ userId }: { userId: string }) {
   const createPost = useCreatePost();
+  const { data: isAdmin = false } = useIsAdmin(userId ? ({ id: userId } as User) : null);
   const fileInput = useRef<HTMLInputElement>(null);
   const [content, setContent] = useState("");
   const [link, setLink] = useState("");
@@ -90,6 +93,7 @@ export function PostComposer({ userId }: { userId: string }) {
         placeholder="Share a win, a question, AI art or what you're building… use @ to mention and # for topics"
         value={content}
         onChange={setContent}
+        allowAll={isAdmin}
       />
 
       {files.length > 0 && (

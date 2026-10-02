@@ -6,6 +6,7 @@ import {
   Linkedin,
   Loader2,
   MessageCircle,
+  Pencil,
   Share2,
   Star,
   Trash2,
@@ -27,9 +28,11 @@ import {
   useReportPost,
   useSavePost,
   useToggleReaction,
+  useEditPost,
   type Post,
 } from "@/hooks/use-feed";
-import { useAdminIds } from "@/hooks/use-auth";
+import { useAdminIds, useIsAdmin } from "@/hooks/use-auth";
+import type { User } from "@supabase/supabase-js";
 
 function timeAgo(iso: string) {
   const mins = Math.round((Date.now() - new Date(iso).getTime()) / 60000);
@@ -53,6 +56,10 @@ export function PostCard({
   const report = useReportPost();
   const remove = useDeletePost();
   const addComment = useAddComment();
+  const edit = useEditPost();
+  const [editing, setEditing] = useState(false);
+  const [editText, setEditText] = useState("");
+  const { data: isAdmin = false } = useIsAdmin(userId ? ({ id: userId } as User) : null);
   const { following, toggle: toggleFollow } = useFollow(userId);
   const [open, setOpen] = useState(false);
   const [showShare, setShowShare] = useState(false);
@@ -149,6 +156,18 @@ export function PostCard({
             <Star className={`h-4 w-4 ${isFollowing ? "fill-primary text-primary" : ""}`} aria-hidden />
           </button>
         )}
+        {mine && !editing && (
+          <button
+            aria-label="Edit post"
+            className="press text-muted-foreground"
+            onClick={() => {
+              setEditText(post.content);
+              setEditing(true);
+            }}
+          >
+            <Pencil className="h-4 w-4" aria-hidden />
+          </button>
+        )}
         {mine && (
           <button
             aria-label="Delete post"
@@ -160,8 +179,45 @@ export function PostCard({
         )}
       </header>
 
-      {post.content && (
-        <RichText text={post.content} className="text-card-foreground mt-3 text-sm leading-relaxed" />
+      {editing ? (
+        <div className="mt-3 space-y-2">
+          <MentionInput
+            ariaLabel="Edit post"
+            multiline
+            rows={4}
+            value={editText}
+            onChange={setEditText}
+            allowAll={isAdmin}
+          />
+          <div className="flex justify-end gap-2">
+            <Button size="sm" variant="secondary" onClick={() => setEditing(false)}>
+              Cancel
+            </Button>
+            <Button
+              size="sm"
+              disabled={edit.isPending || (editText.trim().length < 3 && post.media_urls.length === 0)}
+              onClick={() =>
+                edit.mutate(
+                  { id: post.id, content: editText.trim() },
+                  {
+                    onSuccess: () => {
+                      setEditing(false);
+                      toast.success("Post updated");
+                    },
+                    onError: (e) => toast.error(e.message),
+                  },
+                )
+              }
+            >
+              {edit.isPending && <Loader2 className="mr-1 h-4 w-4 animate-spin" aria-hidden />}
+              Save
+            </Button>
+          </div>
+        </div>
+      ) : (
+        post.content && (
+          <RichText text={post.content} className="text-card-foreground mt-3 text-sm leading-relaxed" />
+        )
       )}
 
       {post.media_urls.length > 0 && post.media_type === "video" && (
