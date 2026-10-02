@@ -93,6 +93,7 @@ export function PostComposer({ userId }: { userId: string }) {
         placeholder="Share a win, a question, AI art or what you're building… use @ to mention and # for topics"
         value={content}
         onChange={setContent}
+        allowAll={isAdmin}
       />
 
       {files.length > 0 && (
