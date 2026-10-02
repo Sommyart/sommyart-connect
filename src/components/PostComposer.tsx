@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import type { User } from "@supabase/supabase-js";
 import { ChevronLeft, ChevronRight, ImagePlus, Link2, Loader2, Send, X } from "lucide-react";
 import { toast } from "sonner";
 
@@ -15,6 +16,7 @@ const MAX_IMAGES = 8;
 /** Composer for text with mentions/hashtags, multiple images (reorderable), and a link. */
 export function PostComposer({ userId }: { userId: string }) {
   const createPost = useCreatePost();
+  const { data: isAdmin = false } = useIsAdmin(userId ? ({ id: userId } as User) : null);
   const fileInput = useRef<HTMLInputElement>(null);
   const [content, setContent] = useState("");
   const [link, setLink] = useState("");
