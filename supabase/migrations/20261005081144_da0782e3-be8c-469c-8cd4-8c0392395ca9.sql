@@ -1,0 +1,2 @@
+REVOKE EXECUTE ON FUNCTION public.is_participant(uuid,uuid), public.is_blocked_between(uuid,uuid), public.ensure_conversation(uuid,uuid), public.start_conversation(uuid), public.on_message_created(), public.mark_conversation_read(uuid), public.my_unread_counts(), public.on_collab_created(), public.respond_collaboration(uuid,boolean), public.admin_messaging_stats() FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.on_message_created(), public.on_collab_created(), public.ensure_conversation(uuid,uuid) FROM authenticated;

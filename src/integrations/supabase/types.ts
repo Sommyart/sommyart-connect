@@ -103,6 +103,42 @@ export type Database = {
           },
         ]
       }
+      blocked_users: {
+        Row: {
+          blocked_id: string
+          blocker_id: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          blocked_id: string
+          blocker_id: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          blocked_id?: string
+          blocker_id?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blocked_users_blocked_id_fkey"
+            columns: ["blocked_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "blocked_users_blocker_id_fkey"
+            columns: ["blocker_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       challenges: {
         Row: {
           ai_tool: string | null
@@ -191,6 +227,146 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      collaboration_requests: {
+        Row: {
+          category: string
+          conversation_id: string | null
+          created_at: string
+          id: string
+          message: string
+          project_id: string | null
+          recipient_id: string
+          sender_id: string
+          status: string
+          topic: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          project_id?: string | null
+          recipient_id: string
+          sender_id: string
+          status?: string
+          topic: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          conversation_id?: string | null
+          created_at?: string
+          id?: string
+          message?: string
+          project_id?: string | null
+          recipient_id?: string
+          sender_id?: string
+          status?: string
+          topic?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "collaboration_requests_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collaboration_requests_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collaboration_requests_recipient_id_fkey"
+            columns: ["recipient_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "collaboration_requests_sender_id_fkey"
+            columns: ["sender_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversation_participants: {
+        Row: {
+          conversation_id: string
+          created_at: string
+          deleted_at: string | null
+          last_read_at: string
+          muted: boolean
+          user_id: string
+        }
+        Insert: {
+          conversation_id: string
+          created_at?: string
+          deleted_at?: string | null
+          last_read_at?: string
+          muted?: boolean
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string
+          deleted_at?: string | null
+          last_read_at?: string
+          muted?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_participants_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversation_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          created_at: string
+          id: string
+          last_message_at: string
+          last_message_preview: string | null
+          last_sender_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_message_at?: string
+          last_message_preview?: string | null
+          last_sender_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_message_at?: string
+          last_message_preview?: string | null
+          last_sender_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       events: {
         Row: {
@@ -400,6 +576,64 @@ export type Database = {
           {
             foreignKeyName: "lessons_presenter_id_fkey"
             columns: ["presenter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          body: string
+          conversation_id: string
+          created_at: string
+          deleted_at: string | null
+          id: string
+          kind: string
+          media_urls: string[]
+          reply_to: string | null
+          sender_id: string
+        }
+        Insert: {
+          body?: string
+          conversation_id: string
+          created_at?: string
+          deleted_at?: string | null
+          id?: string
+          kind?: string
+          media_urls?: string[]
+          reply_to?: string | null
+          sender_id: string
+        }
+        Update: {
+          body?: string
+          conversation_id?: string
+          created_at?: string
+          deleted_at?: string | null
+          id?: string
+          kind?: string
+          media_urls?: string[]
+          reply_to?: string | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_reply_to_fkey"
+            columns: ["reply_to"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey"
+            columns: ["sender_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -710,6 +944,7 @@ export type Database = {
           last_active_date: string | null
           linkedin_url: string | null
           longest_streak: number
+          message_privacy: string
           monthly_points: number
           notify_announcements: boolean
           notify_digest: boolean
@@ -717,6 +952,7 @@ export type Database = {
           occupation: string | null
           phone: string | null
           points: number
+          skills: string[]
           streak: number
           suspended: boolean
           updated_at: string
@@ -739,6 +975,7 @@ export type Database = {
           last_active_date?: string | null
           linkedin_url?: string | null
           longest_streak?: number
+          message_privacy?: string
           monthly_points?: number
           notify_announcements?: boolean
           notify_digest?: boolean
@@ -746,6 +983,7 @@ export type Database = {
           occupation?: string | null
           phone?: string | null
           points?: number
+          skills?: string[]
           streak?: number
           suspended?: boolean
           updated_at?: string
@@ -768,6 +1006,7 @@ export type Database = {
           last_active_date?: string | null
           linkedin_url?: string | null
           longest_streak?: number
+          message_privacy?: string
           monthly_points?: number
           notify_announcements?: boolean
           notify_digest?: boolean
@@ -775,6 +1014,7 @@ export type Database = {
           occupation?: string | null
           phone?: string | null
           points?: number
+          skills?: string[]
           streak?: number
           suspended?: boolean
           updated_at?: string
@@ -1143,6 +1383,54 @@ export type Database = {
           },
         ]
       }
+      user_reports: {
+        Row: {
+          created_at: string
+          details: string | null
+          id: string
+          reason: string
+          reported_id: string
+          reporter_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason: string
+          reported_id: string
+          reporter_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason?: string
+          reported_id?: string
+          reporter_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_reports_reported_id_fkey"
+            columns: ["reported_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_reports_reporter_id_fkey"
+            columns: ["reporter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -1218,12 +1506,27 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_messaging_stats: { Args: never; Returns: Json }
+      ensure_conversation: { Args: { _a: string; _b: string }; Returns: string }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      is_blocked_between: { Args: { _a: string; _b: string }; Returns: boolean }
+      is_participant: {
+        Args: { _conv: string; _uid: string }
+        Returns: boolean
+      }
+      mark_conversation_read: { Args: { _conv: string }; Returns: undefined }
+      my_unread_counts: {
+        Args: never
+        Returns: {
+          conversation_id: string
+          unread: number
+        }[]
       }
       notify_mentions: {
         Args: { _actor: string; _context: string; _link: string; _text: string }
@@ -1239,6 +1542,11 @@ export type Database = {
         }
         Returns: undefined
       }
+      respond_collaboration: {
+        Args: { _accept: boolean; _id: string }
+        Returns: string
+      }
+      start_conversation: { Args: { _other: string }; Returns: string }
       sync_my_admin_role: { Args: never; Returns: boolean }
     }
     Enums: {
