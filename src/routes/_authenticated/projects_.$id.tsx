@@ -93,7 +93,7 @@ function ProjectPage() {
             </div>
             <div className="flex flex-wrap gap-2">
               {user && (
-                <Button variant="outline" onClick={() => like.mutate({ projectId: p.id, userId: user.id, liked: p.project_likes.some((l) => l.user_id === user.id) } as never, { onSuccess: () => void q.refetch() })}>
+                <Button variant="outline" onClick={() => like.mutate({ projectId: p.id, userId: user.id, on: !p.project_likes.some((l) => l.user_id === user.id) }, { onSuccess: () => void q.refetch() })}>
                   <Heart className="mr-1 h-4 w-4" /> Like
                 </Button>
               )}
