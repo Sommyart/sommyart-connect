@@ -19,10 +19,13 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedFeedRouteImport } from './routes/_authenticated/feed'
 import { Route as AuthenticatedGamesRouteImport } from './routes/_authenticated/games'
 import { Route as AuthenticatedLeaderboardRouteImport } from './routes/_authenticated/leaderboard'
+import { Route as AuthenticatedMessagesRouteImport } from './routes/_authenticated/messages'
 import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedProjectsRouteImport } from './routes/_authenticated/projects'
 import { Route as AuthenticatedWeeklyRouteImport } from './routes/_authenticated/weekly'
+import { Route as AuthenticatedMessagesIndexRouteImport } from './routes/_authenticated/messages.index'
+import { Route as AuthenticatedMessagesIdRouteImport } from './routes/_authenticated/messages.$id'
 import { Route as AuthenticatedProjectsIdRouteImport } from './routes/_authenticated/projects_.$id'
 import { Route as AuthenticatedUUsernameRouteImport } from './routes/_authenticated/u.$username'
 
@@ -76,6 +79,11 @@ const AuthenticatedLeaderboardRoute =
     path: '/leaderboard',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedMessagesRoute = AuthenticatedMessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedNotificationsRoute =
   AuthenticatedNotificationsRouteImport.update({
     id: '/notifications',
@@ -96,6 +104,17 @@ const AuthenticatedWeeklyRoute = AuthenticatedWeeklyRouteImport.update({
   id: '/weekly',
   path: '/weekly',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedMessagesIndexRoute =
+  AuthenticatedMessagesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedMessagesRoute,
+  } as any)
+const AuthenticatedMessagesIdRoute = AuthenticatedMessagesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => AuthenticatedMessagesRoute,
 } as any)
 const AuthenticatedProjectsIdRoute = AuthenticatedProjectsIdRouteImport.update({
   id: '/projects_/$id',
@@ -118,12 +137,15 @@ export interface FileRoutesByFullPath {
   '/feed': typeof AuthenticatedFeedRoute
   '/games': typeof AuthenticatedGamesRoute
   '/leaderboard': typeof AuthenticatedLeaderboardRoute
+  '/messages': typeof AuthenticatedMessagesRouteWithChildren
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/weekly': typeof AuthenticatedWeeklyRoute
+  '/messages/$id': typeof AuthenticatedMessagesIdRoute
   '/projects/$id': typeof AuthenticatedProjectsIdRoute
   '/u/$username': typeof AuthenticatedUUsernameRoute
+  '/messages/': typeof AuthenticatedMessagesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -139,8 +161,10 @@ export interface FileRoutesByTo {
   '/profile': typeof AuthenticatedProfileRoute
   '/projects': typeof AuthenticatedProjectsRoute
   '/weekly': typeof AuthenticatedWeeklyRoute
+  '/messages/$id': typeof AuthenticatedMessagesIdRoute
   '/projects/$id': typeof AuthenticatedProjectsIdRoute
   '/u/$username': typeof AuthenticatedUUsernameRoute
+  '/messages': typeof AuthenticatedMessagesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -154,12 +178,15 @@ export interface FileRoutesById {
   '/_authenticated/feed': typeof AuthenticatedFeedRoute
   '/_authenticated/games': typeof AuthenticatedGamesRoute
   '/_authenticated/leaderboard': typeof AuthenticatedLeaderboardRoute
+  '/_authenticated/messages': typeof AuthenticatedMessagesRouteWithChildren
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/projects': typeof AuthenticatedProjectsRoute
   '/_authenticated/weekly': typeof AuthenticatedWeeklyRoute
+  '/_authenticated/messages/$id': typeof AuthenticatedMessagesIdRoute
   '/_authenticated/projects_/$id': typeof AuthenticatedProjectsIdRoute
   '/_authenticated/u/$username': typeof AuthenticatedUUsernameRoute
+  '/_authenticated/messages/': typeof AuthenticatedMessagesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -173,12 +200,15 @@ export interface FileRouteTypes {
     | '/feed'
     | '/games'
     | '/leaderboard'
+    | '/messages'
     | '/notifications'
     | '/profile'
     | '/projects'
     | '/weekly'
+    | '/messages/$id'
     | '/projects/$id'
     | '/u/$username'
+    | '/messages/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -194,8 +224,10 @@ export interface FileRouteTypes {
     | '/profile'
     | '/projects'
     | '/weekly'
+    | '/messages/$id'
     | '/projects/$id'
     | '/u/$username'
+    | '/messages'
   id:
     | '__root__'
     | '/'
@@ -208,12 +240,15 @@ export interface FileRouteTypes {
     | '/_authenticated/feed'
     | '/_authenticated/games'
     | '/_authenticated/leaderboard'
+    | '/_authenticated/messages'
     | '/_authenticated/notifications'
     | '/_authenticated/profile'
     | '/_authenticated/projects'
     | '/_authenticated/weekly'
+    | '/_authenticated/messages/$id'
     | '/_authenticated/projects_/$id'
     | '/_authenticated/u/$username'
+    | '/_authenticated/messages/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -296,6 +331,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLeaderboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/messages': {
+      id: '/_authenticated/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof AuthenticatedMessagesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/notifications': {
       id: '/_authenticated/notifications'
       path: '/notifications'
@@ -324,6 +366,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedWeeklyRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/messages/': {
+      id: '/_authenticated/messages/'
+      path: '/'
+      fullPath: '/messages/'
+      preLoaderRoute: typeof AuthenticatedMessagesIndexRouteImport
+      parentRoute: typeof AuthenticatedMessagesRoute
+    }
+    '/_authenticated/messages/$id': {
+      id: '/_authenticated/messages/$id'
+      path: '/$id'
+      fullPath: '/messages/$id'
+      preLoaderRoute: typeof AuthenticatedMessagesIdRouteImport
+      parentRoute: typeof AuthenticatedMessagesRoute
+    }
     '/_authenticated/projects_/$id': {
       id: '/_authenticated/projects_/$id'
       path: '/projects/$id'
@@ -341,12 +397,28 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedMessagesRouteChildren {
+  AuthenticatedMessagesIdRoute: typeof AuthenticatedMessagesIdRoute
+  AuthenticatedMessagesIndexRoute: typeof AuthenticatedMessagesIndexRoute
+}
+
+const AuthenticatedMessagesRouteChildren: AuthenticatedMessagesRouteChildren = {
+  AuthenticatedMessagesIdRoute: AuthenticatedMessagesIdRoute,
+  AuthenticatedMessagesIndexRoute: AuthenticatedMessagesIndexRoute,
+}
+
+const AuthenticatedMessagesRouteWithChildren =
+  AuthenticatedMessagesRoute._addFileChildren(
+    AuthenticatedMessagesRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedFeedRoute: typeof AuthenticatedFeedRoute
   AuthenticatedGamesRoute: typeof AuthenticatedGamesRoute
   AuthenticatedLeaderboardRoute: typeof AuthenticatedLeaderboardRoute
+  AuthenticatedMessagesRoute: typeof AuthenticatedMessagesRouteWithChildren
   AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedProjectsRoute: typeof AuthenticatedProjectsRoute
@@ -361,6 +433,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedFeedRoute: AuthenticatedFeedRoute,
   AuthenticatedGamesRoute: AuthenticatedGamesRoute,
   AuthenticatedLeaderboardRoute: AuthenticatedLeaderboardRoute,
+  AuthenticatedMessagesRoute: AuthenticatedMessagesRouteWithChildren,
   AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedProjectsRoute: AuthenticatedProjectsRoute,
