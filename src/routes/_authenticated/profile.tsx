@@ -17,6 +17,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useIsAdmin, useMe } from "@/hooks/use-auth";
 import { AdminBadge } from "@/components/AdminBadge";
 import { useCheckInStats } from "@/hooks/use-checkin";
+import { useBlocks } from "@/hooks/use-messages";
+import { Avatar } from "@/components/Media";
 import { supabase } from "@/integrations/supabase/client";
 import { deleteMyAccount, exportMyData, setDeactivated } from "@/lib/account.functions";
 import { badgesFor } from "@/lib/badges";
@@ -143,6 +145,9 @@ function ProfilePage() {
             <ProfileForm profile={profile} onSave={patchProfile} />
           )}
 
+          <Link to="/u/$username" params={{ username: profile.username }} className="press bg-secondary text-secondary-foreground mt-4 block rounded-2xl px-4 py-3 text-center text-sm font-bold">
+            View my public profile
+          </Link>
           {isAdmin && (
             <Link
               to="/admin"
@@ -230,6 +235,7 @@ function ProfileForm({
     github_url: (profile["github_url"] as string) ?? "",
     linkedin_url: (profile["linkedin_url"] as string) ?? "",
     x_url: (profile["x_url"] as string) ?? "",
+    skills: ((profile["skills"] as string[]) ?? []).join(", "),
   });
   const [saving, setSaving] = useState(false);
 
@@ -245,7 +251,8 @@ function ProfileForm({
       return toast.error("Username: 3–20 letters, numbers or underscore");
     setSaving(true);
     try {
-      await onSave({ ...form, username: form.username.trim().toLowerCase() });
+      const skills = form.skills.split(",").map((t) => t.trim()).filter(Boolean).slice(0, 15);
+      await onSave({ ...form, skills, username: form.username.trim().toLowerCase() });
       toast.success("Profile updated");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Could not save");
@@ -270,6 +277,9 @@ function ProfileForm({
       </Row>
       <Row label="Bio" id="bio">
         <Textarea id="bio" rows={3} maxLength={280} className="rounded-2xl" {...field("bio")} />
+      </Row>
+      <Row label="Skills / interests (comma separated)" id="skills">
+        <Input id="skills" placeholder="Prompting, UI/UX, Automation" className="h-11 rounded-2xl" {...field("skills")} />
       </Row>
       <Row label="Website" id="website_url">
         <Input id="website_url" placeholder="https://" className="h-11 rounded-2xl" {...field("website_url")} />
@@ -322,6 +332,8 @@ function AccountPanel({
   const [busy, setBusy] = useState<string | null>(null);
 
   const deactivated = Boolean(profile["deactivated"]);
+  const { blocked, toggle: toggleBlock } = useBlocks(profile["id"] as string);
+  const privacy = (profile["message_privacy"] as string) ?? "everyone";
 
   async function changePassword() {
     if (password.length < 8) return toast.error("Use at least 8 characters");
@@ -408,6 +420,32 @@ function AccountPanel({
               checked={profile[key] !== false}
               onCheckedChange={(next) => void onPatch({ [key]: next })}
             />
+          </div>
+        ))}
+      </section>
+
+      <section className="bg-card/85 shadow-card border-border/60 space-y-3 rounded-3xl border p-5 backdrop-blur-xl">
+        <h2 className="text-card-foreground text-base font-extrabold">Privacy</h2>
+        <p className="text-muted-foreground text-xs font-bold uppercase">Who can message me</p>
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { v: "everyone", l: "Everyone" },
+            { v: "favorites", l: "Members I favorite" },
+            { v: "nobody", l: "Nobody" },
+          ].map(({ v, l }) => (
+            <button key={v} type="button" onClick={() => void onPatch({ message_privacy: v }).then(() => toast.success("Privacy updated"))}
+              className={`rounded-xl border px-2 py-2 text-xs font-bold ${privacy === v ? "border-primary bg-secondary text-primary" : "border-border text-muted-foreground"}`}>
+              {l}
+            </button>
+          ))}
+        </div>
+        <p className="text-muted-foreground pt-2 text-xs font-bold uppercase">Blocked users</p>
+        {blocked.length === 0 && <p className="text-muted-foreground text-sm">You haven't blocked anyone.</p>}
+        {blocked.map((b) => (
+          <div key={b.blocked_id} className="flex items-center gap-3">
+            <Avatar path={b.profiles?.avatar_url} name={b.profiles?.full_name ?? "Member"} size={32} />
+            <span className="min-w-0 flex-1 truncate text-sm font-semibold">{b.profiles?.full_name ?? "Member"}</span>
+            <Button size="sm" variant="outline" onClick={() => toggleBlock.mutate({ targetId: b.blocked_id, block: false }, { onSuccess: () => toast.success("Unblocked") })}>Unblock</Button>
           </div>
         ))}
       </section>
