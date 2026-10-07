@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { Avatar, Media } from "@/components/Media";
 import { MediaCarousel } from "@/components/MediaCarousel";
 import { AdminBadge } from "@/components/AdminBadge";
+import { ProfileLink } from "@/components/ProfileLink";
 import { MentionInput, RichText } from "@/components/MentionInput";
 import { Button } from "@/components/ui/button";
 import {
@@ -125,8 +126,10 @@ export function PostCard({
       className="bg-card border-border shadow-soft animate-fade-up rounded-xl border p-4 sm:p-5"
     >
       <header className="flex items-center gap-3">
-        <Avatar path={post.profiles?.avatar_url} name={post.profiles?.full_name ?? "SC"} size={40} />
-        <div className="min-w-0 flex-1">
+        <ProfileLink username={post.profiles?.username}>
+          <Avatar path={post.profiles?.avatar_url} name={post.profiles?.full_name ?? "SC"} size={40} />
+        </ProfileLink>
+        <ProfileLink username={post.profiles?.username} className="min-w-0 flex-1">
             <p className="text-card-foreground flex items-center gap-1.5 truncate text-sm font-bold">
               <span className="truncate">{post.profiles?.full_name ?? "Member"}</span>
               {adminIds.has(post.author_id) && <AdminBadge compact />}
@@ -134,7 +137,7 @@ export function PostCard({
           <p className="text-muted-foreground truncate text-xs">
             @{post.profiles?.username ?? "member"} • {timeAgo(post.created_at)}
           </p>
-        </div>
+        </ProfileLink>
         {!mine && userId && (
           <button
             aria-label={isFollowing ? "Unfavourite creator" : "Favourite creator"}
@@ -367,16 +370,18 @@ function CommentRow({
   onReply,
   isAdmin,
 }: {
-  comment: { id: string; body: string; author_id: string; profiles: { full_name: string; avatar_url: string | null } | null };
+  comment: { id: string; body: string; author_id: string; profiles: { full_name: string; avatar_url: string | null; username?: string } | null };
   onReply: () => void;
   isAdmin: boolean;
 }) {
   return (
     <div className="flex gap-2">
-      <Avatar path={comment.profiles?.avatar_url} name={comment.profiles?.full_name ?? "SC"} size={28} />
+      <ProfileLink username={comment.profiles?.username}>
+        <Avatar path={comment.profiles?.avatar_url} name={comment.profiles?.full_name ?? "SC"} size={28} />
+      </ProfileLink>
       <div className="bg-secondary min-w-0 flex-1 rounded-2xl px-3 py-2">
         <p className="text-secondary-foreground flex items-center gap-1.5 text-xs font-bold">
-          {comment.profiles?.full_name ?? "Member"}
+          <ProfileLink username={comment.profiles?.username} className="hover:underline">{comment.profiles?.full_name ?? "Member"}</ProfileLink>
           {isAdmin && <AdminBadge compact />}
         </p>
         <RichText text={comment.body} className="text-secondary-foreground text-sm break-words" />
