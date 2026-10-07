@@ -45,6 +45,8 @@ function trendingHashtags(posts: { content: string }[], max = 6) {
 function FeedPage() {
   const { user } = useMe();
   const { data: allPosts = [], isLoading } = useFeed();
+  const { ids: blockedIds } = useBlocks(user?.id);
+  const posts = useMemo(() => allPosts.filter((p) => !blockedIds.has(p.author_id)), [allPosts, blockedIds]);
   const { data: savedIds = [] } = useSavedPostIds(user?.id);
   const { data: leaders = [] } = useLeaderboard("points", 5);
   const [view, setView] = useState<"all" | "saved">("all");
