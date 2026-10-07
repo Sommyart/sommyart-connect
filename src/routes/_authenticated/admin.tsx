@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { createFileRoute } from "@tanstack/react-router";
 import { Flame, Loader2, ShieldCheck, Trash2 } from "lucide-react";
 import { toast } from "sonner";
