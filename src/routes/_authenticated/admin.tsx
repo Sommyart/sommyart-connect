@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { createFileRoute } from "@tanstack/react-router";
 import { Flame, Loader2, ShieldCheck, Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -41,8 +43,8 @@ export const Route = createFileRoute("/_authenticated/admin")({
   component: AdminPage,
 });
 
-type Tab = "overview" | "members" | "moderation" | "content" | "quiz" | "audit";
-const TABS: Tab[] = ["overview", "members", "moderation", "content", "quiz", "audit"];
+type Tab = "overview" | "members" | "moderation" | "safety" | "content" | "quiz" | "audit";
+const TABS: Tab[] = ["overview", "members", "moderation", "safety", "content", "quiz", "audit"];
 
 function AdminPage() {
   const { user } = useMe();
@@ -93,6 +95,7 @@ function AdminPage() {
       {tab === "overview" && <Overview />}
       {tab === "members" && <Members />}
       {tab === "moderation" && <Moderation />}
+      {tab === "safety" && <MessagingSafety />}
       {tab === "content" && <Content />}
       {tab === "quiz" && <QuizManager />}
       {tab === "audit" && <Audit />}
@@ -454,5 +457,94 @@ function QuizManager() {
         ))}
       </div>
     </Card>
+  );
+}
+
+function MessagingSafety() {
+  const stats = useQuery({
+    queryKey: ["admin-messaging-stats"],
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("admin_messaging_stats");
+      if (error) throw error;
+      return data as {
+        conversations: number; messages_today: number; active_today: number; collab_pending: number;
+        collab_total: number; reports_open: number; daily: { day: string; count: number }[];
+      };
+    },
+  });
+  const reports = useQuery({
+    queryKey: ["admin-user-reports"],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("user_reports")
+        .select("*, reporter:reporter_id(username), reported:reported_id(username,full_name)")
+        .order("created_at", { ascending: false })
+        .limit(100);
+      return (data ?? []) as unknown as {
+        id: string; reason: string; details: string | null; status: string; created_at: string;
+        reporter: { username: string } | null; reported: { username: string; full_name: string } | null;
+      }[];
+    },
+  });
+  async function setStatus(id: string, status: string) {
+    const { error } = await supabase.from("user_reports").update({ status, updated_at: new Date().toISOString() }).eq("id", id);
+    if (error) return toast.error(error.message);
+    void reports.refetch();
+    void stats.refetch();
+  }
+  const s = stats.data;
+  const max = Math.max(1, ...(s?.daily ?? []).map((d) => d.count));
+  return (
+    <div className="mt-4 space-y-4">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3">
+        {[
+          ["Total conversations", s?.conversations],
+          ["Daily active messengers", s?.active_today],
+          ["Messages today", s?.messages_today],
+          ["Collab requests", s?.collab_total],
+          ["Pending collabs", s?.collab_pending],
+          ["Open user reports", s?.reports_open],
+        ].map(([label, value]) => (
+          <div key={label as string} className="bg-card border-border rounded-xl border p-4">
+            <p className="text-2xl font-black">{(value as number | undefined) ?? "—"}</p>
+            <p className="text-muted-foreground text-xs font-semibold">{label}</p>
+          </div>
+        ))}
+      </div>
+      <div className="bg-card border-border rounded-xl border p-4">
+        <p className="mb-3 text-sm font-bold">Messages — last 7 days</p>
+        <div className="flex h-28 items-end gap-2">
+          {(s?.daily ?? []).map((d) => (
+            <div key={d.day} className="flex flex-1 flex-col items-center gap-1">
+              <div className="bg-primary w-full rounded-t" style={{ height: `${(d.count / max) * 100}%`, minHeight: 2 }} />
+              <span className="text-muted-foreground text-[10px]">{d.day.slice(5)}</span>
+            </div>
+          ))}
+        </div>
+        <p className="text-muted-foreground mt-2 text-xs">Admins see activity totals only — private message contents are never shown.</p>
+      </div>
+      <div className="bg-card border-border rounded-xl border p-4">
+        <p className="mb-3 text-sm font-bold">User reports</p>
+        {!reports.data?.length && <p className="text-muted-foreground text-sm">No reports.</p>}
+        <div className="space-y-2">
+          {(reports.data ?? []).map((r) => (
+            <div key={r.id} className="border-border rounded-lg border p-3 text-sm">
+              <p className="font-bold">{r.reported?.full_name} <span className="text-muted-foreground font-normal">@{r.reported?.username}</span></p>
+              <p><span className="text-destructive font-semibold">{r.reason}</span> · reported by @{r.reporter?.username} · {new Date(r.created_at).toLocaleDateString()}</p>
+              {r.details && <p className="text-muted-foreground mt-1">{r.details}</p>}
+              <div className="mt-2 flex items-center gap-2">
+                <span className="bg-secondary rounded-full px-2 py-0.5 text-xs font-bold capitalize">{r.status}</span>
+                {r.status === "open" && (
+                  <>
+                    <Button size="sm" onClick={() => void setStatus(r.id, "resolved")}>Resolve</Button>
+                    <Button size="sm" variant="outline" onClick={() => void setStatus(r.id, "dismissed")}>Dismiss</Button>
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }

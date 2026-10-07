@@ -1,8 +1,9 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Bell, Gamepad2, Home, Newspaper, Rocket, Trophy } from "lucide-react";
+import { Bell, Gamepad2, Home, MessageCircle, Newspaper, Rocket, Trophy } from "lucide-react";
 
 import { useMe } from "@/hooks/use-auth";
 import { useUnreadCount } from "@/hooks/use-notifications";
+import { useUnreadMessages } from "@/hooks/use-messages";
 
 const items = [
   { to: "/feed", label: "Feed", icon: Newspaper },
@@ -10,25 +11,28 @@ const items = [
   { to: "/games", label: "Games", icon: Gamepad2 },
   { to: "/projects", label: "Projects", icon: Rocket },
   { to: "/leaderboard", label: "Ranks", icon: Trophy },
+  { to: "/messages", label: "Messages", icon: MessageCircle },
   { to: "/notifications", label: "Alerts", icon: Bell },
 ] as const;
 
 export function AppNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const { user } = useMe();
-  const unread = useUnreadCount(user?.id);
+  const unreadAlerts = useUnreadCount(user?.id);
+  const unreadDms = useUnreadMessages(user?.id);
 
   return (
     <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-40 flex justify-center px-3 pb-3">
       <div className="bg-card/80 shadow-card border-border/60 pointer-events-auto flex w-full max-w-lg items-center justify-around md:max-w-xl gap-1 rounded-3xl border p-1.5 backdrop-blur-xl">
         {items.map(({ to, label, icon: Icon }) => {
           const active = pathname.startsWith(to);
-          const badge = to === "/notifications" && unread > 0;
+          const unread = to === "/notifications" ? unreadAlerts : to === "/messages" ? unreadDms : 0;
+          const badge = unread > 0;
           return (
             <Link
               key={to}
               to={to}
-              className={`press relative flex flex-1 flex-col items-center gap-0.5 rounded-2xl px-1 py-2 text-[10px] font-semibold ${
+              className={`press relative flex flex-1 flex-col items-center gap-0.5 rounded-2xl px-0.5 py-2 text-[9px] sm:text-[10px] font-semibold ${
                 active
                   ? "bg-gradient-brand text-primary-foreground shadow-glow"
                   : "text-muted-foreground"

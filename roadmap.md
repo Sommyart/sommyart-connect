@@ -14,3 +14,11 @@
 - [x] Composer: up to 8 images with reorder/remove, mentions and hashtags
 - [x] Full-width professional feed layout with desktop sidebar (trending, creators, weekly rhythm)
 - [ ] Project attachment in post composer (select one of your projects)
+- [x] Public member profiles (posts, projects, achievements, favourite, share, block, report)
+- [x] Direct messages (realtime, images, replies, mute, delete-for-me, search, unread badge)
+- [x] Message privacy + blocked users settings
+- [x] Collaboration requests (accept opens a DM)
+- [x] Notification deep links to conversations, projects, profiles
+- [x] Project detail page with X / LinkedIn / copy-link sharing
+- [x] Admin Messaging & Safety tab (stats + user reports, no message contents)
+- [ ] Two-account live acceptance test (needs a second test account)
