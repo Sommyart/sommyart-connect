@@ -61,7 +61,14 @@ function notificationTarget(link: string | null) {
   if (!link) return null;
   const [path, hash] = link.split("#");
   if (path === "/feed") return { to: "/feed" as const, hash: hash || undefined };
+  const parts = path.split("?")[0].split("/").filter(Boolean);
+  if (parts[0] === "messages" && parts[1]) return { to: "/messages/$id" as const, params: { id: parts[1] } };
+  if (parts[0] === "messages") return { to: "/messages" as const };
+  if (parts[0] === "u" && parts[1]) return { to: "/u/$username" as const, params: { username: parts[1] } };
+  if (parts[0] === "projects" && parts[1]) return { to: "/projects/$id" as const, params: { id: parts[1] } };
   if (path === "/projects") return { to: "/projects" as const };
+  if (path === "/weekly") return { to: "/weekly" as const };
+  if (path === "/dashboard") return { to: "/dashboard" as const };
   if (path === "/profile") return { to: "/profile" as const };
   if (path === "/games") return { to: "/games" as const };
   if (path === "/leaderboard") return { to: "/leaderboard" as const };
@@ -169,7 +176,7 @@ function NotificationsPage() {
                   onClick={() => {
                     if (!item.is_read) mark.mutate({ ids: [item.id] });
                     const target = notificationTarget(item.link);
-                    if (target) void navigate(target);
+                    if (target) void navigate(target as never);
                   }}
                 >
                   <span className="bg-gradient-brand text-primary-foreground mt-0.5 rounded-xl p-2">

@@ -9,6 +9,7 @@ import { PostComposer } from "@/components/PostComposer";
 import { Button } from "@/components/ui/button";
 import { useMe } from "@/hooks/use-auth";
 import { useFeed, useSavedPostIds } from "@/hooks/use-feed";
+import { useBlocks } from "@/hooks/use-messages";
 import { useLeaderboard } from "@/hooks/use-platform";
 import { WEEKLY_TRACKS } from "@/lib/points";
 
@@ -43,7 +44,7 @@ function trendingHashtags(posts: { content: string }[], max = 6) {
 
 function FeedPage() {
   const { user } = useMe();
-  const { data: posts = [], isLoading } = useFeed();
+  const { data: allPosts = [], isLoading } = useFeed();
   const { data: savedIds = [] } = useSavedPostIds(user?.id);
   const { data: leaders = [] } = useLeaderboard("points", 5);
   const [view, setView] = useState<"all" | "saved">("all");
