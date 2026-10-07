@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { AppNav } from "@/components/AppNav";
 import { AdminBadge } from "@/components/AdminBadge";
 import { Avatar } from "@/components/Media";
+import { ProfileLink } from "@/components/ProfileLink";
+import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -128,6 +130,7 @@ function ProjectsPage() {
               className="bg-card/85 shadow-card border-border/60 animate-fade-up rounded-3xl border p-5 backdrop-blur-xl"
             >
               <header className="flex items-center gap-3">
+                <ProfileLink username={project.profiles?.username} className="flex items-center gap-3">
                 <Avatar
                   path={project.profiles?.avatar_url}
                   name={project.profiles?.full_name ?? "SC"}
@@ -136,6 +139,7 @@ function ProjectsPage() {
                 <p className="text-muted-foreground truncate text-xs font-semibold">
                   @{project.profiles?.username ?? "member"}
                 </p>
+                </ProfileLink>
                 {adminIds.has(project.owner_id) && <AdminBadge compact />}
                 {project.featured && (
                   <span className="bg-primary/10 text-primary ml-auto rounded-full px-2 py-0.5 text-[10px] font-bold uppercase">

@@ -5,6 +5,7 @@ import { Flame, Trophy } from "lucide-react";
 import { AppNav } from "@/components/AppNav";
 import { AdminBadge } from "@/components/AdminBadge";
 import { Avatar } from "@/components/Media";
+import { ProfileLink } from "@/components/ProfileLink";
 import { Button } from "@/components/ui/button";
 import { useAdminIds, useMe } from "@/hooks/use-auth";
 import { useLeaderboard, type LeaderScope } from "@/hooks/use-platform";
@@ -78,6 +79,7 @@ function LeaderboardPage() {
               <span className="text-muted-foreground w-6 text-center text-sm font-extrabold">
                 {i + 1}
               </span>
+              <ProfileLink username={row.username} className="flex min-w-0 flex-1 items-center gap-3">
               <Avatar path={row.avatar_url} name={row.full_name ?? "SC"} size={40} />
               <div className="min-w-0 flex-1">
                  <p className="text-card-foreground flex items-center gap-1.5 truncate text-sm font-bold">
@@ -88,6 +90,7 @@ function LeaderboardPage() {
                    {level.name} • @{row.username}
                 </p>
               </div>
+              </ProfileLink>
               <div className="text-right">
                 <p className="text-primary text-sm font-extrabold">{points} pts</p>
                 <p className="text-muted-foreground flex items-center justify-end gap-1 text-[11px] font-semibold">
