@@ -148,7 +148,7 @@ function ProjectsPage() {
                 )}
               </header>
               <h2 className="text-card-foreground mt-3 flex items-center gap-2 text-base font-extrabold">
-                <Rocket className="text-primary h-4 w-4" aria-hidden /> {project.title}
+                <Rocket className="text-primary h-4 w-4" aria-hidden /> <Link to="/projects/$id" params={{ id: project.id }} className="hover:underline">{project.title}</Link>
               </h2>
               <p className="text-muted-foreground mt-1 text-sm leading-relaxed">
                 {project.description}
