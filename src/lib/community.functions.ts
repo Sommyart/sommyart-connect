@@ -18,6 +18,7 @@ const awardSchema = z.object({
     "help_member",
     "win_weekly_challenge",
     "host_session",
+    "publish_project",
   ]),
   refId: z.string().uuid().optional(),
 });
@@ -45,6 +46,22 @@ export const awardForAction = createServerFn({ method: "POST" })
         .eq("reason", "start_discussion")
         .gte("created_at", new Date(Date.now() - 86_400_000).toISOString());
       if ((paid ?? 0) >= 3) return { awarded: 0 };
+    }
+
+    if (data.reason === "publish_project") {
+      const { count } = await supabaseAdmin
+        .from("projects")
+        .select("id", { count: "exact", head: true })
+        .eq("id", data.refId ?? "")
+        .eq("owner_id", userId);
+      if (!count) throw new Error("Project not found");
+      const { count: paid } = await supabaseAdmin
+        .from("points_log")
+        .select("id", { count: "exact", head: true })
+        .eq("user_id", userId)
+        .eq("reason", "publish_project")
+        .gte("created_at", new Date(Date.now() - 86_400_000).toISOString());
+      if ((paid ?? 0) >= 3) return { awarded: false };
     }
 
     if (data.reason === "complete_challenge") {
