@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import {
-  ArrowLeft, Ban, Bell, BellOff, Check, CheckCheck, Copy, Flag, ImagePlus, Loader2, MoreVertical, Reply, Send, Trash2, X,
+  ArrowLeft, Ban, SmilePlus, Bell, BellOff, Check, CheckCheck, Copy, Flag, ImagePlus, Loader2, MoreVertical, Reply, Send, Trash2, X,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -13,7 +13,7 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Textarea } from "@/components/ui/textarea";
 import { useMe } from "@/hooks/use-auth";
-import { dmMediaUrl, useBlocks, useConversations, useMessages, useSendMessage, type Message } from "@/hooks/use-messages";
+import { dmMediaUrl, REACTIONS, useBlocks, useConversations, useMessages, useReactions, useSendMessage, useTyping, type Message } from "@/hooks/use-messages";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/messages/$id")({
@@ -34,6 +34,10 @@ function Conversation() {
   const [file, setFile] = useState<File | null>(null);
   const [replyTo, setReplyTo] = useState<Message | null>(null);
   const [reportOpen, setReportOpen] = useState(false);
+  const [actionsFor, setActionsFor] = useState<string | null>(null);
+  const pressTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const { reactions, react } = useReactions(id, user?.id);
+  const { otherTyping, ping } = useTyping(id, user?.id);
   const bottomRef = useRef<HTMLDivElement>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const lastId = messages[messages.length - 1]?.id;
@@ -64,6 +68,7 @@ function Conversation() {
   async function submit() {
     if (!text.trim() && !file) return;
     try {
+      ping(false);
       await send.mutateAsync({ body: text, file, replyTo: replyTo?.id });
       setText(""); setFile(null); setReplyTo(null);
     } catch (e) {
@@ -131,9 +136,17 @@ function Conversation() {
             return <p key={m.id} className="bg-secondary text-primary mx-auto w-fit rounded-full px-3 py-1 text-xs font-semibold">{m.body}</p>;
           }
           const read = mine && conv?.otherLastReadAt && conv.otherLastReadAt >= m.created_at;
+          const delivered = mine && (read || (conv?.otherDeliveredAt && conv.otherDeliveredAt >= m.created_at));
+          const mr = reactions.filter((r) => r.message_id === m.id);
+          const counts = REACTIONS.map((e) => ({ e, n: mr.filter((r) => r.emoji === e).length, me: mr.some((r) => r.emoji === e && r.user_id === user?.id) })).filter((x) => x.n);
+          const showActions = actionsFor === m.id;
           const parent = m.reply_to ? byId.get(m.reply_to) : null;
           return (
-            <div key={m.id} className={`group flex ${mine ? "justify-end" : "justify-start"}`}>
+            <div key={m.id} className={`group flex ${mine ? "justify-end" : "justify-start"}`}
+              onTouchStart={() => { clearTimeout(pressTimer.current); pressTimer.current = setTimeout(() => setActionsFor(m.id), 450); }}
+              onTouchEnd={() => clearTimeout(pressTimer.current)}
+              onTouchMove={() => clearTimeout(pressTimer.current)}
+              onContextMenu={(e) => { e.preventDefault(); setActionsFor(m.id); }}>
               <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-sm ${mine ? "bg-primary text-primary-foreground rounded-br-sm" : "bg-secondary text-secondary-foreground rounded-bl-sm"}`}>
                 {parent && <p className="mb-1 border-l-2 border-current/40 pl-2 text-xs opacity-80 line-clamp-2">{parent.body || "Photo"}</p>}
                 {m.deleted_at ? (
@@ -146,11 +159,32 @@ function Conversation() {
                 )}
                 <div className="mt-1 flex items-center justify-end gap-1 text-[10px] opacity-75">
                   {new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                  {mine && (read ? <CheckCheck className="h-3 w-3" aria-label="Read" /> : <Check className="h-3 w-3" aria-label="Delivered" />)}
+                  {mine && (read
+                    ? <CheckCheck className="h-3.5 w-3.5 text-sky-200" strokeWidth={3} aria-label="Seen" />
+                    : delivered
+                      ? <CheckCheck className="h-3.5 w-3.5" aria-label="Delivered" />
+                      : <Check className="h-3.5 w-3.5" aria-label="Sent" />)}
                 </div>
+                {counts.length > 0 && (
+                  <div className="mt-1 flex flex-wrap gap-1">
+                    {counts.map((c) => (
+                      <button key={c.e} type="button" onClick={() => void react(m.id, c.e)}
+                        className={`bg-background text-foreground rounded-full border px-1.5 text-xs ${c.me ? "border-primary" : "border-border"}`}>
+                        {c.e} {c.n > 1 ? c.n : ""}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 {!m.deleted_at && (
-                  <div className="mt-1 hidden gap-2 group-hover:flex group-focus-within:flex">
-                    <button type="button" aria-label="Reply" onClick={() => setReplyTo(m)}><Reply className="h-3.5 w-3.5" /></button>
+                  <div className={`mt-1 items-center gap-2 ${showActions ? "flex" : "hidden group-hover:flex group-focus-within:flex"}`}>
+                    <span className="bg-background text-foreground flex gap-0.5 rounded-full border px-1 py-0.5 shadow-sm">
+                      <SmilePlus className="text-muted-foreground mx-0.5 h-3.5 w-3.5 self-center" aria-hidden />
+                      {REACTIONS.map((e) => (
+                        <button key={e} type="button" aria-label={`React ${e}`} className="press px-0.5 text-sm leading-none"
+                          onClick={() => { void react(m.id, e); setActionsFor(null); }}>{e}</button>
+                      ))}
+                    </span>
+                    <button type="button" aria-label="Reply" onClick={() => { setReplyTo(m); setActionsFor(null); }}><Reply className="h-3.5 w-3.5" /></button>
                     {m.body && <button type="button" aria-label="Copy" onClick={() => void navigator.clipboard.writeText(m.body).then(() => toast.success("Copied"))}><Copy className="h-3.5 w-3.5" /></button>}
                     {mine && <button type="button" aria-label="Delete" onClick={() => void deleteMessage(m)}><Trash2 className="h-3.5 w-3.5" /></button>}
                   </div>
@@ -159,13 +193,24 @@ function Conversation() {
             </div>
           );
         })}
+        {otherTyping && (
+          <div className="flex justify-start">
+            <div className="bg-secondary text-muted-foreground flex items-center gap-1 rounded-2xl rounded-bl-sm px-3 py-2 text-xs">
+              <span className="sr-only">{other?.full_name} is typing</span>
+              <span className="bg-muted-foreground h-1.5 w-1.5 animate-bounce rounded-full" />
+              <span className="bg-muted-foreground h-1.5 w-1.5 animate-bounce rounded-full [animation-delay:150ms]" />
+              <span className="bg-muted-foreground h-1.5 w-1.5 animate-bounce rounded-full [animation-delay:300ms]" />
+              <span className="ml-1">typing…</span>
+            </div>
+          </div>
+        )}
         <div ref={bottomRef} />
       </div>
 
       <footer className="border-border bg-card border-t p-2">
         {replyTo && (
           <div className="bg-secondary mb-2 flex items-center justify-between rounded-lg px-3 py-1.5 text-xs">
-            <span className="truncate">Replying to: {replyTo.body || "Photo"}</span>
+            <span className="border-primary min-w-0 truncate border-l-2 pl-2"><b>{replyTo.sender_id === user?.id ? "You" : other?.full_name}</b> · {replyTo.body || "Photo"}</span>
             <button type="button" onClick={() => setReplyTo(null)} aria-label="Cancel reply"><X className="h-4 w-4" /></button>
           </div>
         )}
@@ -184,7 +229,8 @@ function Conversation() {
             <Textarea
               rows={1}
               value={text}
-              onChange={(e) => setText(e.target.value)}
+              onChange={(e) => { setText(e.target.value); if (e.target.value) ping(); }}
+              onBlur={() => ping(false)}
               onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); void submit(); } }}
               placeholder="Write a message"
               className="max-h-32 min-h-10 flex-1 resize-none"
