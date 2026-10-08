@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { BellOff, Check, Handshake, Search, X } from "lucide-react";
+import { BellOff, Check, Handshake, Loader2, PenSquare, Search, X } from "lucide-react";
 import { toast } from "sonner";
 
 import { AppNav } from "@/components/AppNav";
@@ -9,7 +9,8 @@ import { Avatar } from "@/components/Media";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useMe } from "@/hooks/use-auth";
-import { useConversations, usePendingCollabs } from "@/hooks/use-messages";
+import { startConversation, useConversations, useMemberSearch, usePendingCollabs, type MiniProfile } from "@/hooks/use-messages";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/_authenticated/messages")({
@@ -42,6 +43,21 @@ function MessagesLayout() {
   const activeId = inConversation ? pathname.split("/")[2] : null;
   const { data: convs = [], isLoading } = useConversations(user?.id);
   const [term, setTerm] = useState("");
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const navigate = useNavigate();
+  const people = useMemberSearch(term.trim());
+  const [opening, setOpening] = useState<string | null>(null);
+  async function openChat(p: MiniProfile) {
+    setOpening(p.id);
+    try {
+      const existing = convs.find((c) => c.other?.id === p.id);
+      const id = existing?.id ?? (await startConversation(p.id));
+      setTerm(""); setPickerOpen(false);
+      void navigate({ to: "/messages/$id", params: { id } });
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not open chat");
+    } finally { setOpening(null); }
+  }
 
   const contentHits = useQuery({
     queryKey: ["dm-search", term],
@@ -69,7 +85,10 @@ function MessagesLayout() {
       <div className="bg-card border-border flex min-h-0 flex-1 overflow-hidden md:rounded-xl md:border">
         <aside className={`border-border flex w-full min-h-0 flex-col md:w-80 md:border-r ${inConversation ? "hidden md:flex" : "flex"}`}>
           <div className="border-border space-y-3 border-b p-4">
-            <h1 className="text-foreground text-xl font-extrabold">Messages</h1>
+            <div className="flex items-center justify-between">
+              <h1 className="text-foreground text-xl font-extrabold">Messages</h1>
+              <Button size="sm" onClick={() => setPickerOpen(true)}><PenSquare className="mr-1 h-4 w-4" /> New message</Button>
+            </div>
             <div className="relative">
               <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
               <Input value={term} onChange={(e) => setTerm(e.target.value)} placeholder="Search people or messages" className="pl-9" />
@@ -78,9 +97,10 @@ function MessagesLayout() {
           <div className="min-h-0 flex-1 overflow-y-auto">
             <CollabRequests userId={user?.id} />
             {isLoading && <div className="bg-muted m-4 h-16 animate-pulse rounded-lg" />}
-            {!isLoading && !filtered.length && (
+            {term.trim().length >= 2 && filtered.length > 0 && <p className="text-muted-foreground px-4 pt-3 text-xs font-bold uppercase">Conversations</p>}
+            {!isLoading && !filtered.length && !term.trim() && (
               <p className="text-muted-foreground p-6 text-center text-sm">
-                {term ? "No matching conversations." : "No conversations yet. Open a member's profile and tap Send Message."}
+                {"No conversations yet. Open a member's profile and tap Send Message."}
               </p>
             )}
             {filtered.map((c) => (
@@ -108,14 +128,68 @@ function MessagesLayout() {
                 </div>
               </Link>
             ))}
+            {term.trim().length >= 1 && (
+              <PeopleList people={(people.data ?? []).filter((p) => !filtered.some((c) => c.other?.id === p.id))} loading={people.isLoading} opening={opening} onPick={openChat} empty={!filtered.length} />
+            )}
           </div>
         </aside>
+        <Dialog open={pickerOpen} onOpenChange={setPickerOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader><DialogTitle>New message</DialogTitle></DialogHeader>
+            <MemberPicker onPick={openChat} opening={opening} />
+          </DialogContent>
+        </Dialog>
         <section className={`min-h-0 flex-1 flex-col ${inConversation ? "flex" : "hidden md:flex"}`}>
           <Outlet />
         </section>
       </div>
       <AppNav />
     </main>
+  );
+}
+
+function PeopleRow({ p, onPick, opening }: { p: MiniProfile; onPick: (p: MiniProfile) => void; opening: string | null }) {
+  return (
+    <button type="button" onClick={() => onPick(p)} disabled={opening === p.id}
+      className="hover:bg-secondary/60 flex w-full items-center gap-3 px-4 py-2.5 text-left">
+      <Avatar path={p.avatar_url} name={p.full_name} size={40} />
+      <div className="min-w-0 flex-1">
+        <p className="text-foreground truncate text-sm font-semibold">{p.full_name}</p>
+        <p className="text-muted-foreground truncate text-xs">@{p.username}</p>
+      </div>
+      {opening === p.id && <Loader2 className="text-muted-foreground h-4 w-4 animate-spin" />}
+    </button>
+  );
+}
+
+function PeopleList({ people, loading, opening, onPick, empty }: { people: MiniProfile[]; loading: boolean; opening: string | null; onPick: (p: MiniProfile) => void; empty: boolean }) {
+  return (
+    <div className="pb-2">
+      <p className="text-muted-foreground px-4 pt-3 pb-1 text-xs font-bold uppercase">People</p>
+      {loading && <Loader2 className="text-muted-foreground mx-auto my-3 h-4 w-4 animate-spin" />}
+      {!loading && !people.length && (
+        <p className="text-muted-foreground px-4 py-2 text-sm">{empty ? "No members or conversations match your search." : "No other members match."}</p>
+      )}
+      {people.map((p) => <PeopleRow key={p.id} p={p} onPick={onPick} opening={opening} />)}
+    </div>
+  );
+}
+
+function MemberPicker({ onPick, opening }: { onPick: (p: MiniProfile) => void; opening: string | null }) {
+  const [q, setQ] = useState("");
+  const { data = [], isLoading } = useMemberSearch(q.trim());
+  return (
+    <div className="space-y-2">
+      <div className="relative">
+        <Search className="text-muted-foreground absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+        <Input autoFocus value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search members by name or username" className="pl-9" />
+      </div>
+      <div className="-mx-4 max-h-80 overflow-y-auto">
+        {isLoading && <Loader2 className="text-muted-foreground mx-auto my-4 h-5 w-5 animate-spin" />}
+        {!isLoading && !data.length && <p className="text-muted-foreground px-4 py-4 text-center text-sm">No members found.</p>}
+        {data.map((p) => <PeopleRow key={p.id} p={p} onPick={onPick} opening={opening} />)}
+      </div>
+    </div>
   );
 }
 

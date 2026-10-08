@@ -160,9 +160,9 @@ function Conversation() {
                 <div className="mt-1 flex items-center justify-end gap-1 text-[10px] opacity-75">
                   {new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                   {mine && (read
-                    ? <CheckCheck className="h-3.5 w-3.5 text-sky-200" strokeWidth={3} aria-label="Seen" />
+                    ? <CheckCheck className="h-3.5 w-3.5" strokeWidth={3} aria-label="Seen" />
                     : delivered
-                      ? <CheckCheck className="h-3.5 w-3.5" aria-label="Delivered" />
+                      ? <CheckCheck className="h-3.5 w-3.5 opacity-60" aria-label="Delivered" />
                       : <Check className="h-3.5 w-3.5" aria-label="Sent" />)}
                 </div>
                 {counts.length > 0 && (
