@@ -304,6 +304,7 @@ export type Database = {
           conversation_id: string
           created_at: string
           deleted_at: string | null
+          last_delivered_at: string
           last_read_at: string
           muted: boolean
           user_id: string
@@ -312,6 +313,7 @@ export type Database = {
           conversation_id: string
           created_at?: string
           deleted_at?: string | null
+          last_delivered_at?: string
           last_read_at?: string
           muted?: boolean
           user_id: string
@@ -320,6 +322,7 @@ export type Database = {
           conversation_id?: string
           created_at?: string
           deleted_at?: string | null
+          last_delivered_at?: string
           last_read_at?: string
           muted?: boolean
           user_id?: string
@@ -576,6 +579,55 @@ export type Database = {
           {
             foreignKeyName: "lessons_presenter_id_fkey"
             columns: ["presenter_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      message_reactions: {
+        Row: {
+          conversation_id: string
+          created_at: string
+          emoji: string
+          id: string
+          message_id: string
+          user_id: string
+        }
+        Insert: {
+          conversation_id: string
+          created_at?: string
+          emoji: string
+          id?: string
+          message_id: string
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string
+          emoji?: string
+          id?: string
+          message_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_reactions_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_reactions_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "messages"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_reactions_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -1521,6 +1573,7 @@ export type Database = {
         Returns: boolean
       }
       mark_conversation_read: { Args: { _conv: string }; Returns: undefined }
+      mark_messages_delivered: { Args: never; Returns: undefined }
       my_unread_counts: {
         Args: never
         Returns: {
@@ -1545,6 +1598,15 @@ export type Database = {
       respond_collaboration: {
         Args: { _accept: boolean; _id: string }
         Returns: string
+      }
+      search_members: {
+        Args: { _q: string }
+        Returns: {
+          avatar_url: string
+          full_name: string
+          id: string
+          username: string
+        }[]
       }
       start_conversation: { Args: { _other: string }; Returns: string }
       sync_my_admin_role: { Args: never; Returns: boolean }
