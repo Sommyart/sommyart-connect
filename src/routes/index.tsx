@@ -29,7 +29,7 @@ export const Route = createFileRoute("/")({
 });
 
 function Landing() {
-  const trackIcons = { mission_sunday: Target, ai_tool_challenge: Wrench, tech_challenge_tuesday: Rocket, wip_wednesday: FlaskConical, knowledge_exchange: Lightbulb, demo_day: MessageSquare } as const;
+  const trackIcons = { mission_sunday: Target, ai_tool_challenge: Wrench, tech_challenge_tuesday: Rocket, wip_wednesday: FlaskConical, knowledge_exchange: Lightbulb, demo_day: MessageSquare, community_showcase: Users } as const;
   return (
     <main className="mx-auto flex min-h-dvh w-full max-w-md flex-col justify-center px-6 py-12 sm:max-w-xl md:max-w-2xl">
       <div className="absolute top-5 right-5">

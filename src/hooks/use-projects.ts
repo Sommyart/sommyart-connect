@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { supabase } from "@/integrations/supabase/client";
+import { awardForAction } from "@/lib/community.functions";
 
 export type Project = {
   id: string;
@@ -66,17 +67,27 @@ export function useCreateProject() {
       link_url?: string | null;
       technologies?: string[];
     }) => {
-      const { error } = await supabase.from("projects").insert({
+      const { data, error } = await supabase.from("projects").insert({
         owner_id: input.owner_id,
         title: input.title,
         description: input.description,
         cover_url: input.cover_url ?? null,
         link_url: input.link_url ?? null,
         technologies: input.technologies ?? [],
-      });
+      }).select("id").single();
       if (error) throw error;
+      let awarded = false;
+      try {
+        const res = await awardForAction({ data: { reason: "publish_project", refId: data.id } });
+        awarded = Boolean(res?.awarded);
+      } catch { /* points are best-effort; project is already saved */ }
+      return { id: data.id as string, awarded };
     },
-    onSuccess: () => void queryClient.invalidateQueries({ queryKey: ["projects"] }),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["projects"] });
+      void queryClient.invalidateQueries({ queryKey: ["me"] });
+      void queryClient.invalidateQueries({ queryKey: ["profile"] });
+    },
   });
 }
 

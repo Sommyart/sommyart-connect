@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { ExternalLink, Heart, Plus, Rocket } from "lucide-react";
+import { ExternalLink, FolderPlus, Heart, Plus, Rocket } from "lucide-react";
+import { POINT_RULES } from "@/lib/points";
 import { toast } from "sonner";
 
 import { AppNav } from "@/components/AppNav";
@@ -55,10 +56,10 @@ function ProjectsPage() {
           .filter(Boolean),
       },
       {
-        onSuccess: () => {
+        onSuccess: (res) => {
           setForm({ title: "", description: "", link_url: "", technologies: "" });
           setOpen(false);
-          toast.success("Project published");
+          toast.success(res?.awarded ? `Project published · +${POINT_RULES.publish_project} points` : "Project published");
         },
         onError: (error) => toast.error(error.message),
       },
@@ -118,9 +119,19 @@ function ProjectsPage() {
       <div className="mt-5 space-y-3">
         {isLoading && <div className="bg-muted h-32 animate-pulse rounded-3xl" />}
         {!isLoading && projects.length === 0 && (
-          <p className="text-muted-foreground text-sm">
-            No projects yet — be the first to showcase your build.
-          </p>
+          <div className="bg-card border-border flex flex-col items-center rounded-xl border px-6 py-10 text-center">
+            <div className="bg-primary/10 text-primary flex h-14 w-14 items-center justify-center rounded-full">
+              <FolderPlus className="h-7 w-7" aria-hidden />
+            </div>
+            <h2 className="text-foreground mt-4 text-lg font-extrabold">Showcase what you've built</h2>
+            <p className="text-muted-foreground mt-1 max-w-sm text-sm">
+              Share an AI or tech project — a tool, app, design or workflow. Add a short description, a live link and the tech you used.
+            </p>
+            <Button className="mt-5 rounded-xl" onClick={() => setOpen(true)}>
+              <Plus className="mr-1 h-4 w-4" aria-hidden /> Add your first project
+            </Button>
+            <p className="text-primary mt-2 text-xs font-semibold">Earn +{POINT_RULES.publish_project} points for each project you publish</p>
+          </div>
         )}
         {projects.map((project) => {
           const liked = project.project_likes.some((l) => l.user_id === user?.id);

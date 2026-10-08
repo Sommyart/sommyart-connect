@@ -8,6 +8,13 @@
       "when": 1791418525770,
       "tag": "0000_restrict_community_reads_to_members",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791464341516,
+      "tag": "0001_dm_reactions_delivery",
+      "breakpoints": true
     }
   ]
 }

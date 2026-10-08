@@ -6,6 +6,7 @@ export const POINT_RULES = {
   help_member: 15,
   win_weekly_challenge: 50,
   host_session: 100,
+  publish_project: 15,
 } as const;
 
 export type PointReason = keyof typeof POINT_RULES;
@@ -16,6 +17,7 @@ export const POINT_LABELS: Record<PointReason, string> = {
   help_member: "Help another member",
   win_weekly_challenge: "Win a weekly challenge",
   host_session: "Host a session",
+  publish_project: "Publish a project",
 };
 
 export type LevelDef = { min: number; name: string; icon: string };
@@ -95,6 +97,15 @@ export const WEEKLY_TRACKS = [
     tagline: "Showcase and vote",
     prompt: "Show what you finished this week.",
     icon: "flag",
+  },
+  {
+    day: 6,
+    key: "community_showcase",
+    label: "Saturday",
+    title: "Community Showcase",
+    tagline: "Celebrate the week's best work",
+    prompt: "Browse the week's highlights, cheer on others and reflect on what you learned.",
+    icon: "users",
   },
 ] as const;
 
