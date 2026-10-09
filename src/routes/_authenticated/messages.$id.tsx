@@ -101,7 +101,7 @@ function Conversation() {
           <Avatar path={other?.avatar_url} name={other?.full_name ?? "Member"} size={38} />
           <div className="min-w-0">
             <p className="truncate text-sm font-bold">{other?.full_name ?? "…"}</p>
-            <p className="text-muted-foreground truncate text-xs">@{other?.username}</p>
+            <p className={`truncate text-xs ${otherTyping ? "text-primary font-semibold" : "text-muted-foreground"}`}>{otherTyping ? "typing…" : `@${other?.username ?? ""}`}</p>
           </div>
         </ProfileLink>
         <DropdownMenu>

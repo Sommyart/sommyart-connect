@@ -123,12 +123,12 @@ function ProjectsPage() {
             <div className="bg-primary/10 text-primary flex h-14 w-14 items-center justify-center rounded-full">
               <FolderPlus className="h-7 w-7" aria-hidden />
             </div>
-            <h2 className="text-foreground mt-4 text-lg font-extrabold">Showcase what you've built</h2>
+            <h2 className="text-foreground mt-4 text-lg font-extrabold">Showcase what you're building and earn points</h2>
             <p className="text-muted-foreground mt-1 max-w-sm text-sm">
               Share an AI or tech project — a tool, app, design or workflow. Add a short description, a live link and the tech you used.
             </p>
             <Button className="mt-5 rounded-xl" onClick={() => setOpen(true)}>
-              <Plus className="mr-1 h-4 w-4" aria-hidden /> Add your first project
+              <Plus className="mr-1 h-4 w-4" aria-hidden /> Add your first project · +{POINT_RULES.publish_project} pts
             </Button>
             <p className="text-primary mt-2 text-xs font-semibold">Earn +{POINT_RULES.publish_project} points for each project you publish</p>
           </div>
