@@ -22,3 +22,9 @@
 - [x] Project detail page with X / LinkedIn / copy-link sharing
 - [x] Admin Messaging & Safety tab (stats + user reports, no message contents)
 - [ ] Two-account live acceptance test (needs a second test account)
+
+## Messaging & polish update
+- [x] Live inbox previews/timestamps, member search + New message picker
+- [x] Sent/delivered/seen ticks, typing indicator, reactions, quoted replies
+- [x] Landing tile popups, Saturday Community Showcase, projects empty state + 15 pts
+- [ ] Two-account live acceptance test (needs a second test account signed in)

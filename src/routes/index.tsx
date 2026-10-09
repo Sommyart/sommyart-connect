@@ -5,6 +5,7 @@ import { AppFooter } from "@/components/AppFooter";
 import { Logo } from "@/components/Logo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { WEEKLY_TRACKS } from "@/lib/points";
 
 export const Route = createFileRoute("/")({
@@ -59,9 +60,7 @@ function Landing() {
         </Button>
 
         <div className="mt-6 grid grid-cols-3 gap-2">
-          <Perk icon={Sparkles} label="Weekly challenges" />
-          <Perk icon={Rocket} label="Project portfolio" />
-          <Perk icon={Users} label="Creator community" />
+          {PERKS.map((p) => <Perk key={p.label} {...p} />)}
         </div>
 
         <section className="bg-card/85 shadow-card border-border/60 mt-6 rounded-3xl border p-5 text-left backdrop-blur-xl">
@@ -84,11 +83,28 @@ function Landing() {
   );
 }
 
-function Perk({ icon: Icon, label }: { icon: typeof Users; label: string }) {
+const PERKS = [
+  { icon: Sparkles, label: "Weekly challenges", text: "Every day of the week has a focus — from Mission Sunday goals to Friday Demo Day and Saturday's Community Showcase. Take part, submit your work and earn points as you build consistently." },
+  { icon: Rocket, label: "Project portfolio", text: "Publish your AI and tech projects with descriptions, live links and the tools you used. Members can like and comment, and every project you publish earns you points." },
+  { icon: Users, label: "Creator community", text: "Connect with African AI creators: follow members, chat privately, request collaborations, share posts in the feed and climb the leaderboard together." },
+];
+
+function Perk({ icon: Icon, label, text }: { icon: typeof Users; label: string; text: string }) {
   return (
-    <div className="bg-card/85 border-border/60 rounded-2xl border p-3 backdrop-blur-xl">
-      <Icon className="text-primary mx-auto h-5 w-5" aria-hidden />
-      <p className="text-muted-foreground mt-1 text-[11px] font-semibold">{label}</p>
-    </div>
+    <Dialog>
+      <DialogTrigger asChild>
+        <button type="button" className="press bg-card/85 border-border/60 hover:border-primary rounded-2xl border p-3 backdrop-blur-xl">
+          <Icon className="text-primary mx-auto h-5 w-5" aria-hidden />
+          <p className="text-muted-foreground mt-1 text-[11px] font-semibold">{label}</p>
+        </button>
+      </DialogTrigger>
+      <DialogContent className="max-w-sm">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2"><Icon className="text-primary h-5 w-5" aria-hidden /> {label}</DialogTitle>
+          <DialogDescription className="leading-relaxed">{text}</DialogDescription>
+        </DialogHeader>
+        <Button asChild className="w-full rounded-xl"><Link to="/auth">Get started <ArrowRight className="ml-1 h-4 w-4" aria-hidden /></Link></Button>
+      </DialogContent>
+    </Dialog>
   );
 }
